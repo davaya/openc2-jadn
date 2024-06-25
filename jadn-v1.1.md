@@ -746,7 +746,7 @@ affect how values are serialized, see [Section 4](#4-serialization).
 
 #### 3.2.1.6 Pattern
 The *pattern* option specifies a regular expression used to validate a String instance.
-* The *pattern* value SHOULD conform to the Pattern grammar of [ECMAScript](#es9) Section 21.2.
+* The *pattern* value SHOULD conform to the Pattern grammar of [ECMAScript](#ecmascript) Section 22.2.
 * A String instance MUST be considered invalid if it does not match the regular expression specified by *pattern*.
 
 #### 3.2.1.7 Size and Value Constraints
@@ -1619,8 +1619,8 @@ While any hyperlinks included in this appendix were valid at the time of publica
 
 The following documents are referenced in such a way that some or all of their content constitutes requirements of this document.
 
-###### [ES9]
-ECMA International, *"ECMAScript 2018 Language Specification"*, ECMA-262 9th Edition, June 2018, https://www.ecma-international.org/ecma-262.
+###### [ECMASCRIPT]
+ECMA International, *"ECMAScript 2023 Language Specification"*, ECMA-262 14th Edition, June 2023, https://www.ecma-international.org/ecma-262 (*or corresponding section(s) in current edition*).
 ###### [EUI]
 "IEEE Registration Authority Guidelines for use of EUI, OUI, and CID", IEEE, August 2017, https://standards.ieee.org/content/dam/ieee-standards/standards/web/documents/tutorials/eui.pdf.
 ###### [JSONSCHEMA]
