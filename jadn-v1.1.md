@@ -29,14 +29,15 @@ https://docs.oasis-open.org/openc2/jadn/v1.0/jadn-v1.0.pdf
 
 #### Chair:
 Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
+Michael Rosa (mjrosa@nsa.gov), [National Security Agency](https://www.nsa.gov/)
 
 #### Editor:
 David Kemp (d.kemp@cyber.nsa.gov), [National Security Agency](https://www.nsa.gov/)
 
 #### Additional artifacts:
 This prose specification is one component of a Work Product that also includes:
-* JSON schema for JADN documents: https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/schemas/jadn-v1.0.json
-* JADN schema for JADN documents: https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/schemas/jadn-v1.0.jadn
+* JSON schema for JADN documents: https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/schemas/jadn-v1.1.json
+* JADN schema for JADN documents: https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/schemas/jadn-v1.1.jadn
 
 #### Abstract:
 JSON Abstract Data Notation (JADN) is a UML-based information modeling language that defines data structure
@@ -435,8 +436,8 @@ IDL or property tables are preferred for use in documentation, but conformance i
 ## 2.4 Implementation
 
 Two general approaches can be used to implement IM-based protocol specifications:
-1) Translate the IM to a data-format-specific schema language such [Relax-NG](#relaxng),
-[JSON Schema](#jsonschema), [Protobuf](#proto), or [CDDL](#rfc8610),
+1) Translate the IM to a data-format-specific schema language such as [XSD](#xsd),
+[Relax-NG](#relaxng), [JSON Schema](#jsonschema), [Protobuf](#proto), or [CDDL](#rfc8610),
 then use format-specific serialization and validation libraries to process data in the selected format.
 Applications use data objects specific to each serialization format.
 2) Use the IM directly as a format-independent schema language, using IM serialization and validation libraries
@@ -1687,7 +1688,7 @@ ECMA International, *"ECMAScript 2023 Language Specification"*, ECMA-262 14th Ed
 ###### [EUI]
 "IEEE Registration Authority Guidelines for use of EUI, OUI, and CID", IEEE, August 2017, https://standards.ieee.org/content/dam/ieee-standards/standards/web/documents/tutorials/eui.pdf.
 ###### [JSONSCHEMA]
-Wright, A., Andrews, H., Hutton, B., *"JSON Schema Validation"*, Internet-Draft, 16 September 2019, https://tools.ietf.org/html/draft-handrews-json-schema-validation-02, or for latest drafts: https://json-schema.org/work-in-progress.
+Wright, A., Andrews, H., Hutton, B., *"JSON Schema Validation"*, Internet-Draft, 16 June 2022, https://json-schema.org/draft/2020-12/draft-bhutton-json-schema-validation-01.
 ###### [RFC791]
 Postel, J., "Internet Protocol", RFC 791, September 1981, http://www.rfc-editor.org/info/rfc791.
 ###### [RFC2119]
@@ -1714,8 +1715,6 @@ Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words", BCP 14, 
 Deering, S., Hinden, R., "Internet Protocol, Version 6 (IPv6) Specification", RFC 8200, July 2017, http://www.rfc-editor.org/info/rfc8200.
 ###### [RFC8259]
 Bray, T., "The JavaScript Object Notation (JSON) Data Interchange Format", STD 90, RFC 8259, December 2017, http://www.rfc-editor.org/info/rfc8259.
-###### [XMLDATA]
-W3C, "XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes", 5 April 2012, https://www.w3.org/TR/xmlschema11-2.
 
 ## A.2 Informative References
 
@@ -1764,7 +1763,9 @@ Boyer, J., et. al., *"Experiences with JSON and XML Transformations"*, October 2
 "Union Type", Wikipedia, https://en.wikipedia.org/wiki/Union_type
 ###### [TAGGEDUNION]
 "Tagged Union", Wikipedia, https://en.wikipedia.org/wiki/Tagged_union.
-
+###### [XSD]
+W3C, "XML Schema Definition Language (XSD) 1.1 Part 1: Structures", 5 April 2012, https://www.w3.org/TR/xmlschema11-1.
+W3C, "XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes", 5 April 2012, https://www.w3.org/TR/xmlschema11-2.
 -------
 
 # Appendix B. Safety, Security and Privacy Considerations
