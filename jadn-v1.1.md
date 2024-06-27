@@ -40,14 +40,18 @@ This prose specification is one component of a Work Product that also includes:
 * JADN schema for JADN documents: https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/schemas/jadn-v1.1.jadn
 
 #### Abstract:
-JSON Abstract Data Notation (JADN) is a UML-based information modeling language that defines data structure
-independently of data format. Information models are used to define and generate physical data models,
-validate information instances, and enable lossless translation across data formats.
-A JADN specification consists of two parts: type definitions that comprise the information model,
-and serialization rules that define how information instances are represented as data.
-The information model is itself an information instance that can be serialized and transferred between applications.
-The model is documented using a compact and expressive interface definition language, property tables, or
-entity relationship diagrams, easing integration with existing design processes and architecture tools.
+An information model (IM) defines the essential content of messages used in computing independently of
+how that content is represented externally for communication and storage or internally for processing.
+JSON Abstract Data Notation (JADN) is an information modeling language used to formally define essential
+content using a minimal and regular set of built-in datatypes, plus encoding rules to translate between
+internal instances of each type and multiple external representations. "Essential content" refers to the
+information-theoretic meaning of information ("entropy"), and JADN's core requirement is to define
+information equivalence across external representations ranging from the most compact (e.g., IP packets,
+FIX transactions) to concise binary languages such as Protobuf and CBOR to text-based languages such as
+JSON and XML. JADN information models are themselves information values that can be serialized in any
+data format, edited as information definition language (IDL) text files, and displayed as property
+tables or entity relationship diagrams to facilitate use with existing design processes and architecture
+tools.
 
 #### Status:
 This document was last revised or approved by the OASIS Open Command and Control (OpenC2) TC on the above date.
@@ -522,7 +526,7 @@ The notation `X+y` indicates that the definition of type `X` includes type optio
 
 **Union Types**:
 
-A union type specifies a set of alternatives against which instances are matched. See [Section 3.2.2.2](#3222)
+A union type specifies a set of alternatives against which instances are matched. See [Section 3.2.2.2](#3222-union-types)
 
 **Conformance**:
 
@@ -614,7 +618,7 @@ JADN does not restrict the syntax of TypeName and FieldName, but naming conventi
     * A "System" character used in tool-generated or specially-processed type names
 * Schema authors MUST NOT create FieldNames containing the [JSON Pointer](#rfc6901) field separator "/", which is reserved for use in the [Pointers](#335-pointers) extension
 * Schema authors SHOULD NOT create TypeNames containing the System character, but schema processing tools MAY do so
-* Specifications that do not define alternate name formats MUST use the definitions in Figure 3-1 expressed as [ABNF](#rfc5234) and [Regular Expression](#es9):
+* Specifications that do not define alternate name formats MUST use the definitions in Figure 3-1 expressed as [ABNF](#rfc5234) and [Regular Expression](#ecmascript):
 ```
 ABNF:
 TypeName   = UC *63("-" / Sys / UC / LC / DIGIT)    ; PascalCase / Train-Case, 1-64 characters
@@ -822,7 +826,7 @@ from which elements are picked at random.
 The *seq* option specifies that a Map, MapOf or Record instance is an OrderedSet.
 
 #### 3.2.1.12 Combine
-The *combine* option specifies that a [Choice](#3222-tagged-and-untagged-unions) instance must be valid
+The *combine* option specifies that a [Choice](#32222-choice---untagged-union) instance must be valid
 against a logical combination of types. The single-character value indicates the combination type:
 * A = AND: data must be an instance of `allOf` the Choice types
 * O = OR: data must be an instance of `anyOf` the Choice types (at least one, short-circuit evaluated in field order)
@@ -2125,7 +2129,7 @@ This appendix contains the JADN type definitions corresponding to all examples i
 ]]
 ```
 
-**[Section 3.2.2.2 Discriminated Union with Explicit Tag](#3222-discriminated-union-with-explicit-tag):**
+**[Section 3.2.2.2 Discriminated Union with Explicit Tag](#32223-choice---tagged-union):**
 ```json
 [
   ["Product", "Choice", [], "Discriminated union", [
