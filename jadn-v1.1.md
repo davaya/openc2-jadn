@@ -42,10 +42,11 @@ This prose specification is one component of a Work Product that also includes:
 #### Abstract:
 An information model (IM) defines the essential content of messages used in computing independently of
 how that content is represented externally for communication and storage or internally for processing.
-JSON Abstract Data Notation (JADN) is an information modeling language used to formally define essential
-content using a minimal and regular set of built-in datatypes, plus encoding rules to translate between
-internal instances of each type and multiple external representations. "Essential content" refers to the
-information-theoretic meaning of information ("entropy"), and JADN's core requirement is to define
+Essential means information content or entropy as defined in information theory, the amount of
+news in a message measured in bits.
+JSON Abstract Data Notation (JADN) is an information modeling language that formally defines essential
+content using a minimal set of core datatypes, plus encoding rules that losslessly translate between
+internal and external representations of each type. JADN's core requirement is to define
 information equivalence across external representations ranging from the most compact (e.g., IP packets,
 FIX transactions) to concise binary languages such as Protobuf and CBOR to text-based languages such as
 JSON and XML. JADN information models are themselves information values that can be serialized in any
