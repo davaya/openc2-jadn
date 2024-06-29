@@ -50,9 +50,9 @@ internal and external representations of each type. JADN's core requirement is t
 information equivalence across external representations ranging from the most compact (e.g., IP packets,
 FIX transactions) to concise binary languages such as Protobuf and CBOR to text-based languages such as
 JSON and XML. JADN information models are themselves information values that can be serialized in any
-data format, edited as information definition language (IDL) text files, and displayed as property
-tables or entity relationship diagrams to facilitate use with existing design processes and architecture
-tools.
+data format, edited as human-friendly information definition language (IDL) text files, and displayed
+as property tables or entity relationship diagrams to facilitate use with existing design processes
+and architecture tools.
 
 #### Status:
 This document was last revised or approved by the OASIS Open Command and Control (OpenC2) TC on the above date.
