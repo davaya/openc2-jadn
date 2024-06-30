@@ -42,7 +42,7 @@ This prose specification is one component of a Work Product that also includes:
 #### Abstract:
 An information model (IM) defines the essential content of messages used in computing independently of
 how that content is represented externally for communication and storage or internally for processing.
-Essential means information content or entropy as defined in information theory, the amount of
+"Essential" means information content or entropy as defined in information theory, the amount of
 news in a message measured in bits.
 JSON Abstract Data Notation (JADN) is an information modeling language that formally defines essential
 content using a minimal set of core datatypes, plus encoding rules that losslessly translate between
@@ -707,7 +707,7 @@ TypeOption = Choice
   115 set       Boolean    // 's' ArrayOf instance is unordered and unique (Section 3.2.1.9)
    98 unordered Boolean    // 'b' ArrayOf instance is unordered (Section 3.2.1.10)
   111 seq       Boolean    // 'o' Map, MapOf, or Record instance is ordered and unique (Section 3.2.1.11)
-   67 combine   String     // 'C' Choice is an untagged union, a logical combination of types: (Section 3.2.1.12) 
+   67 combine   String     // 'C' Choice is an untagged union, a logical combination of types (Section 3.2.1.12) 
    88 extend    Boolean    // 'X' Type is extensible; new Items or Fields may be appended (Section 3.2.1.13)
    33 default   String     // '!' Default value (Section 3.2.1.14)
 ```
@@ -908,7 +908,7 @@ The `allOf` and `oneOf` options always perform the evaluation against all FieldT
 The Choice type without a combine option represents a [discriminated union](#union), a Map with exactly
 one tag:type pair where the tag indicates the value type. By default the tag is included in the instance
 value. But if the *tagid* option is present on a Choice field in an Array or Record container,
-a separate field within that container contains the tag separagely from the instance value.
+a separate field within that container contains the tag separately from the instance value.
 
 * The Tag field MUST be an Enumerated type derived from the Choice.  It MAY contain a subset of fields from the Choice.
 
