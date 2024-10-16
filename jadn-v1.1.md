@@ -40,15 +40,22 @@ This prose specification is one component of a Work Product that also includes:
 * JADN schema for JADN documents: https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/schemas/jadn-v1.1.jadn
 
 #### Abstract:
-An information model (IM) defines the essential content of messages used in computing independently of
-how that content is represented externally for communication and storage or internally for processing.
-"Essential" means information content or entropy as defined in information theory, the amount of
-news in a message measured in bits.
+An Information Model (IM) defines the essential content of data used in computing independently of
+how it is represented for processing, communication or storage.
+
+--a--
+JSON Abstract Data Notation (JADN) is an information modeling language consisting of a small set of
+Unified Modeling Language (UML) logical datatypes designed to express the meaning of data items at a
+conceptual level, formally define and validate their essential content based on information theory,
+and enable lossless translation of information across a wide range of data representations.
+This specification defines the JADN language and describes how to construct IMs using it.
+
+--b--
 JSON Abstract Data Notation (JADN) is an information modeling language that formally defines essential
 content using a minimal set of core datatypes, plus encoding rules that losslessly translate between
 internal and external representations of each type. JADN's core requirement is to define
 information equivalence across external representations ranging from the most compact (e.g., IP packets,
-FIX transactions) to concise binary languages such as Protobuf and CBOR to text-based languages such as
+FIX-SBE transactions) to concise binary languages such as Protobuf and CBOR to text-based languages such as
 JSON and XML. JADN information models are themselves information values that can be serialized in any
 data format, edited as human-friendly information definition language (IDL) text files, and displayed
 as property tables or entity relationship diagrams to facilitate use with existing design processes
@@ -1735,6 +1742,8 @@ Dammann, Olaf, *"Data, Information, Evidence, and Knowledge"*, https://www.ncbi.
 *"Don't Repeat Yourself"*, https://en.wikipedia.org/wiki/Don%27t_repeat_yourself.
 ###### [FDT]
 König, H., *"Protocol Engineering, Chapter 8"*, https://link.springer.com/chapter/10.1007%2F978-3-642-29145-6_8
+###### [FIX]
+FIX Trading Community Technical Standards, https://www.fixtrading.org/standards/
 ###### [GRAPH]
 Rennau, Hans-Juergen, *"Combining graph and tree"*, XML Prague 2018, https://archive.xmlprague.cz/2018/files/xmlprague-2018-proceedings.pdf
 ###### [GRAPHVIZ]
