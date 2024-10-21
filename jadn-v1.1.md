@@ -198,11 +198,21 @@ business and similar processes.*
 In software-based systems a class is a template that defines the properties and behaviors of objects,
 and an object is a specific instance of a class that has specific values for its properties and methods.
 And while an instance of a class has properties, it does not have a value (an instance of a type).
-UML models classes using the Class structured classifier and types as the DataType simple classifier,
-where DataType differs from Class in that instances of a DataType are identified only by their value.
-All instances of a DataType with the same value are considered to be equal instances.
+UML models classes using the Class structured classifier and types as the DataType simple classifier.
+DataType differs from Class in that instances of a DataType are identified only by their value.
+All instances of a DataType with the same value are considered to be equal instances, meaning that
+each instance has a static (immutable) value and that values can be hashed for integrity and
+compared for equality with other instances of the same type.
 
-*Note: Coordinate example, no Classes or Properties*
+* Two instances of the same class with the same properties are different instances.
+Two instances of the same type with the same value are equal.
+* Types specify if order is significant: in a "Directions" type ("preheat", "bake") it is;
+in an "Ingredients" type ("sugar", "flour") it is not. Class properties are not ordered.
+* Types distinguish between values and references and a value is never equal to a reference to that value.
+A "Collection of Element" class may not specify whether its members are Element values or Element IDs.
+
+Using classes to model data often leads to absurdities like modeling one-dimensional coordinates
+(latitude) as datatypes but multi-dimensional coordinates (latitude, longitude, elevation) as classes.
 
 <!---
 *The **Resource Description Framework** [[RDF](#rdf)] is a framework for representing information in the Web.
