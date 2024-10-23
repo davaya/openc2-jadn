@@ -181,8 +181,7 @@ language is a formal syntax that allows users to capture data semantics and cons
 
 -- [[Information Modeling](#information-modeling)], Y. Tina Lee, NIST
 
-This specification defines the JADN information modeling language, a formal syntax that captures
-data semantics and constraints.
+This specification defines the JADN information modeling language.
 While the term information modeling is used broadly and covers a range of applications,
 a JADN information model defines the **essential content** of **data items** used in computing
 independently of how that content is represented for processing, communication or storage.
@@ -196,20 +195,28 @@ JADN is based on the Unified Modeling Language [[UML](#uml)]:
 with tools for analysis, design, and implementation of software-based systems as well as for modeling
 business and similar processes.*
 
+The UML specification is organized around classification, and among its many kinds of classifiers
+are DataType and Class.
+DataType differs from Class in that instances of a DataType are identified only by their value.
+All instances of a DataType with the same value are considered to be equal instances.
+All DataType instances are constants (immutable literal values), values can be compared
+for equality, and different values are different instances. A given value may be classified as
+an instance of multiple DataTypes, but equality requires both type and value to be equal.
+
 In software-based systems a class is a template that defines the properties and behaviors of objects,
 and an object is a specific instance of a class that has specific values for its properties and methods.
-UML models classes using the Class structured classifier and types as the DataType simple classifier.
-DataType differs from Class in that instances of a DataType are identified only by their value.
-All instances of a DataType with the same value are considered to be equal instances, meaning that
-each DataType instance has an immutable value and that values can be hashed for integrity and
-compared for equality with other instances of the same type.
-While an instance of a class has properties, it does not have a value because objects are not serialized
-or hashable, and two instances of the same Class with the same properties are not equal instances.
+Instances of a Class are never equal. Two objects instantiated from the same class with identical data
+values remain distinct: an object does not have a literal value, and equality comparison of two objects
+always returns false.
+
+<!--
+with the same properties are not equal instances.
 * DataTypes specify if order is significant: in a "Directions" type ("preheat", "bake") it is;
 in an "Ingredients" type ("sugar", "flour") it is not. Class properties are not ordered.
 * DataTypes distinguish between values and references, Classes do not.
 A "Collection of X" class does not specify whether it contains complete values of type X or just
 ID properties of X.
+-->
 
 Using classes to model data often leads to absurdities like modeling one-dimensional coordinates
 (latitude) as DataTypes but multi-dimensional coordinates (e.g., latitude, longitude) as Classes.
@@ -227,12 +234,13 @@ while an information model *defines* the logical and lexical values of digital r
 not have a lexical-to-value mapping, which is why JADN information models are based exclusively on
 DataTypes.
 
+<!--
 *Note that UML applications generally do not perform semantic modeling, they create drawings with boxes
 and lines and text following UML conventions. Class diagrams may be used as a substitute for DataType
 diagrams if the application does not explicitly support the latter, but this does not indicate that DataTypes
 are Classes.*
 
-<!--
+
 UML class models and diagrams are commonly referred to as "Data Models", but they model knowledge
 of real-world entities using classes. In contrast, information models model data itself using datatypes.
 A practical distinction is that class models are undirected graphs with an unlimited variety of
