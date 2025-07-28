@@ -4,7 +4,7 @@
 # JSON Abstract Data Notation (JADN) Version 2.0
 
 ## Committee Specification Draft 01
-## 19 February 2025
+## 4 August 2025
 
 &nbsp;
 
@@ -184,13 +184,28 @@ For complete copyright information please see the Notices section in the Appendi
 -------
 
 # 1 Introduction
-> *An information model is a representation of concepts, relationships, constraints, rules,
-and operations to specify data semantics for a chosen domain of discourse. An information modeling
-language is a formal syntax that allows users to capture data semantics and constraints.*
+NIST describes [[Information Modeling](#information-modeling)] as:
 
--- [[Information Modeling](#information-modeling)], Y. Tina Lee, NIST
+> An information model is a representation of concepts, relationships, constraints, rules, and operations
+> to specify data semantics for a chosen domain of discourse.
+> The advantage of using an information model is that it can provide sharable, stable, and organized
+> structure of information requirements for the domain context.
+>
+> An information modeling language is a formal syntax that allows users to capture data semantics and constraints.
 
-This is the reference specification for the JADN information modeling language.
+This hints at the primary reasons for using information models:
+
+* **High Level** - for an IM to be broadly sharable and stable, it should be a high level specification
+that separates information sharing requirements from implementation details. This allows it to be used
+both for conceptual design where details are unknown, unstable, or distracting, as well as for
+implementation where unambiguous specification of details using a formal syntax is essential for
+robustness and interoperability.
+* **Language-Independent** - an information modeling language defines information requirements in a
+representation-independent way both within a process and when stored or communicated among processes.
+Focusing on requirements allows a single specification to apply to many processing environments and
+data formats and ensures that they deliver equivalent results.
+
+This document is the reference specification for the JADN information modeling language.
 See [[JADN-CN](#jadn-cn)] for additional detail on the information modeling
 process and how to construct and use JADN information models.
 While the term information modeling is used broadly and covers a range of applications, a JADN
