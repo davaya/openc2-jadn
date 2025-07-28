@@ -49,11 +49,11 @@ This prose specification is one component of a Work Product that also includes:
 An Information Model (IM) defines the meaning and essential content of data used in computing independently
 of how it is represented for processing, communication or storage.
 JSON Abstract Data Notation (JADN) is an information modeling language based on Unified Modeling Language
-(UML) logical DataTypes, used to both express the meaning of data items at a conceptual level and
+(UML) logical datatypes, used to both express the meaning of data items at a conceptual level and
 formally define and validate instances of those types.
 JADN uses information theory to define logical equivalence, which enables representation of essential
 content in a wide range of formats and ensures translation among representations without loss.
-This document defines the normative DataTypes and data formats used to construct a JADN IM, and describes
+This document defines the normative datatypes and data formats used to construct a JADN IM, and describes
 several equivalent non-normative model representations including a textual information definition
 language, a table format, and a diagram format. Because a JADN IM is a logical value, it can also
 be serialized in the same formats as the data it describes, allowing the model to accompany the data
@@ -201,8 +201,8 @@ information conveyed in a message is not directly related to the size or format 
 * **Data items** (documents, messages, protocol data units, data structures, object state, etc.)
 are JADN's scope within a system's domain of discourse.
 
-An information model defines the question "What does the recipient know after receiving
-a data item" separately from "what does a data item look like".
+An information model focuses on information requirements, defining what a recipient needs to know
+separately from data item format.
 
 > *The objective of UML is to provide system architects, software engineers, and software developers
 with tools for analysis, design, and implementation of software-based systems as well as for modeling
@@ -212,46 +212,43 @@ business and similar processes.*
 
 JADN is a UML profile for documents and messages. UML's organizing principle is classification,
 where a classifier represents a classification of instances according to their features.
-The values that are classified by a classifier are called instances of the classifier.
-UML defines several kinds of classifier including DataType and Class. Instances of a DataType are identified
-by their value, and all instances of a DataType with the same value are considered to be equal instances.
-DataType instances are immutable because by definition a different value is a different instance.
-A value may be classified as an instance of multiple DataTypes, but value comparison is meaningful
+UML defines several kinds of classifier including datatype and class. Instances of a datatype are identified
+by their value, and all instances of a datatype with the same value are considered to be equal instances.
+Datatype instances are immutable because by definition a different value is a different instance.
+A value may be classified as an instance of multiple datatypes, but value comparison is meaningful
 only among instances of the same type.
 
-Instances of a Class are objects that model operations and behavior.
+Instances of a class are objects that model operations and behavior.
 An object does not have an immutable value: its state can change over time and two objects
-instantiated from the same Class, even with identical property values, are different instances.
-Although objects are not values, DataTypes model object features that are values, such as
+instantiated from the same class, even with identical property values, are different instances.
+Although objects are not values, datatypes model object features that are values, such as
 documents and messages in business processes and public fields and API (getter/setter) views
 of private state in software-based systems.
-Additional differences between DataType and Class include:
-* Collection DataTypes specify if value order is significant. Class public fields and API values
+Additional differences between datatype and class include:
+* Collection datatypes specify if value order is significant. Class public fields and API values
 do not have an order.
-* DataType distinguishes between values and references, Class does not.
+* Datatype distinguishes between values and references, class does not.
 For example, software functions cannot persistently modify arguments passed by value but can modify
 those passed by reference. Validating a document for correctness or integrity validates the values
-it contains but not the values it references. A document DataType can distinguish between local and
+it contains but not the values it references. A document datatype can distinguish between local and
 external references and validate that local references identify values contained within that instance.
 * Misusing Class to model data is a common practice, but often results in contradictions such as
-modeling a one-dimensional Coordinate (e.g., latitude) as a DataType but a two-dimensional Coordinate
-(latitude, longitude) as a Class.
+modeling a one-dimensional Coordinate (e.g., latitude) as a datatype but a two-dimensional Coordinate
+(latitude, longitude) as a class.
 
-The **Resource Description Framework** [[RDF](#rdf)] includes DataTypes:
+The **XML Schema Definition Language** [[XSD](#xsd)] defines datatype as:
 
-> *RDF defines an abstract syntax (a data model) which serves to link all RDF-based languages and
-specifications. RDF graphs are sets of subject-predicate-object triples, where the elements may be
-IRIs, blank nodes, or **datatyped literals**. They are used to express descriptions of resources.*
-
-RDF defines DataType as having a "lexical-to-value (L2V) mapping", and while an RDF graph defines
-relationships among physical and data resources, DataType is the only RDF element that defines
-a data resource in terms of both a literal representation and its representation-independent
-logical value.
+> A datatype has three properties:
+>  * A **value space**, which is a set of values.
+>  * A **lexical space**, which is a set of **literals** used to denote the **values**.
+>  * A **lexical mapping**, which is a mapping from the **lexical space** into the **value space**,
+>    and a small collection of functions, relations, and procedures associated with the datatype,
+>    including equality and (for some datatypes) order relations on the value space.
 
 Defining equivalence across representations is the primary distinction between information modeling
 and other data modeling approaches.
-An information model is constructed from DataTypes, not Classes, because its purpose is to compare
-literal values for equivalence based on their logical information content, and only DataTypes have
+An information model is constructed from datatypes, not classes, because its purpose is to compare
+literal values for equivalence based on their logical information content, and only datatypes have
 instances that can be validated for content integrity and compared for equality.
 
 ## 1.1 Glossary
@@ -271,30 +268,35 @@ instances that can be validated for content integrity and compared for equality.
 
 * **Equivalence**:
     The relation between the meaning represented by two data values such that each logically implies the other.
-    Two data values are equivalent if and only if they are classified as instances of the same DataType
+    Two data values are equivalent if and only if they are classified as instances of the same datatype
     and have the same logical value.
 
-* **DataType (logical type, type)**:
+* **Class**:
+    A blueprint or template for creating objects within a process.
+    It defines the characteristics (datatype) and behaviors (functions or methods)
+    that objects of that class will possess.
+
+* **Object**:
+    An instance of a class.
+
+* **Datatype (type)**:
     An abstract type that defines the meaning and essential content of a discrete data item used
     in computing independently of how it is represented for processing, communication or storage.
-    DataTypes are defined by and composed using an information modeling language.
-    Every DataType has a value space as defined in [XSD](#xsd) Part 2 Section 2.1
-    and a lexical space defined by a specified data format.
 
-* **Logical Value (information value)**:
-    An immutable instance of a DataType used for processing and comparison, specified by
-    behavioral effect independently of programming languages and techniques.
-    Every logical value is a member of the value space of its DataType.
+* **Logical Value (value)**:
+    An immutable instance of a datatype used within a process, specified by its semantics
+    independently of programming languages and techniques.
+    Every value is a member of the value space of its type.
 
-* **Data Value (document, message, artifact, lexical value, literal value)**:
-    An immutable instance of a DataType used for transmission or storage, consisting of a sequence of
-    octets or characters in an external data format.
-    Every lexical value is a member of a lexical space of its DataType.
+* **Literal (document, message, artifact)**:
+    An immutable sequence of bytes or characters used outside a process for transmission or storage.
+    A literal is either a member of the lexical space of one or more types or it is not an instance
+    of any type. Parsing a literal establishes its type and value, if any.
 
 * **Data Format**:
     Serialization rules that specify the media type (e.g., XML, JSON, CBOR, Protobuf),
     design goals (human readability, efficiency), and style preferences for data values in that format.
-    A data format defines a lexical space and a lexical mapping for each DataType.
+    A data format defines a lexical space and a lexical mapping for each datatype.
 
 * **Data Model**:
     A concrete schema that defines the structure and value constraints of serialized data.
@@ -310,12 +312,12 @@ instances that can be validated for content integrity and compared for equality.
     if one is specified by the data format.
 
 * **Valid**:
-    A logical value is valid if it satisfies the constraints of its DataType.
-    A data value is valid if it is well-formed and is classified as an instance of a DataType.
+    A logical value is valid if it satisfies the constraints of its datatype.
+    A data value is valid if it is well-formed and is classified as an instance of a datatype.
 
 * **Serialization**:
     Serialization, or encoding, converts a logical value into a data value.
-    De-serialization, or decoding, classifies a data value and converts it into an instance of a DataType.
+    De-serialization, or decoding, classifies a data value and converts it into an instance of a datatype.
 
 * **Description (annotation)**:
     Description fields of an information model are reserved for comments from authors to readers
@@ -341,7 +343,7 @@ instances that can be validated for content integrity and compared for equality.
 
 A JADN information model defines the essential content of discrete data items used in computing independently
 of how that content is represented for processing, communication or storage.
-Information values are instances of abstract UML DataTypes, and as shown in Figure 2-1 DataType definitions are
+Information values are instances of abstract UML datatypes, and as shown in Figure 2-1 datatype definitions are
 organized into abstract schema packages which are included in an application's information model.
 
 ###### Figure 2-1 -- Information Model Organization
@@ -352,7 +354,7 @@ organized into abstract schema packages which are included in an application's i
 encoding rules that define the lexical-to-value mapping in a specific data format for each JADN core type.
 * Schema is the top level JADN type. It has two fields:
   * "Metadata" containing descriptive and functional information about the schema package as a whole.
-  * List of "Type" containing JADN type definitions. Every type definition is a UML DataType.
+  * List of "Type" containing JADN type definitions. Every type definition is a UML datatype.
 * An instance of the Schema type is identified by a globally-unique package namespace.
 Types defined in a package have names qualified by its namespace, and reference types defined in other
 packages by their qualified names. An individual Schema instance is called a "package" because it is an
@@ -508,16 +510,16 @@ using $NSID and $TypeName instances as `Prefix` and `LocalPart` respectively.
 
 # 4 JADN Types
 
-An information modeling language's abstract DataTypes define their meaning and application behavior.
+An information modeling language's abstract datatypes define their meaning and application behavior.
 As shown in Figure 4-1, JADN defines twelve core types in three categories:
 
 * **Primitive** ([Section 4.2.1](#421-primitive-types)): Types whose instances are atomic (non-decomposable) values.
 * **Compound** ([Section 4.2.2](#422-compound-types): Types whose instances are collections of values.
 * **Union** ([Section 4.2.3](#423-union-types)): Types whose instances are selected from a set of possible values.
 
-###### Fig. 4-1. JADN Core DataTypes
+###### Fig. 4-1. JADN Core Datatypes
 
-![Core DataTypes](images/im-datatype.jpg)
+![Core Datatypes](images/im-datatype.jpg)
 
 ## 4.1 Type Definition Structure
 
@@ -660,7 +662,7 @@ Coordinate = Record                      // A GPS coordinate
 Type and field options are the mechanisms to support a varied set of information needs within the
 strictly regular type definition structure. New requirements can be accommodated by defining new options
 without modifying that structure.
-Each TypeOption and FieldOption provides a limited piece of information about some aspect of the DataType
+Each TypeOption and FieldOption provides a limited piece of information about some aspect of the datatype
 to which it applies, similar in purpose to an [[XSD](#xsd)] *facet*. Each option has an ID and value listed
 in [Section 4.2](#42-core-types),
 and is represented in JSON format as a string where the first character's Unicode codepoint is the option's
@@ -670,7 +672,7 @@ otherwise False.
 
 As an example the TypeOption "minLength = 1" is represented as:
 ```
-+----+-----------+     Option ID = 0x7b (Left Curley Bracket) = "minLength"
++----+-----------+     Option ID = 0x7b (Left Curly Bracket) = "minLength"
 | ID | Value     |     Value = 1 (Integer)
 +----+-----------+     TypeOption = "{1" (String)
 ```
@@ -779,7 +781,36 @@ options do not apply.
 to be classified as an instance of a type containing that option.
 * The *pattern* option value SHOULD conform to the Pattern grammar of [[ECMAScript](#ecmascript)] Section 22.2.
 
-### 4.2.2 Compound Types
+### 4.2.2 Collections
+
+Objects, types and values
+
+<img src=images/collection.jpg width=480>
+
+#### 4.2.2.1 Collection types
+
+Define the semantics of a collection, aligned with programming language collection variables
+* Unique vs. Nonunique
+* Ordered vs. Unordered - comparison between two values, not related to order-preserving variables or schema order significance
+* Value vs. Association
+
+##### 4.2.2.1.1 Sequence
+##### 4.2.2.1.2 Set
+##### 4.2.2.1.3 OrderedSet
+##### 4.2.2.1.4 Bag
+##### 4.2.2.1.5 Map
+##### 4.2.2.1.6 OrderedMap
+
+#### 4.2.2.2 Compound types
+
+Define the literal space and literal-to-value mapping.
+* Structured vs. Unstructured
+
+##### 4.2.2.2.1 ArrayOf(vtype)
+##### 4.2.2.2.2 Array
+##### 4.2.2.2.3 MapOf(ktype, vtype)
+##### 4.2.2.2.4 Map
+##### 4.2.2.2.5 Record
 
 Compound types define a collection of items.
 As shown in [Figure 4-1](#figure-4-1----jadn-core-datatypes) a compound type defines how the items in a
@@ -1172,7 +1203,7 @@ The TypeOptions applicable to all core types are shown in Table 4-10:
 
 #### 4.2.4.1 Type Inheritance
 
-UML defines inherited classifiers, and JADN defines a mechanism for constructing DataType inheritance
+UML defines inherited classifiers, and JADN defines a mechanism for constructing datatype inheritance
 hierarchies using the `extends` and `restricts` TypeOptions. Type inheritance is static;
 it can be implemented as a shortcut that transforms inherited type definitions into expanded form
 prior to use, or as a runtime classifier operation.
@@ -1368,7 +1399,7 @@ Timestamp2 = String /date-time
 
 #### 4.2.5.2 XSD Semantic Validation Keywords
 
-XML Schema Definition Language ([[XSD](#xsd)]) Section 3 defines a set of built-in DataTypes
+XML Schema Definition Language ([[XSD](#xsd)]) Section 3 defines a set of built-in datatypes
 using a text-centric approach:
 > The *value space* of *anyAtomicType* is the union of the value spaces of all the *primitive* datatypes
 > defined here or supplied as implementation-defined primitives.
@@ -1377,8 +1408,8 @@ Information models are value-centric: the JADN *value space* consists of the fiv
 types defined in Section 4.2.1, and the *lexical space* is constructed using semantic keywords defined here
 or supplied from elsewhere. This difference has several effects:
 
-* Enumerated is a first-class JADN DataType, not a facet of string or integer representations.
-* Integer and Number are distinct first-class JADN DataTypes, not subsets of a *decimal* DataType. Open and
+* Enumerated is a first-class JADN datatype, not a facet of string or integer representations.
+* Integer and Number are distinct first-class JADN datatypes, not subsets of a *decimal* datatype. Open and
 closed intervals apply to both Integers and Numbers.
 * System time (Epoch + Integer offset and the Seven-property subset of POSIX `tm`) is the value space
 of time-related Integers. The lexical space is broad, and lexical mappings beyond ISO 8601
@@ -1391,7 +1422,7 @@ serializations.
 
 ###### Table 4-12: XSD Formats
 
-| XSD DataType         | JADN DataType | JADN Opts  | XSD-compatible      |
+| XSD Datatype         | JADN Datatype | JADN Opts  | XSD-compatible      |
 |----------------------|---------------|------------|---------------------|
 | string               | String        |            |                     |
 | - normalizedString   | String        |            | /normalizedString   |
