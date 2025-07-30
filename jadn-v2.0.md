@@ -186,24 +186,26 @@ For complete copyright information please see the Notices section in the Appendi
 # 1 Introduction
 NIST describes [[Information Modeling](#information-modeling)] as:
 
-> An information model is a representation of concepts, relationships, constraints, rules, and operations
-> to specify data semantics for a chosen domain of discourse.
-> The advantage of using an information model is that it can provide sharable, stable, and organized
-> structure of information requirements for the domain context.
+> An information model is a representation of concepts, relationships, constraints, rules,
+> and operations to specify data semantics for a chosen domain of discourse.
+> The advantage of using an information model is that it can provide sharable, stable, and
+> organized structure of information requirements for the domain context.
 >
-> An information modeling language is a formal syntax that allows users to capture data semantics and constraints.
+> An information modeling language is a formal syntax that allows users to capture data
+> semantics and constraints.
 
 This hints at the primary reasons for using information models:
 
-* **High Level** - for an IM to be broadly sharable and stable, it should be a high level specification
-that separates information sharing requirements from implementation details. This makes it uniquely suited
-for conceptual design where details are unknown or undecided, for exposition and publication where they
-are distracting, as well as for implementation where unambiguous specification of details using a
-formal syntax is essential.
-* **Language-Independent** - an information modeling language defines information requirements in a
-representation-independent way both within a process and when stored or communicated among processes.
-Focusing on requirements allows a single specification to apply to many processing environments and
-data formats and ensures that different solutions deliver equivalent results.
+1. **High Level** - for an IM to be broadly sharable and stable, it should be a high level
+specification that separates information sharing requirements from implementation details.
+This makes an IM desirable for initial conceptual design where details are unknown or undecided,
+for exposition and publication where they are distracting, as well as for implementation
+where unambiguous specification of details using a formal syntax is essential
+for robustness and interoperability.
+2. **Language Independent** - an information modeling language defines information in a way that
+is representation-independent both within a process and when stored or communicated among processes.
+Because an IM is requirements-focused, a single specification applies to many processing environments
+and data formats, ensuring that they can deliver equivalent results.
 
 This document is the reference specification for the JADN information modeling language.
 See [[JADN-CN](#jadn-cn)] for additional detail on the information modeling
