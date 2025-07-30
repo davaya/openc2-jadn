@@ -4,7 +4,7 @@
 # JSON Abstract Data Notation (JADN) Version 2.0
 
 ## Committee Specification Draft 01
-## 6 August 2025
+## 4 August 2025
 
 &nbsp;
 
@@ -186,26 +186,24 @@ For complete copyright information please see the Notices section in the Appendi
 # 1 Introduction
 NIST describes [[Information Modeling](#information-modeling)] as:
 
-> An information model is a representation of concepts, relationships, constraints, rules,
-> and operations to specify data semantics for a chosen domain of discourse.
-> The advantage of using an information model is that it can provide sharable, stable, and
-> organized structure of information requirements for the domain context.
+> An information model is a representation of concepts, relationships, constraints, rules, and operations
+> to specify data semantics for a chosen domain of discourse.
+> The advantage of using an information model is that it can provide sharable, stable, and organized
+> structure of information requirements for the domain context.
 >
-> An information modeling language is a formal syntax that allows users to capture data
-> semantics and constraints.
+> An information modeling language is a formal syntax that allows users to capture data semantics and constraints.
 
 This hints at the primary reasons for using information models:
 
-1. **High Level** - for an IM to be broadly sharable and stable, it should be a high level
-specification that separates information sharing requirements from implementation details.
-This makes an IM desirable for initial conceptual design where details are unknown or undecided,
-for exposition and publication where they are distracting, as well as for implementation
-where unambiguous specification of details using a formal syntax is essential
-for robustness and interoperability.
-2. **Language Independent** - an information modeling language defines information in a way that
-is representation-independent both within a process and when stored or communicated among processes.
-Because an IM is requirements-focused, a single specification applies to many processing environments
-and data formats, ensuring that they can deliver equivalent results.
+* **High Level** - for an IM to be broadly sharable and stable, it should be a high level specification
+that separates information sharing requirements from implementation details. This allows it to be used
+both for conceptual design where details are unknown, unstable, or distracting, as well as for
+implementation where unambiguous specification of details using a formal syntax is essential for
+robustness and interoperability.
+* **Language-Independent** - an information modeling language defines information requirements in a
+representation-independent way both within a process and when stored or communicated among processes.
+Focusing on requirements allows a single specification to apply to many processing environments and
+data formats and ensures that they deliver equivalent results.
 
 This document is the reference specification for the JADN information modeling language.
 See [[JADN-CN](#jadn-cn)] for additional detail on the information modeling
@@ -213,32 +211,47 @@ process and how to construct and use JADN information models.
 While the term information modeling is used broadly and covers a range of applications, a JADN
 information model defines the essential content of discrete data items used in computing
 independently of how that content is represented for processing, communication or storage.
-* **Essential content** (meaning) is expressed using model definitions and quantified by
-information theory, where the amount of information conveyed in a message is not directly related
-to the size or format of the message.
+* **Essential content** (information, meaning) is defined by information theory, where the amount of
+information conveyed in a message is not directly related to the size or format of the message.
 * **Data items** (documents, messages, protocol data units, data structures, object state, etc.)
-are mapped to information values using explicit and unambiguous encoding rules.
+are JADN's scope within a system's domain of discourse.
 
-[[Unified Modeling Language (UML)](#uml)] provides a standardized visual way to model and document
-software systems, encompassing both their structure and behavior:
+An information model focuses on information requirements, defining what a recipient needs to know
+separately from data item format.
 
 > *The objective of UML is to provide system architects, software engineers, and software developers
 with tools for analysis, design, and implementation of software-based systems as well as for modeling
 business and similar processes.*
 
-JADN can be described as a UML profile for data items, formally defining the content of data used
-in software-based systems but not operations on that data.
-UML's organizing principle is classification, and among its classifiers are datatype and class:
-* **Class**: Instances of a class are objects that model operations and behavior, including the
-behavior of any variables within a process. This is inherent in the fact that a variable's value
-can be changed, and does not imply use of an object-oriented programming language.
-* **Datatype**: Datatype differs from class in that instances of a datatype are identified only by
-their value. All instances of a datatype with the same value are considered to be equal instances.
+-- [[Unified Modeling Language (UML)](#uml)]
+
+JADN is a UML profile for documents and messages. UML's organizing principle is classification,
+where a classifier represents a classification of instances according to their features.
+UML defines several kinds of classifier including datatype and class. Instances of a datatype are identified
+by their value, and all instances of a datatype with the same value are considered to be equal instances.
 Datatype instances are immutable because by definition a different value is a different instance.
 A value may be classified as an instance of multiple datatypes, but value comparison is meaningful
 only among instances of the same type.
 
-**XML Schema Definition Language** [[XSD](#xsd)] defines datatype as:
+Instances of a class are objects that model operations and behavior.
+An object does not have an immutable value: its state can change over time and two objects
+instantiated from the same class, even with identical property values, are different instances.
+Although objects are not values, datatypes model object features that are values, such as
+documents and messages in business processes and public fields and API (getter/setter) views
+of private state in software-based systems.
+Additional differences between datatype and class include:
+* Collection datatypes specify if value order is significant. Class public fields and API values
+do not have an order.
+* Datatype distinguishes between values and references, class does not.
+For example, software functions cannot persistently modify arguments passed by value but can modify
+those passed by reference. Validating a document for correctness or integrity validates the values
+it contains but not the values it references. A document datatype can distinguish between local and
+external references and validate that local references identify values contained within that instance.
+* Misusing Class to model data is a common practice, but often results in contradictions such as
+modeling a one-dimensional Coordinate (e.g., latitude) as a datatype but a two-dimensional Coordinate
+(latitude, longitude) as a class.
+
+The **XML Schema Definition Language** [[XSD](#xsd)] defines datatype as:
 
 > A datatype has three properties:
 >  * A **value space**, which is a set of values.
