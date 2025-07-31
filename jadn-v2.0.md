@@ -4,7 +4,6 @@
 # JSON Abstract Data Notation (JADN) Version 2.0
 
 ## Committee Specification Draft 01
-
 ## 6 August 2025
 
 &nbsp;
@@ -207,6 +206,39 @@ for robustness and interoperability.
 is representation-independent both within a process and when stored or communicated among processes.
 Because an IM is requirements-focused, a single specification applies to many processing environments
 and data formats, ensuring that they can deliver equivalent results.
+
+This document is the reference specification for the JADN information modeling language.
+See [[JADN-CN](#jadn-cn)] for additional detail on the information modeling
+process and how to construct and use JADN information models.
+While the term information modeling is used broadly and covers a range of applications, a JADN
+information model defines the essential content of discrete data items used in computing
+independently of how that content is represented for processing, communication or storage.
+* **Essential content** (meaning) is expressed using model definitions and quantified by
+information theory, where the amount of information conveyed in a message is not directly related
+to the size or format of the message.
+* **Data items** (documents, messages, protocol data units, data structures, object state, etc.)
+are mapped to information values using explicit and unambiguous encoding rules.
+
+[[Unified Modeling Language (UML)](#uml)] provides a standardized visual way to model and document
+software systems, encompassing both their structure and behavior:
+
+> *The objective of UML is to provide system architects, software engineers, and software developers
+with tools for analysis, design, and implementation of software-based systems as well as for modeling
+business and similar processes.*
+
+JADN can be described as a UML profile for data items, formally defining the content of data used
+in software-based systems but not operations on that data.
+UML's organizing principle is classification, and among its classifiers are datatype and class:
+* **Class**: Instances of a class are objects that model operations and behavior, including the
+behavior of any variables within a process. This is inherent in the fact that a variable's value
+can be changed, and does not imply use of an object-oriented programming language.
+* **Datatype**: Datatype differs from class in that instances of a datatype are identified only by
+their value. All instances of a datatype with the same value are considered to be equal instances.
+Datatype instances are immutable because by definition a different value is a different instance.
+A value may be classified as an instance of multiple datatypes, but value comparison is meaningful
+only among instances of the same type.
+
+**XML Schema Definition Language** [[XSD](#xsd)] defines datatype as:
 
 > A datatype has three properties:
 >  * A **value space**, which is a set of values.
