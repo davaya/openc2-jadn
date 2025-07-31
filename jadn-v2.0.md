@@ -4,7 +4,8 @@
 # JSON Abstract Data Notation (JADN) Version 2.0
 
 ## Committee Specification Draft 01
-                         ## 6 August 2025
+
+## 6 August 2025
 
 &nbsp;
 
