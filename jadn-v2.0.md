@@ -228,17 +228,19 @@ business and similar processes.*
 
 JADN can be described as a UML profile for data items, formally defining the content of data used
 in software-based systems but not operations on that data.
-UML's organizing principle is classification, and among its classifiers are datatype and class:
+UML's organizing principle is classification, and among its classifiers are class and datatype:
 * **Class**: Instances of a class are objects that model operations and behavior, including the
-behavior of any variables within a process. This is inherent in the fact that a variable's value
-can be changed, and does not imply use of an object-oriented programming language.
+behavior of any variables within a process. This does not imply use of an object-oriented
+programming language; object refers to any variable in any language.
 * **Datatype**: Datatype differs from class in that instances of a datatype are identified only by
 their value. All instances of a datatype with the same value are considered to be equal instances.
-Datatype instances are immutable because by definition a different value is a different instance.
+A datatype instance is a constant because by definition a different value is a different instance.
 A value may be classified as an instance of multiple datatypes, but value comparison is meaningful
 only among instances of the same type.
 
-**XML Schema Definition Language** [[XSD](#xsd)] defines datatype as:
+A class is a programming language's mechanism for implementing variables, while a type defines the
+set of values an object of that type may have, as defined in 
+**XML Schema Definition Language** [[XSD](#xsd)]:
 
 > A datatype has three properties:
 >  * A **value space**, which is a set of values.
@@ -247,11 +249,10 @@ only among instances of the same type.
 >    and a small collection of functions, relations, and procedures associated with the datatype,
 >    including equality and (for some datatypes) order relations on the value space.
 
-Defining equivalence across representations is the primary distinction between information modeling
-and other data modeling approaches.
 An information model is constructed from datatypes, not classes, because its purpose is to compare
-literal values for equivalence based on their logical information content, and only datatypes have
-instances that can be validated for content integrity and compared for equality.
+literal values for equivalence based on their logical information content, and only datatypes
+provide the necessary linkage between variables of a specified type and messages that can be
+validated for content integrity.
 
 ## 1.1 Glossary
 
