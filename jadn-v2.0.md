@@ -216,7 +216,7 @@ independently of how that content is represented for processing, communication o
 * **Essential content** (meaning) is expressed using model definitions and quantified by
 information theory, where the amount of information conveyed in a message is not directly related
 to the size or format of the message.
-* **Data items** (documents, messages, protocol data units, data structures, object state, etc.)
+* **Data items** (literals: documents, messages, protocol data units, data structures, etc.)
 are mapped to information values using explicit and unambiguous encoding rules.
 
 [[Unified Modeling Language (UML)](#uml)] provides a standardized visual way to model and document
@@ -227,11 +227,11 @@ with tools for analysis, design, and implementation of software-based systems as
 business and similar processes.*
 
 JADN can be described as a UML profile for data items, formally defining the content of data used
-in software-based systems but not operations on that data.
+in software-based systems.
 UML's organizing principle is classification, and among its classifiers are class and datatype:
 * **Class**: Instances of a class are objects that model operations and behavior, including the
-behavior of any variables within a process. This does not imply use of an object-oriented
-programming language; object refers to any variable in any language.
+behavior of variables within a process. This does not imply use of an object-oriented
+programming language; objects implement any variable in any language.
 * **Datatype**: Datatype differs from class in that instances of a datatype are identified only by
 their value. All instances of a datatype with the same value are considered to be equal instances.
 A datatype instance is a constant because by definition a different value is a different instance.
@@ -250,9 +250,8 @@ set of values an object of that type may have, as defined in
 >    including equality and (for some datatypes) order relations on the value space.
 
 An information model is constructed from datatypes, not classes, because its purpose is to compare
-literal values for equivalence based on their logical information content, and only datatypes
-provide the necessary linkage between variables of a specified type and messages that can be
-validated for content integrity.
+literals for equivalence based on their information values, and only datatypes provide the necessary
+linkage between typed variables and messages that can be compared and validated for content and integrity.
 
 ## 1.1 Glossary
 
@@ -798,11 +797,36 @@ Define the semantics of a collection, aligned with programming language collecti
 * Value vs. Association
 
 ##### 4.2.2.1.1 Sequence
+Values of the Sequence type are ordered lists of elements containing the individual values.
+
+The elements of a sequence may be randomly accessed using 0-origin indices.
+Sequences [A, B, ...] can be combined into a new Sequence whose elements are the concatenation of
+the elements (in order) of each of the arguments (in order).
+
 ##### 4.2.2.1.2 Set
+Values of the Set type are unordered collections of elements where no element appears more than once.
+
+Elements may be added to and removed from Sets.
+Sets may be unioned, intersected, or subtracted from each other.
+
 ##### 4.2.2.1.3 OrderedSet
+Values of the OrderedSet type are ordered lists of elements where no element appears more than once.
+
+OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into either
+a Sequence or a Set.
+
 ##### 4.2.2.1.4 Bag
+Values of the Bag type are unordered collections of elements where elements may appear more than once.
+
+For comparison purposes a Bag can be considered a set of its unique elements along with the count of each.
+A Sequence, Set, OrderedSet or Bag value can be combined into a Bag by iterating over each element in the
+input collection and incrementing the count of that element in the resulting Bag.
+
 ##### 4.2.2.1.5 Map
+Values of the Map type are collections of key:value associations where the keys are a Set.
+
 ##### 4.2.2.1.6 OrderedMap
+Values of the OrderedMap type are collections of key:value associations where the keys are an OrderedSet.
 
 #### 4.2.2.2 Compound types
 
