@@ -786,46 +786,53 @@ to be classified as an instance of a type containing that option.
 ### 4.2.2 Collections
 
 A collection datatype defines a collection value as a group of multiple elements of the same or different types,
-specifying both a value space and the literals used to represent a value.
+specifying both a value space and the literals used to represent a value. As with all types, collections
+are instantiated by variables (objects) in a programming language whose value space is defined by the
+collection's type.
 Since a single collection value can be represented by multiple literals and a single literal can represent
-multiple collection types, an IM needs both "Collection Types" to model collection semantics and "Compound Types"
-to model message syntax, using facets to link one to the other.
+multiple collection types, an IM needs both collection types to model semantics and compound types
+to model message syntax, with a facet specifying the combination applicable to a particular datatype.
 
-JADN defines six collection types based on three binary characteristics:
-* Unique vs. Nonunique - whether a value can contain repeated elements
-* Ordered vs. Unordered - whether element order is significant when comparing two values
-* Value vs. Association - whether the collection elements are values or key:value pairs
+A [[UML](#uml)] MultiplicityElement is "an Element that may be instantiated in some way to represent a
+collection of values. The cardinality of a collection is the number of values contained in that collection.
+The multiplicity of a MultiplicityElement specifies valid cardinalities of the collection it represents."
 
-The collection semantic types are:
+Collections are instantiated by variables (objects) with a value space defined by the collection type.
+Following UML MultiplicityElements and the capabilities of most programming languages, JADN defines
+six semantic collection types based on three properties:
+* Unique vs. Nonunique - whether a collection value can contain repeated elements
+* Ordered vs. Unordered - whether element order is significant when comparing two collection values
+* Value vs. Association - whether elements are values or associations between keys and values (key:value pairs)
 
-* **Sequence:**
+1. **Sequence:**
 A Sequence value is an ordered list of elements where an element can appear more than once.
 Values of the Sequence type are ordered lists of elements containing the individual values.
 The elements of a sequence may be randomly accessed using 0-origin indices.
 Sequences [A, B, ...] can be combined into a new Sequence whose elements are the concatenation of
 the elements (in order) of each of the arguments (in order).
 
-* **Set:**
+2. **Set:**
 A Set value is an unordered collection of elements where no element appears more than once.
 Elements may be added to and removed from Sets.
 Sets may be unioned, intersected, or subtracted from each other.
 
-* **OrderedSet:**
+3. **OrderedSet:**
 An OrderedSet value is an ordered list of elements where no element appears more than once.
-OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into either
-a Sequence or a Set.
+OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
+combined with either a Sequence or a Set.
 
-* **Bag:**
+4. **Bag:**
 A Bag value is an unordered collection of elements where elements may appear more than once.
-For comparison purposes a Bag can be considered a set of its unique elements along with the count of each.
+For comparison purposes a Bag can be considered a set of unique elements along with the count of each.
+Two Bags are equal if they contain the same elements each with the same count.
 A Sequence, Set, OrderedSet or Bag value can be combined into a Bag by iterating over each element in the
-input collection and incrementing the count of that element in the resulting Bag.
+input collection and incrementing the count of that element in the destination.
 
-* **Map:**
+5. **Map:**
 A Map value is a collection of key:value pairs where the keys are a Set.
 Each key and each value may be any type.
 
-* **OrderedMap:**
+6. **OrderedMap:**
 An OrderedMap value is a collection of key:value pairs where the keys are an OrderedSet.
 Each key and each value may be any type.
 
@@ -838,15 +845,15 @@ Each key and each value may be any type.
 Define the literal space and literal-to-value mapping.
 * Structured vs. Unstructured
 
-##### 4.2.2.1 ArrayOf(vtype)
+#### 4.2.2.1 ArrayOf(vtype)
 
-##### 4.2.2.2 Array
+#### 4.2.2.2 Array
 
-##### 4.2.2.3 MapOf(ktype, vtype)
+#### 4.2.2.3 MapOf(ktype, vtype)
 
-##### 4.2.2.4 Map
+#### 4.2.2.4 Map
 
-##### 4.2.2.5 Record
+#### 4.2.2.5 Record
 
 Compound types define a collection of items.
 As shown in [Figure 4-1](#figure-4-1----jadn-core-datatypes) a compound type defines how the items in a
