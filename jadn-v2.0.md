@@ -785,59 +785,76 @@ to be classified as an instance of a type containing that option.
 
 ### 4.2.2 Collections
 
+A collection datatype defines a group of multiple elements (values) of the same or different types.
+The collection type defines both the value space of the type and the literals used to represent a
+collection value. 
+
 Objects, types and values
-
-<img src=images/collection.jpg width=480>
-
-#### 4.2.2.1 Collection types
 
 Define the semantics of a collection, aligned with programming language collection variables
 * Unique vs. Nonunique
 * Ordered vs. Unordered - comparison between two values, not related to order-preserving variables or schema order significance
 * Value vs. Association
 
-##### 4.2.2.1.1 Sequence
+1. **Sequence**
+
+A Sequence value is an ordered list of elements, where an element can be
 Values of the Sequence type are ordered lists of elements containing the individual values.
 
 The elements of a sequence may be randomly accessed using 0-origin indices.
 Sequences [A, B, ...] can be combined into a new Sequence whose elements are the concatenation of
 the elements (in order) of each of the arguments (in order).
 
-##### 4.2.2.1.2 Set
+2. **Set**
+
 Values of the Set type are unordered collections of elements where no element appears more than once.
 
 Elements may be added to and removed from Sets.
 Sets may be unioned, intersected, or subtracted from each other.
 
-##### 4.2.2.1.3 OrderedSet
+3. **OrderedSet**
+
 Values of the OrderedSet type are ordered lists of elements where no element appears more than once.
 
 OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into either
 a Sequence or a Set.
 
-##### 4.2.2.1.4 Bag
+4. **Bag**
+
 Values of the Bag type are unordered collections of elements where elements may appear more than once.
 
 For comparison purposes a Bag can be considered a set of its unique elements along with the count of each.
 A Sequence, Set, OrderedSet or Bag value can be combined into a Bag by iterating over each element in the
 input collection and incrementing the count of that element in the resulting Bag.
 
-##### 4.2.2.1.5 Map
+5. **Map**
+
 Values of the Map type are collections of key:value associations where the keys are a Set.
+Each key and each value may be any type.
 
-##### 4.2.2.1.6 OrderedMap
+6. **OrderedMap**
+
 Values of the OrderedMap type are collections of key:value associations where the keys are an OrderedSet.
+Each key and each value may be any type.
 
-#### 4.2.2.2 Compound types
+**Compound types**
+
+###### Fig. 4-3. Collection Values and Compound Types
+
+<img src=images/collection.jpg width=480>
 
 Define the literal space and literal-to-value mapping.
 * Structured vs. Unstructured
 
-##### 4.2.2.2.1 ArrayOf(vtype)
-##### 4.2.2.2.2 Array
-##### 4.2.2.2.3 MapOf(ktype, vtype)
-##### 4.2.2.2.4 Map
-##### 4.2.2.2.5 Record
+##### 4.2.2.1 ArrayOf(vtype)
+
+##### 4.2.2.2 Array
+
+##### 4.2.2.3 MapOf(ktype, vtype)
+
+##### 4.2.2.4 Map
+
+##### 4.2.2.5 Record
 
 Compound types define a collection of items.
 As shown in [Figure 4-1](#figure-4-1----jadn-core-datatypes) a compound type defines how the items in a
