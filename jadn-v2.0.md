@@ -790,19 +790,20 @@ specifying both a value space and the literals used to represent a value. As wit
 are instantiated by variables (objects) in a programming language whose value space is defined by the
 collection's type.
 Since a single collection value can be represented by multiple literals and a single literal can represent
-multiple collection types, an IM needs both collection types to model semantics and compound types
-to model message syntax, with a facet specifying the combination applicable to a particular datatype.
+multiple collection types, an IM needs collection types to model semantics, compound types
+to specify syntax, and a facet to indicate the combination defined by a particular datatype.
 
 A [[UML](#uml)] MultiplicityElement is "an Element that may be instantiated in some way to represent a
 collection of values. The cardinality of a collection is the number of values contained in that collection.
 The multiplicity of a MultiplicityElement specifies valid cardinalities of the collection it represents."
 
-Collections are instantiated by variables (objects) with a value space defined by the collection type.
-Following UML MultiplicityElements and the capabilities of most programming languages, JADN defines
-six semantic collection types based on three properties:
+In accordance with UML and the variable types supported by most programming languages,
+JADN defines six collection types based on three binary properties:
 * Unique vs. Nonunique - whether a collection value can contain repeated elements
 * Ordered vs. Unordered - whether element order is significant when comparing two collection values
-* Value vs. Association - whether elements are values or associations between keys and values (key:value pairs)
+* Value vs. Association - whether a collection's elements are values or key:value pairs
+
+The collection types are:
 
 1. **Sequence:**
 A Sequence value is an ordered list of elements where an element can appear more than once.
