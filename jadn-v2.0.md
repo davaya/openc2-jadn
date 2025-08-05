@@ -783,27 +783,29 @@ options do not apply.
 to be classified as an instance of a type containing that option.
 * The *pattern* option value SHOULD conform to the Pattern grammar of [[ECMAScript](#ecmascript)] Section 22.2.
 
-### 4.2.2 Collections
+### 4.2.2 Collection Types
 
-A collection datatype defines a collection value as a group of multiple elements of the same or different types,
-specifying both a value space and the literals used to represent a value. As with all types, collections
-are instantiated by variables (objects) in a programming language whose value space is defined by the
-collection's type.
+A collection **value** is a group of multiple elements of the same or different types.  
+A collection **datatype** defines its value space, its lexical space, and the mapping between
+values and literals used to represent those values.  
+A collection **object** is the instantiation of a collection in a processing environment.
+The object includes its type and the functions/operations defined on values of that type.
+
+[[UML](#uml)] defines a MultiplicityElement as:
+> .. an Element that may be instantiated in some way to represent a collection of values.
+> The cardinality of a collection is the number of values contained in that collection.
+> The multiplicity of a MultiplicityElement specifies valid cardinalities of the collection it represents.
+
 Since a single collection value can be represented by multiple literals and a single literal can represent
-multiple collection types, an IM needs collection types to model semantics, compound types
-to specify syntax, and a facet to indicate the combination defined by a particular datatype.
-
-A [[UML](#uml)] MultiplicityElement is "an Element that may be instantiated in some way to represent a
-collection of values. The cardinality of a collection is the number of values contained in that collection.
-The multiplicity of a MultiplicityElement specifies valid cardinalities of the collection it represents."
-
+multiple values, an IM collection datatype defines both a "Multiplicity" type to model value semantics and
+a "Compound" type to specify collection literal syntax.
 In accordance with UML and the variable types supported by most programming languages,
-JADN defines six collection types based on three binary properties:
-* Unique vs. Nonunique - whether a collection value can contain repeated elements
-* Ordered vs. Unordered - whether element order is significant when comparing two collection values
-* Value vs. Association - whether a collection's elements are values or key:value pairs
+JADN defines six Multiplicity types based on three binary properties:
+* isUnique - whether a collection value can contain repeated elements
+* isOrdered - whether element order is significant when comparing two collection values
+* isAssociation - whether a collection's elements are values or key:value pairs
 
-The collection types are:
+Multiplicity types are:
 
 1. **Sequence:**
 A Sequence value is an ordered list of elements where an element can appear more than once.
@@ -826,8 +828,10 @@ combined with either a Sequence or a Set.
 A Bag value is an unordered collection of elements where elements may appear more than once.
 For comparison purposes a Bag can be considered a set of unique elements along with the count of each.
 Two Bags are equal if they contain the same elements each with the same count.
-A Sequence, Set, OrderedSet or Bag value can be combined into a Bag by iterating over each element in the
-input collection and incrementing the count of that element in the destination.
+A Sequence, Set, OrderedSet or Bag value can be combined into a destination Bag by iterating over
+each element in the source collection and incrementing the count of that element in the destination.
+Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys is
+modeled as a Bag of pairs.
 
 5. **Map:**
 A Map value is a collection of key:value pairs where the keys are a Set.
@@ -838,6 +842,10 @@ An OrderedMap value is a collection of key:value pairs where the keys are an Ord
 Each key and each value may be any type.
 
 **Compound types**
+
+Although an IM could in principle link from semantics to syntax, a JADN Compound type specifies
+a literal form along with an option to model non-default semantics for that type.  The possible
+combinations of Compound and Multiplicity types is shown in Figure 4-3:
 
 ###### Fig. 4-3. Collection Values and Compound Types
 
