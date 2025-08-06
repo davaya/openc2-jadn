@@ -696,11 +696,9 @@ numbered consecutively starting at 1.
 in TypeOptions, the Fields array MUST be empty.
 * The default value of TypeOptions, Fields and FieldOptions is the empty Array.
 * The default value of TypeDescription, ItemDescription and FieldDescription is the empty String.
-* Description values MUST have no effect on validation or serialization. 
+* Description values MUST have no effect on validation or serialization.
 
-## 4.2 Core Types
-
-### 4.2.1 Primitive Types
+## 4.2 Primitive Types
 
 A primitive type has no substructure, and specifies an unrestricted space of atomic values
 without regard to processing mechanisms or data format. As shown in [Figure 4-1](#figure-4-1----jadn-core-datatypes)
@@ -712,7 +710,7 @@ also define value restrictions on primitive types.
 
 Primitive TypeOptions are listed in Table 4-1:
 
-###### Table 4-1: TypeOptions Specific to Primitive Types
+###### Table 4-1: Primitive Type Options
 
 | ID   | Chr | Type    | Name         | Description                                       |
 |------|:---:|---------|--------------|---------------------------------------------------|
@@ -743,24 +741,31 @@ For options with type = `*` the result of using a value other than a single term
 (literal instance of a Primitive type) is not defined here. In principle the `default` and `const`
 options apply to Compound types but cannot be used until a Compound literal format is defined.*
 
-#### 4.2.1.1 Boolean
+**Conformance Requirements:**
+
+* A value MUST satisfy the conditions defined for each type option listed in
+[Table 4-1](#table-4-1-typeoptions-specific-to-primitive-types)
+to be classified as an instance of a type containing that option.
+* The *pattern* option value SHOULD conform to the Pattern grammar of [[ECMAScript](#ecmascript)] Section 22.2.
+
+### 4.2.1 Boolean
 A Boolean instance is one of the predefined values *true* and *false*.
 
 **Options:** const, default
 
-#### 4.2.1.2 Integer
+### 4.2.2 Integer
 An Integer instance is a value in the ordered infinite set of integers (…, -2, -1, 0, 1, 2, …).
 
 **Options:** const, default  \
 **Range Options:** minInclusive, maxInclusive, minExclusive, maxExclusive
 
-#### 4.2.1.3 Number
+### 4.2.3 Number
 A Number instance is a value in the ordered infinite set of real numbers.
 
 **Options:** const, default  \
 **Range Options:** minInclusive, maxInclusive, minExclusive, maxExclusive
 
-#### 4.2.1.4 String
+### 4.2.4 String
 A String instance is a sequence of characters in a character set. Value range options are
 meaningful if the character set defines a collation order. The pattern, length, and range
 options are not normally used together, but if more than one kind is present in a
@@ -770,42 +775,64 @@ type definition an instance must satisfy all conditions.
 **Length Options:** minLength, maxLength  \
 **Range Options:** minInclusive, maxInclusive, minExclusive, maxExclusive
 
-#### 4.2.1.5 Binary
+### 4.2.5 Binary
 A Binary instance is sequence of octets. Binary values are not ordered so range
 options do not apply. 
 
 **Options:** const, default  \
 **Length Options:** minLength, maxLength
 
-#### 4.2.1.6 Primitive Type Conformance Requirements
-* A value MUST satisfy the conditions defined for each type option listed in
-[Table 4-1](#table-4-1-typeoptions-specific-to-primitive-types)
-to be classified as an instance of a type containing that option.
-* The *pattern* option value SHOULD conform to the Pattern grammar of [[ECMAScript](#ecmascript)] Section 22.2.
-
-### 4.2.2 Collection Types
+## 4.3 Collection Types
 
 A collection **value** is a group of multiple elements of the same or different types.  
 A collection **datatype** defines its value space, its lexical space, and the mapping between
 values and literals used to represent those values.  
 A collection **object** is the instantiation of a collection in a processing environment.
-The object includes its type and the functions/operations defined on values of that type.
+The object has both a datatype and the functions/operations defined on values of that type.
 
 [[UML](#uml)] defines a MultiplicityElement as:
 > .. an Element that may be instantiated in some way to represent a collection of values.
 > The cardinality of a collection is the number of values contained in that collection.
 > The multiplicity of a MultiplicityElement specifies valid cardinalities of the collection it represents.
+>
+> If the MultiplicityElement is specified as ordered (i.e., isOrdered is true), then the collection
+> of values in an instantiation of this Element is ordered.
+> This ordering implies that there is a mapping from positive integers to the elements of the collection
+> of values. If a MultiplicityElement is not multivalued, then the value for isOrdered has no semantic effect.
+>
+> If the MultiplicityElement is specified as unordered (i.e., isOrdered is false), then no assumptions
+> can be made about the order of the values in an instantiation of this Element.
+> 
+> If the MultiplicityElement is specified as unique (i.e., isUnique is true), then the collection of values
+> in an instantiation of this Element must be unique. That is, no two values in the collection may be equal,
+> where equality of data values (instances of DataTypes) is based on value.
+> If a MultiplicityElement is not multivalued, then the value for isUnique has no semantic effect.
+> 
+> Taken together, the isOrdered and isUnique properties can be used to specify that the collection of values
+> in an instantiation of a MultiplicityElement is of one of four types (Set, OrderedSet, Bag, Sequence).
 
-Since a single collection value can be represented by multiple literals and a single literal can represent
-multiple values, an IM collection datatype defines both a "Multiplicity" type to model value semantics and
-a "Compound" type to specify collection literal syntax.
-In accordance with UML and the variable types supported by most programming languages,
-JADN defines six Multiplicity types based on three binary properties:
-* isUnique - whether a collection value can contain repeated elements
-* isOrdered - whether element order is significant when comparing two collection values
-* isAssociation - whether a collection's elements are values or key:value pairs
+Support for mapping types (known in programming languages as associative arrays, maps, dictionaries,
+hashes, etc.) is conspicuously missing from UML's MultiplicityElement. JADN extends UML to support
+mapping types by defining an "isAssociative" property:
 
-Multiplicity types are:
+* If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
+of this Element must be a collection of associations between keys and values (i.e., key:value pairs)
+where the keys must be unique.
+
+Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
+collection of values in an instantiation of a JADN MultiplicityElement is one of six types.
+Table 4-2 shows the names given to each of these collection types:
+
+###### Table 4-2: Collection Types 
+
+| isOrdered | isUnique | isAssociative | Collection Type |
+|-----------|----------|---------------|-----------------|
+| true      | false    | false         | Sequence        |
+| false     | true     | false         | Set             |
+| true      | true     | false         | OrderedSet      |
+| false     | false    | false         | Bag             |
+| false     | true     | true          | Map             |
+| true      | true     | true          | OrderedMap      |
 
 1. **Sequence:**
 A Sequence value is an ordered list of elements where an element can appear more than once.
@@ -854,15 +881,15 @@ combinations of Compound and Multiplicity types is shown in Figure 4-3:
 Define the literal space and literal-to-value mapping.
 * Structured vs. Unstructured
 
-#### 4.2.2.1 ArrayOf(vtype)
+### 4.3.1 ArrayOf(vtype)
 
-#### 4.2.2.2 Array
+### 4.3.2 Array
 
-#### 4.2.2.3 MapOf(ktype, vtype)
+### 4.3.3 MapOf(ktype, vtype)
 
-#### 4.2.2.4 Map
+### 4.3.4 Map
 
-#### 4.2.2.5 Record
+### 4.3.5 Record
 
 Compound types define a collection of items.
 As shown in [Figure 4-1](#figure-4-1----jadn-core-datatypes) a compound type defines how the items in a
@@ -1107,7 +1134,7 @@ otherwise identical instance without that key.
 * Values referenced by the `link` option MUST be instances of the referenced type.
 * The value of a field with the `link` option MUST equal the value of the `key` field of the referenced type.
 
-### 4.2.3 Union Types
+## 4.4 Union Types
 
 A union type specifies a set of alternatives used to classify a value. Like Compound types, some Union types
 have fields individually identified by tag, where the tag consists of an integer FieldID and a string FieldName,
@@ -1133,7 +1160,7 @@ The TypeOptions applicable to Union types are shown in Table 4-8:
 | 0x23 |  #  | TypeRef | enum    | Enumerated type derived from a structured type                               |
 | 0x3e |  >  | TypeRef | pointer | Enumerated type containing pointers derived from a structured type           |
 
-#### 4.2.3.1 Enumerated
+### 4.4.1 Enumerated
 
 An Enumerated type defines a vocabulary, an explicitly listed set of `item_id`:`item_value` pairs.
 Enumerated is described as "a degenerate tagged union of unit type" [[ENUM](#enum)] because it defines
@@ -1144,13 +1171,13 @@ otherwise it is a string matching the corresponding `item_value`.
 The `enum` ([Section 5.3](#53-derived-enumerations)) and `pointer` ([Section 5.5](#55-pointers)) options
 are shortcuts that expand to an Enumerated type containing the tags from a referenced structured type.
 
-#### 4.2.3.2 Choice (Tagged)
+### 4.4.2 Choice (Tagged)
 
 The Choice type without a `combine` TypeOption is a tagged union, a structure that defines a set of tag:type pairs.
 Values include a tag specifying a single FieldType from the set, and an instance is a value that matches the
 FieldType specified by the tag.
 
-#### 4.2.3.3 Choice (Untagged)
+### 4.4.3 Choice (Untagged)
 
 The Choice type containing a `combine` TypeOption is an untagged union, a structure that defines a set of types
 used collectively to classify a value.
@@ -1240,7 +1267,11 @@ of the first matching field.
 * The `not` FieldOption MUST appear only in a Choice(allOf) type containing at least one field without
 a `not` option.
 
-### 4.2.4 General Type Options
+## 4.5 Type Inheritance
+
+.. types define a value space (a set of valid values)  
+.. the value space is static  
+.. the value space is a set, set operations can be evaluated statically
 
 The TypeOptions applicable to all core types are shown in Table 4-10:
 
@@ -1252,8 +1283,6 @@ The TypeOptions applicable to all core types are shown in Table 4-10:
 | 0x72 |  r  | TypeRef | restricts | Inheritance restriction: subset of referenced type |
 | 0x61 |  a  | Boolean | abstract  | Inheritance abstract: non-instantiatable type      |
 | 0x66 |  f  | Boolean | final     | Inheritance final: cannot be subtyped              |
-
-#### 4.2.4.1 Type Inheritance
 
 UML defines inherited classifiers, and JADN defines a mechanism for constructing datatype inheritance
 hierarchies using the `extends` and `restricts` TypeOptions. Type inheritance is static;
@@ -1331,7 +1360,7 @@ Colors2 = Enumerated extends(Colors1)       // Primary and secondary colors
 * A type MUST NOT have both `extends` and `restricts` TypeOptions.
 * A type with an `extends` or `restricts` TypeOption MUST have the same CoreType as the type referenced by that option.
 
-### 4.2.5 Semantic Validation
+### 4.6 Semantic Validation
 
 Semantic validation supplements type validation, ensuring that data values are within boundaries that
 applications will understand. Each format type option is a semantic validation keyword that references
@@ -1345,7 +1374,7 @@ type may include multiple format options.
 |------|:---:|------------|--------------|---------------------------------------------------|
 | 0x2f |  /  | Enumerated | format       | Semantic validation keyword                       |
 
-#### 4.2.5.1 JADN Semantic Validation Keywords
+#### 4.6.1 JADN Semantic Validation Keywords
 
 JADN types define both logical values and literals, and format options affect both validation and translation
 between values and text representations. See [Section 6](#6-serialization-and-data-formats).
@@ -1449,7 +1478,7 @@ Timestamp2 = String /date-time
 "Wednesday, October 2, 2024 11:00:00 AM GMT-04:00 DST"
 ```
 
-#### 4.2.5.2 XSD Semantic Validation Keywords
+#### 4.6.2 XSD Semantic Validation Keywords
 
 XML Schema Definition Language ([[XSD](#xsd)]) Section 3 defines a set of built-in datatypes
 using a text-centric approach:
@@ -1514,7 +1543,7 @@ serializations.
 | QName                | String        |            | /QName              |
 | Notation             | String        |            | /Notation           |
 
-#### 4.2.5.3 JSON Schema Semantic Validation Keywords
+#### 4.6.3 JSON Schema Semantic Validation Keywords
 
 Table 4-13 shows semantic validation keywords defined in [[JSON Schema](#jsonschema)] Section 7.3.
 Because JSON Schema defines only text representations, these keywords have the meanings listed here
