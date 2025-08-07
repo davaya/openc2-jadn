@@ -815,43 +815,58 @@ Support for mapping types (known in programming languages as associative arrays,
 hashes, etc.) is conspicuously missing from UML's MultiplicityElement. JADN extends UML to support
 mapping types by defining an "isAssociative" property:
 
-* If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
+<style type="text/css">
+ .tab { margin-left: 2em; }
+</style>
+
+<div class="tab">
+If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
 of this Element must be a collection of associations between keys and values (i.e., key:value pairs)
 where the keys must be unique.
 
 Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
 collection of values in an instantiation of a JADN MultiplicityElement is one of six types.
+</div>  
+
 Table 4-2 shows the names given to each of these collection types:
 
 ###### Table 4-2: Collection Types 
 
 | isOrdered | isUnique | isAssociative | Collection Type |
 |-----------|----------|---------------|-----------------|
-| true      | false    | false         | Sequence        |
 | false     | true     | false         | Set             |
 | true      | true     | false         | OrderedSet      |
-| false     | false    | false         | Bag             |
 | false     | true     | true          | Map             |
 | true      | true     | true          | OrderedMap      |
+| true      | false    | false         | Sequence        |
+| false     | false    | false         | Bag             |
 
-1. **Sequence:**
+1. **Set:**
+A Set value is an unordered collection of elements where no element appears more than once.
+Elements may be added to and removed from Sets.
+Sets may be unioned, intersected, or subtracted from each other.
+
+2. **OrderedSet:**
+An OrderedSet value is an ordered list of elements where no element appears more than once.
+OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
+combined with either a Sequence or a Set.
+
+3. **Map:**
+A Map value is a collection of key:value pairs where the keys are a Set.
+Each key and each value may be any type.
+
+4. **OrderedMap:**
+An OrderedMap value is a collection of key:value pairs where the keys are an OrderedSet.
+Each key and each value may be any type.
+
+5. **Sequence:**
 A Sequence value is an ordered list of elements where an element can appear more than once.
 Values of the Sequence type are ordered lists of elements containing the individual values.
 The elements of a sequence may be randomly accessed using 0-origin indices.
 Sequences [A, B, ...] can be combined into a new Sequence whose elements are the concatenation of
 the elements (in order) of each of the arguments (in order).
 
-2. **Set:**
-A Set value is an unordered collection of elements where no element appears more than once.
-Elements may be added to and removed from Sets.
-Sets may be unioned, intersected, or subtracted from each other.
-
-3. **OrderedSet:**
-An OrderedSet value is an ordered list of elements where no element appears more than once.
-OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
-combined with either a Sequence or a Set.
-
-4. **Bag:**
+6. **Bag:**
 A Bag value is an unordered collection of elements where elements may appear more than once.
 For comparison purposes a Bag can be considered a set of unique elements along with the count of each.
 Two Bags are equal if they contain the same elements each with the same count.
@@ -859,14 +874,6 @@ A Sequence, Set, OrderedSet or Bag value can be combined into a destination Bag 
 each element in the source collection and incrementing the count of that element in the destination.
 Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys is
 modeled as a Bag of pairs.
-
-5. **Map:**
-A Map value is a collection of key:value pairs where the keys are a Set.
-Each key and each value may be any type.
-
-6. **OrderedMap:**
-An OrderedMap value is a collection of key:value pairs where the keys are an OrderedSet.
-Each key and each value may be any type.
 
 **Compound types**
 
