@@ -785,10 +785,18 @@ options do not apply.
 ## 4.3 Collection Types
 
 A collection **value** is a group of multiple elements of the same or different types.  
-A collection **datatype** defines its value space, its lexical space, and the mapping between
-values and literals used to represent those values.  
+A collection **datatype** defines the collection's value space, lexical space, and
+lexical-to-value mapping.  
 A collection **object** is the instantiation of a collection in a processing environment.
 The object has both a datatype and the functions/operations defined on values of that type.
+
+Each collection datatype has two parts:
+1. collection semantics, one of six extended UML MultiplicityElement types that specify
+representation-independent constraints on collection values.
+2. literal representation, defined by one of five JADN Compound Types. Each compound type has a default
+semantic type with the option to specify an alternate semantic type.
+
+**Collection Semantics:**
 
 [[UML](#uml)] defines a MultiplicityElement as:
 > .. an Element that may be instantiated in some way to represent a collection of values.
@@ -807,12 +815,11 @@ The object has both a datatype and the functions/operations defined on values of
 > in an instantiation of this Element must be unique. That is, no two values in the collection may be equal,
 > where equality of data values (instances of DataTypes) is based on value.
 > If a MultiplicityElement is not multivalued, then the value for isUnique has no semantic effect.
-> 
-> Taken together, the isOrdered and isUnique properties can be used to specify that the collection of values
-> in an instantiation of a MultiplicityElement is of one of four types (Set, OrderedSet, Bag, Sequence).
 
-Support for mapping types (known in programming languages as associative arrays, maps, dictionaries,
-hashes, etc.) is conspicuously missing from UML's MultiplicityElement. JADN extends UML to support
+The isOrdered and isUnique properties specify four collection types supported in most computing environments:
+Set, OrderedSet, Sequence and Bag.
+But mapping types (known in programming languages as associative arrays, maps, dictionaries,
+hashes, etc.) are missing from UML's MultiplicityElement. JADN extends MultiplicityElement to support
 mapping types by defining an "isAssociative" property:
 
 <style type="text/css">
@@ -821,16 +828,18 @@ mapping types by defining an "isAssociative" property:
 
 <div class="tab">
 If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
-of this Element must be a collection of associations between keys and values (i.e., key:value pairs)
+of this Element is a collection of associations between keys and values (i.e., key:value pairs)
 where the keys must be unique.
 
 Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
-collection of values in an instantiation of a JADN MultiplicityElement is one of six types.
+collection of values in an instantiation of a JADN MultiplicityElement is one of six types. Because
+association keys are unique, the combination of isUnique=false and isAssociation=true is invalid.
 </div>  
 
-Table 4-2 shows the names given to each of these collection types:
+Table 4-2 shows the collection type name used for each combination of MultiplicityElement properties.
 
-###### Table 4-2: Collection Types 
+
+###### Table 4-2: Collection Semantic Types 
 
 | isOrdered | isUnique | isAssociative | Collection Type |
 |-----------|----------|---------------|-----------------|
@@ -842,38 +851,57 @@ Table 4-2 shows the names given to each of these collection types:
 | false     | false    | false         | Bag             |
 
 1. **Set:**
+
 A Set value is an unordered collection of elements where no element appears more than once.
 Elements may be added to and removed from Sets.
 Sets may be unioned, intersected, or subtracted from each other.
 
+Python: set() language type, frozenset() language type.
+
 2. **OrderedSet:**
+
 An OrderedSet value is an ordered list of elements where no element appears more than once.
 OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
 combined with either a Sequence or a Set.
 
+Python: ordered-set package or collections.OrderedDict() library type keys with values ignored
+
 3. **Map:**
+
 A Map value is a collection of key:value pairs where the keys are a Set.
 Each key and each value may be any type.
 
+Python: dict() language type, frozendict package
+
 4. **OrderedMap:**
+
 An OrderedMap value is a collection of key:value pairs where the keys are an OrderedSet.
 Each key and each value may be any type.
 
+Python: collections.OrderedDict() library type
+
 5. **Sequence:**
+
 A Sequence value is an ordered list of elements where an element can appear more than once.
 Values of the Sequence type are ordered lists of elements containing the individual values.
 The elements of a sequence may be randomly accessed using 0-origin indices.
 Sequences [A, B, ...] can be combined into a new Sequence whose elements are the concatenation of
 the elements (in order) of each of the arguments (in order).
 
+Python: list() language type, tuple() language type
+
 6. **Bag:**
-A Bag value is an unordered collection of elements where elements may appear more than once.
+
+A Bag ([Multiset](#multiset)) value is an unordered collection of elements where elements may appear
+more than once.
 For comparison purposes a Bag can be considered a set of unique elements along with the count of each.
 Two Bags are equal if they contain the same elements each with the same count.
 A Sequence, Set, OrderedSet or Bag value can be combined into a destination Bag by iterating over
 each element in the source collection and incrementing the count of that element in the destination.
 Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys is
 modeled as a Bag of pairs.
+
+Python: collections.Counter() library type
 
 **Compound types**
 
@@ -2279,6 +2307,8 @@ Rennau, Hans-Juergen, *"Combining graph and tree"*, XML Prague 2018, https://arc
 Lee, Y. Tina, *"Information Modeling: From Design to Implementation"*, IEEE Transactions on Robotics and Automation, 1999, https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=821265.
 ###### [JADN-CN]
 OASIS, *"Information Modeling with JADN"*, https://docs.oasis-open.org/openc2/imjadn/v2.0/imjadn-v2.0.md.
+###### [MULTISET]
+*"Multiset"*, Wikipedia, https://en.wikipedia.org/wiki/Multiset
 ###### [ORDER]
 LaFontaine, Robin, *"Element order is always important in XML, except when it isn't"*, Balisage: The Markup Conference, 2021, https://www.balisage.net/Proceedings/vol26/html/LaFontaine01/BalisageVol26-LaFontaine01.html.
 ###### [PROTO]
@@ -2313,7 +2343,7 @@ Apache Software Foundation, *"Writing a .thrift file"*, https://thrift-tutorial.
 ###### [TRANSFORM]
 Boyer, J., et. al., *"Experiences with JSON and XML Transformations"*, October 2011, https://www.w3.org/2011/10/integration-workshop/s/ExperienceswithJSONandXMLTransformations.v08.pdf.
 ###### [UML]
-*"Unified Modeling Language"*, Version 2.5.1, December 2017, https://www.omg.org/spec/UML/2.5.1/PDF.
+Object Management Group, *"Unified Modeling Language"*, Version 2.5.1, December 2017, https://www.omg.org/spec/UML/2.5.1/PDF.
 ###### [UNION]
 "Union Type", Wikipedia, https://en.wikipedia.org/wiki/Union_type.
 ###### [TAGGEDUNION]
