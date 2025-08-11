@@ -784,19 +784,20 @@ options do not apply.
 
 ## 4.3 Collection Types
 
-A collection **value** is a group of multiple elements of the same or different types.  
+A collection **value** is a group of elements of the same or different types.  
 A collection **datatype** defines the collection's value space, lexical space, and
 lexical-to-value mapping.  
 A collection **object** is the instantiation of a collection in a processing environment.
 The object has both a datatype and the functions/operations defined on values of that type.
 
 Each collection datatype has two parts:
-1. collection semantics, one of six extended UML MultiplicityElement types that specify
+1. semantic type, one of six extended MultiplicityElement types that specify
 representation-independent constraints on collection values.
-2. literal representation, defined by one of five JADN Compound Types. Each compound type has a default
-semantic type with the option to specify an alternate semantic type.
+2. compound type, one of five JADN compound types used with data formats to specify
+representation of collection values.
+Each compound type has a default semantic type and the option to specify different semantics.
 
-**Collection Semantics:**
+**Collection Semantic Types:**
 
 [[UML](#uml)] defines a MultiplicityElement as:
 > .. an Element that may be instantiated in some way to represent a collection of values.
@@ -836,19 +837,21 @@ collection of values in an instantiation of a JADN MultiplicityElement is one of
 association keys are unique, the combination of isUnique=false and isAssociation=true is invalid.
 </div>  
 
-Table 4-2 shows the collection type name used for each combination of MultiplicityElement properties.
-
+Table 4-2 shows the semantic type name used for each combination of MultiplicityElement properties.
+Each collection value is instantiated as a variable of the specified type.
+For illustration purposes, each type description includes programming language types that could
+hold collection values with the specified semantics.
 
 ###### Table 4-2: Collection Semantic Types 
 
-| isOrdered | isUnique | isAssociative | Collection Type |
-|-----------|----------|---------------|-----------------|
-| false     | true     | false         | Set             |
-| true      | true     | false         | OrderedSet      |
-| false     | true     | true          | Map             |
-| true      | true     | true          | OrderedMap      |
-| true      | false    | false         | Sequence        |
-| false     | false    | false         | Bag             |
+| isOrdered | isUnique | isAssociative | Semantic Type |
+|-----------|----------|---------------|---------------|
+| false     | true     | false         | Set           |
+| true      | true     | false         | OrderedSet    |
+| false     | true     | true          | Map           |
+| true      | true     | true          | OrderedMap    |
+| true      | false    | false         | Sequence      |
+| false     | false    | false         | Bag           |
 
 1. **Set:**
 
@@ -864,7 +867,7 @@ An OrderedSet value is an ordered list of elements where no element appears more
 OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
 combined with either a Sequence or a Set.
 
-Python: ordered-set package or collections.OrderedDict() library type keys with values ignored
+Python: ordered-set package or collections.OrderedDict() library type using keys and ignoring values
 
 3. **Map:**
 
@@ -892,14 +895,14 @@ Python: list() language type, tuple() language type
 
 6. **Bag:**
 
-A Bag ([Multiset](#multiset)) value is an unordered collection of elements where elements may appear
-more than once.
+A Bag (also known as [Multiset](#multiset)) value is an unordered collection of elements where
+elements may appear more than once.
 For comparison purposes a Bag can be considered a set of unique elements along with the count of each.
 Two Bags are equal if they contain the same elements each with the same count.
 A Sequence, Set, OrderedSet or Bag value can be combined into a destination Bag by iterating over
 each element in the source collection and incrementing the count of that element in the destination.
-Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys is
-modeled as a Bag of pairs.
+Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys may be
+modeled as a Bag of pairs (if value affects key comparison) or a Map of Arrays of values.
 
 Python: collections.Counter() library type
 
