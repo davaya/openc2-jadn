@@ -791,10 +791,10 @@ A collection **object** is the instantiation of a collection in a processing env
 The object has both a datatype and the functions/operations defined on values of that type.
 
 Each collection datatype has two parts:
-1. semantic type, one of six extended MultiplicityElement types that specify
+1. semantic type, one of six extended UML MultiplicityElement types that specify
 representation-independent constraints on collection values.
-2. compound type, one of five JADN compound types used with data formats to specify
-representation of collection values.
+2. compound type, one of five JADN compound types that specify collection value representation
+in multiple data formats.
 Each compound type has a default semantic type and the option to specify different semantics.
 
 **Collection Semantic Types:**
@@ -823,24 +823,16 @@ But mapping types (known in programming languages as associative arrays, maps, d
 hashes, etc.) are missing from UML's MultiplicityElement. JADN extends MultiplicityElement to support
 mapping types by defining an "isAssociative" property:
 
-<style type="text/css">
- .tab { margin-left: 2em; }
-</style>
-
-<div class="tab">
-If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
-of this Element is a collection of associations between keys and values (i.e., key:value pairs)
-where the keys must be unique.
-
-Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
-collection of values in an instantiation of a JADN MultiplicityElement is one of six types. Because
-association keys are unique, the combination of isUnique=false and isAssociation=true is invalid.
-</div>  
+> If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
+> of this Element is a collection of associations between keys and values (i.e., key:value pairs)
+> where the keys must be unique.
+>
+> Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
+> collection of values in an instantiation of a JADN MultiplicityElement is one of six types. Because
+> association keys are unique, the combination of isUnique=false and isAssociation=true is invalid.
 
 Table 4-2 shows the semantic type name used for each combination of MultiplicityElement properties.
-Each collection value is instantiated as a variable of the specified type.
-For illustration purposes, each type description includes programming language types that could
-hold collection values with the specified semantics.
+Each collection value is instantiated as a variable with the specified semantics.
 
 ###### Table 4-2: Collection Semantic Types 
 
@@ -853,13 +845,25 @@ hold collection values with the specified semantics.
 | true      | false    | false         | Sequence      |
 | false     | false    | false         | Bag           |
 
+This document does not specify how information values are instantiated, but for illustration
+purposes Table 4-3 lists language types that could hold collection values with the specified
+semantics. Values used as keys in the Map, OrderedMap and Bag types must be hashable (constant).
+
+###### Table 4-3: Example Programming Language Types
+| Semantic Type | Variable                                                                   | Hashable Constant         |
+|---------------|----------------------------------------------------------------------------|---------------------------|
+| Set           | Python: set() language type                                                | frozenset() language type |
+| OrderedSet    | Python: ordered-set package, collections.OrderedDict() library type (keys) |                           |
+| Map           | Python: dict() language type                                               | frozendict package        |
+| OrderedMap    | Python: collections.orderedDict() library type                             |                           |
+| Sequence      | Python: list() language type                                               | tuple() language type     |
+| Bag           | Python: collections.Counter() library type                                 |                           |
+
 1. **Set:**
 
 A Set value is an unordered collection of elements where no element appears more than once.
 Elements may be added to and removed from Sets.
 Sets may be unioned, intersected, or subtracted from each other.
-
-Python: set() language type, frozenset() language type.
 
 2. **OrderedSet:**
 
@@ -867,21 +871,15 @@ An OrderedSet value is an ordered list of elements where no element appears more
 OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
 combined with either a Sequence or a Set.
 
-Python: ordered-set package or collections.OrderedDict() library type using keys and ignoring values
-
 3. **Map:**
 
 A Map value is a collection of key:value pairs where the keys are a Set.
 Each key and each value may be any type.
 
-Python: dict() language type, frozendict package
-
 4. **OrderedMap:**
 
 An OrderedMap value is a collection of key:value pairs where the keys are an OrderedSet.
 Each key and each value may be any type.
-
-Python: collections.OrderedDict() library type
 
 5. **Sequence:**
 
@@ -890,8 +888,6 @@ Values of the Sequence type are ordered lists of elements containing the individ
 The elements of a sequence may be randomly accessed using 0-origin indices.
 Sequences [A, B, ...] can be combined into a new Sequence whose elements are the concatenation of
 the elements (in order) of each of the arguments (in order).
-
-Python: list() language type, tuple() language type
 
 6. **Bag:**
 
@@ -904,9 +900,7 @@ each element in the source collection and incrementing the count of that element
 Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys may be
 modeled as a Bag of pairs (if value affects key comparison) or a Map of Arrays of values.
 
-Python: collections.Counter() library type
-
-**Compound types**
+**Compound Types:**
 
 Although an IM could in principle link from semantics to syntax, a JADN Compound type specifies
 a literal form along with an option to model non-default semantics for that type.  The possible
