@@ -796,7 +796,7 @@ representation-independent constraints on collection values.
 2. **compound type**, one of five JADN compound types that specify literal representation
 combined with value semantics.
 
-**Collection Semantic Types:**
+### 4.3.1 Collection Semantics
 
 [[UML](#uml)] defines a MultiplicityElement as:
 > .. an Element that may be instantiated in some way to represent a collection of values.
@@ -900,11 +900,15 @@ Two Bags are equal if they contain the same elements each with the same count.
 A Sequence, Set, OrderedSet or Bag value can be combined into a destination Bag by iterating over
 each element in the source collection and incrementing the count of that element in the destination.
 
-**Compound Types:**
+### 4.3.2 Compound Types
 
-Although an IM could in principle link from semantics to syntax, a JADN Compound type specifies
-a literal form along with an option to model non-default semantics for that type.  The possible
-combinations of Compound and Multiplicity types is shown in Figure 4-3:
+Structured data collections are organized and formatted datasets where the data is arranged in
+a predefined format, making it easily searchable and analyzable.
+Semi-structured data has some structure but doesn't conform to a rigid schema. It often uses tags
+or markers to organize elements into a "self-describing" structure. XML and JSON are commonly
+described as semi-structured data formats.
+
+.. IM translates information requirements into predefined data formats ..
 
 ###### Fig. 4-3. Collection Values and Compound Types
 
@@ -913,15 +917,17 @@ combinations of Compound and Multiplicity types is shown in Figure 4-3:
 Define the literal space and literal-to-value mapping.
 * Structured vs. Unstructured
 
-### 4.3.1 ArrayOf(vtype)
+#### 4.3.2.1 ArrayOf(vtype)
 
-### 4.3.2 Array
+#### 4.3.2.2 Array
 
-### 4.3.3 MapOf(ktype, vtype)
+#### 4.3.2.3 MapOf(ktype, vtype)
 
-### 4.3.4 Map
+#### 4.3.2.4 Map
 
-### 4.3.5 Record
+#### 4.3.2.5 Record
+
+
 
 Compound types define a collection of items.
 As shown in [Figure 4-1](#figure-4-1----jadn-core-datatypes) a compound type defines how the items in a
