@@ -791,11 +791,10 @@ A collection **object** is the instantiation of a collection in a processing env
 The object has both a datatype and the functions/operations defined on values of that type.
 
 Each collection datatype has two parts:
-1. semantic type, one of six extended UML MultiplicityElement types that specify
+1. **semantic type**, one of six extended UML MultiplicityElement types that specify
 representation-independent constraints on collection values.
-2. compound type, one of five JADN compound types that specify collection value representation
-in multiple data formats.
-Each compound type has a default semantic type and the option to specify different semantics.
+2. **compound type**, one of five JADN compound types that specify literal representation
+combined with value semantics.
 
 **Collection Semantic Types:**
 
@@ -819,9 +818,9 @@ Each compound type has a default semantic type and the option to specify differe
 
 The isOrdered and isUnique properties specify four collection types supported in most computing environments:
 Set, OrderedSet, Sequence and Bag.
-But mapping types (known in programming languages as associative arrays, maps, dictionaries,
-hashes, etc.) are missing from UML's MultiplicityElement. JADN extends MultiplicityElement to support
-mapping types by defining an "isAssociative" property:
+But mapping types (also known as associative arrays, maps, dictionaries, or hashes) are also supported
+by most programming languages but are missing from UML's MultiplicityElement.
+JADN extends MultiplicityElement to support mapping types by defining an "isAssociative" property:
 
 > If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
 > of this Element is a collection of associations between keys and values (i.e., key:value pairs)
@@ -847,10 +846,11 @@ Each collection value is instantiated as a variable with the specified semantics
 
 This document does not specify how information values are instantiated, but for illustration
 purposes Table 4-3 lists language types that could hold collection values with the specified
-semantics. Values used as keys in the Map, OrderedMap and Bag types must be hashable (constant).
+semantics. Values used as keys in the Map, OrderedMap and Bag types must be constant in order
+to be hashable.
 
 ###### Table 4-3: Example Programming Language Types
-| Semantic Type | Variable                                                                   | Hashable Constant         |
+| Semantic Type | Variable Type                                                              | Constant Type             |
 |---------------|----------------------------------------------------------------------------|---------------------------|
 | Set           | Python: set() language type                                                | frozenset() language type |
 | OrderedSet    | Python: ordered-set package, collections.OrderedDict() library type (keys) |                           |
@@ -875,6 +875,8 @@ combined with either a Sequence or a Set.
 
 A Map value is a collection of key:value pairs where the keys are a Set.
 Each key and each value may be any type.
+Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys may be
+modeled as a Map of value Arrays.
 
 4. **OrderedMap:**
 
@@ -897,8 +899,6 @@ For comparison purposes a Bag can be considered a set of unique elements along w
 Two Bags are equal if they contain the same elements each with the same count.
 A Sequence, Set, OrderedSet or Bag value can be combined into a destination Bag by iterating over
 each element in the source collection and incrementing the count of that element in the destination.
-Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys may be
-modeled as a Bag of pairs (if value affects key comparison) or a Map of Arrays of values.
 
 **Compound Types:**
 
