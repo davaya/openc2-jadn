@@ -184,6 +184,7 @@ For complete copyright information please see the Notices section in the Appendi
 -------
 
 # 1 Introduction
+
 NIST describes [[Information Modeling](#information-modeling)] as:
 
 > An information model is a representation of concepts, relationships, constraints, rules,
@@ -796,7 +797,7 @@ representation-independent constraints on collection values.
 2. **compound type**, one of five JADN compound types that specify literal representation
 combined with value semantics.
 
-### 4.3.1 Collection Semantics
+### 4.3.1 Collection Semantic Types
 
 [[UML](#uml)] defines a MultiplicityElement as:
 > .. an Element that may be instantiated in some way to represent a collection of values.
@@ -845,19 +846,19 @@ Each collection value is instantiated as a variable with the specified semantics
 | false     | false    | false         | Bag           |
 
 This document does not specify how information values are instantiated, but for illustration
-purposes Table 4-3 lists language types that could hold collection values with the specified
-semantics. Values used as keys in the Map, OrderedMap and Bag types must be constant in order
+purposes Table 4-3 lists programming language types that could hold collection values with the
+specified semantics. Values used as keys must be constants in order
 to be hashable.
 
 ###### Table 4-3: Example Programming Language Types
-| Semantic Type | Variable Type                                                              | Constant Type             |
-|---------------|----------------------------------------------------------------------------|---------------------------|
-| Set           | Python: set() language type                                                | frozenset() language type |
-| OrderedSet    | Python: ordered-set package, collections.OrderedDict() library type (keys) |                           |
-| Map           | Python: dict() language type                                               | frozendict package        |
-| OrderedMap    | Python: collections.orderedDict() library type                             |                           |
-| Sequence      | Python: list() language type                                               | tuple() language type     |
-| Bag           | Python: collections.Counter() library type                                 |                           |
+| Semantic Type | Python Variable Type                          | Constant Type             |
+|---------------|-----------------------------------------------|---------------------------|
+| Set           | set() language type                           | frozenset() language type |
+| OrderedSet    | collections.OrderedDict() library type (keys) |                           |
+| Map           | dict() language type                          | frozendict package        |
+| OrderedMap    | collections.orderedDict() library type        |                           |
+| Sequence      | list() language type                          | tuple() language type     |
+| Bag           | collections.Counter() library type            |                           |
 
 1. **Set:**
 
@@ -871,12 +872,21 @@ An OrderedSet value is an ordered list of elements where no element appears more
 OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
 combined with either a Sequence or a Set.
 
+Example:
+* Set: `{'a', 'b', 'c'}` equals `{'c', 'a', 'b'}`
+* OrderedSet: `{'a', 'b', 'c'}` does not equal `{'c', 'a', 'b'}`
+
 3. **Map:**
 
 A Map value is a collection of key:value pairs where the keys are a Set.
 Each key and each value may be any type.
 Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys may be
-modeled as a Map of value Arrays.
+modeled as a Map of value Arrays or a Set of key:value pairs.
+
+Example:
+* Not a Map: `{'a': 15, 'b': 42, 'c': 5, 'a': 31}`
+* Set of Maps: `{{'a': 15'}, {'b': 42}, {'c': 5}, {'a': 31}}`
+* Map of value Arrays: `{'a': [15, 31], 'b': [42], 'c': [5]}`
 
 4. **OrderedMap:**
 
@@ -895,33 +905,43 @@ the elements (in order) of each of the arguments (in order).
 
 A Bag (also known as [Multiset](#multiset)) value is an unordered collection of elements where
 elements may appear more than once.
-For comparison purposes a Bag can be considered a set of unique elements along with the count of each.
+A Bag can be instantiated efficiently as a set of unique elements with each element mapped to its count.
 Two Bags are equal if they contain the same elements each with the same count.
 A Sequence, Set, OrderedSet or Bag value can be combined into a destination Bag by iterating over
 each element in the source collection and incrementing the count of that element in the destination.
 
-### 4.3.2 Compound Types
+Example:
+* Bag: `['a', 'c', 'b', 'a']` equals `['b', 'a', 'a', 'c']`
+* Sequence: `['a', 'c', 'b', 'a']` does not equal `['b', 'a', 'a', 'c']`
+* Bag instantiation: `{'a': 2, 'b': 1, 'c': 1}`
 
-Structured data collections are organized and formatted datasets where the data is arranged in
-a predefined format, making it easily searchable and analyzable.
-Semi-structured data has some structure but doesn't conform to a rigid schema. It often uses tags
-or markers to organize elements into a "self-describing" structure. XML and JSON are commonly
-described as semi-structured data formats.
+### 4.3.2 Collection Compound Types
 
-.. IM translates information requirements into predefined data formats ..
+Every element in a collection has a type. A compound type defines both the type of each element
+in a collection and the semantics of the collection as a whole. JADN has five compound types:
+* ArrayOf and MapOf specify that every element in the collection has the same type.
+* Array, Map and Record define the type of each element individually, by either position or key.
 
-###### Fig. 4-3. Collection Values and Compound Types
+Compound TypeOptions are listed in Table 4-3:
 
-<img src=images/collection.jpg width=480>
+###### Table 4-3: TypeOptions Specific to Compound Types
 
-Define the literal space and literal-to-value mapping.
-* Structured vs. Unstructured
+| ID   | Chr | Type    | Name            | Description                                                   |
+|------|:---:|---------|-----------------|---------------------------------------------------------------|
+| 0x2a |  *  | TypeRef | vtype           | Value type for ArrayOf and MapOf                              |
+| 0x2b |  +  | TypeRef | ktype           | Key type for MapOf                                            |
+| 0x7b |  {  | Integer | minLength       | Minimum number of items in a collection, default is 0         |
+| 0x7d |  }  | Integer | maxLength       | Maximum number of items in a collection, default is unlimited |
+| 0x3d |  =  | Boolean | id              | Fields are identified by FieldID not FieldName                |
+| 0x71 |  q  | Boolean | unique, ordered | isOrdered = true,  isUnique = true (OrderedSet)               | 
+| 0x73 |  s  | Boolean | set             | isOrdered = false, isUnique = true (Set)                      |
+| 0x62 |  b  | Boolean | unordered       | isOrdered = false, isUnique = false (Bag)                     |
 
 #### 4.3.2.1 ArrayOf(vtype)
 
-#### 4.3.2.2 Array
+#### 4.3.2.2 MapOf(ktype, vtype)
 
-#### 4.3.2.3 MapOf(ktype, vtype)
+#### 4.3.2.3 Array
 
 #### 4.3.2.4 Map
 
@@ -959,20 +979,7 @@ A non-structured compound type defines a collection where each item is an instan
 * The Record type defines the key order, which allows Record instances to be represented as either arrays where
 items are identified by position within the array, or associative arrays (maps) where items are identified by key.
 
-Compound TypeOptions are listed in Table 4-3:
 
-###### Table 4-3: TypeOptions Specific to Compound Types
-
-| ID   | Chr | Type    | Name           | Description                                                   |
-|------|:---:|---------|----------------|---------------------------------------------------------------|
-| 0x2a |  *  | TypeRef | vtype          | Value type for ArrayOf and MapOf                              |
-| 0x2b |  +  | TypeRef | ktype          | Key type for MapOf                                            |
-| 0x7b |  {  | Integer | minLength      | Minimum number of items in a collection, default is 0         |
-| 0x7d |  }  | Integer | maxLength      | Maximum number of items in a collection, default is unlimited |
-| 0x3d |  =  | Boolean | id             | Fields are identified by FieldID not FieldName                |
-| 0x71 |  q  | Boolean | unique/ordered | isOrdered = true,  isUnique = true (ordered set)              | 
-| 0x73 |  s  | Boolean | set            | isOrdered = false, isUnique = true (set)                      |
-| 0x62 |  b  | Boolean | unordered      | isOrdered = false, isUnique = false (bag)                     |
 
 * Map and Record types have Fields identified by both a numeric FieldID and a text FieldName, both of which
 are unique within a type.
