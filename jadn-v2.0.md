@@ -817,11 +817,12 @@ combined with value semantics.
 > where equality of data values (instances of DataTypes) is based on value.
 > If a MultiplicityElement is not multivalued, then the value for isUnique has no semantic effect.
 
-The isOrdered and isUnique properties specify four collection types supported in most computing environments:
-Set, OrderedSet, Sequence and Bag.
-But mapping types (also known as associative arrays, maps, dictionaries, or hashes) are also supported
+The isOrdered and isUnique properties specify four collection types defined by UML and supported
+in most programming languages: Set, OrderedSet, Sequence and Bag.
+Mapping types (also known as associative arrays, maps, dictionaries, or hashes) are also supported
 by most programming languages but are missing from UML's MultiplicityElement.
-JADN extends MultiplicityElement to support mapping types by defining an "isAssociative" property:
+JADN extends MultiplicityElement to support mapping types Map and OrderedMap by defining an
+isAssociative property:
 
 > If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
 > of this Element is a collection of associations between keys and values (i.e., key:value pairs)
@@ -847,8 +848,8 @@ Each collection value is instantiated as a variable with the specified semantics
 
 This document does not specify how information values are instantiated, but for illustration
 purposes Table 4-3 lists programming language types that could hold collection values with the
-specified semantics. Values used as keys must be constants in order
-to be hashable.
+specified semantics.
+Values used as keys must be constant in order to be hashable.
 
 ###### Table 4-3: Example Programming Language Types
 | Semantic Type | Python Variable Type                          | Constant Type             |
@@ -917,19 +918,40 @@ Example:
 
 ### 4.3.2 Compound Types
 
-A compound type defines the semantics of the collection as a whole, the type of each element
-in a collection, and the literal representations of collection values.
-JADN defines five compound types:
+JADN has five compound types that define the semantics of a collection, the type of each element
+in the collection, and literal representations of the collection using encoding rules for each
+compound type:
 * ArrayOf and MapOf specify that every element in the collection has the same type.
 * Array, Map and Record define the type of each element individually, by either position or key.
+These types are inherently unique.
 
-Serialization rules for each compound type determine how a collection value is represented as a message.
-A compound type may define collection semantics different from message syntax, for example an ArrayOf
-value is a Sequence by default, but a TypeOption can specify its value is a Set, OrderedSet, or Bag instead.
+#### 4.3.2.1 ArrayOf(valueType)
 
-Compound TypeOptions are listed in Table 4-3:
+The ArrayOf type defines a collection of undifferentiated elements:
+* All elements have the same type, specified by the required `valueType` option.
+* All elements have the same role within the collection; no special meaning is attached to any element.
+* A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
+* If valueType is an Array, Map or Record, the collection is serialized as a list of rows in a table,
+with the columns defined by valueType and the rows indexed by position.
+* If valueType is an Array, Map or Record with a Key ([Section x](#414)) field, the rows are
+indexed by both position and key and can be accessed by either.
 
-###### Table 4-3: TypeOptions Specific to Compound Types
+*An ArrayOf collection value is serialized by concatenating the values of its elements. Data formats
+must support determining the extent of an element and the extent of a collection from the serialized value.*
+
+#### 4.3.2.2 MapOf(keyType, valueType)
+
+#### 4.3.2.3 Array
+
+#### 4.3.2.4 Map
+
+#### 4.3.2.5 Record
+
+### 4.3.3 Compound Type Options
+
+Table 4-3 lists the type options specific to compound types:
+
+###### Table 4-3: Compound Type Options
 
 | ID   | Chr | Type    | Name            | Description                                                   |
 |------|:---:|---------|-----------------|---------------------------------------------------------------|
@@ -938,11 +960,24 @@ Compound TypeOptions are listed in Table 4-3:
 | 0x7b |  {  | Integer | minLength       | Minimum number of items in a collection, default is 0         |
 | 0x7d |  }  | Integer | maxLength       | Maximum number of items in a collection, default is unlimited |
 | 0x3d |  =  | Boolean | id              | Fields are identified by FieldID not FieldName                |
-| 0x71 |  q  | Boolean | unique, ordered | isOrdered = true,  isUnique = true (OrderedSet)               | 
+| 0x71 |  q  | Boolean | unique, ordered | isOrdered = true,  isUnique = true (OrderedSet, OrderedMap)   | 
 | 0x73 |  s  | Boolean | set             | isOrdered = false, isUnique = true (Set)                      |
 | 0x62 |  b  | Boolean | unordered       | isOrdered = false, isUnique = false (Bag)                     |
 
-The default collection semantics and TypeOptions applicable to each compound type are listed in Table 4-4:
+* The `valueType` option specifies the type of each instance in an ArrayOf or MapOf type.
+* The `keyType` option specifies the type of each key in a MapOf type.
+* The `minLength` option specifies the minimum cardinality of a collection. If not present the minimum is zero.
+* The `maxLength` option specifies the maximum cardinality of a collection. If not present the maximum is unlimited.
+* The `id` option specifies that fields in a Map, Enumerated or Choice ([Section 4.4](#44-union-types)) type
+are identified by their integer field / item ID and that any field name / item value present in the type
+definition is never used in serialized messages.
+* The `unique`, `ordered`, `set`, and `unordered` options modify the semantic type of a collection from the
+default Sequence or Map type shown in Table 4-4. These options are mutually exclusive:
+a type definition may not contain more than one.
+  * If a collection is Ordered, element order is significant when comparing instances, otherwise it is not.
+  * If a collection is Unique, no element is duplicated within a collection instance, otherwise duplicates are allowed.
+
+Table 4-4 lists the default collection semantics and TypeOptions usable with each compound type:
 
 ###### Table 4-4: Allowed Compound Type Options
 
@@ -954,51 +989,14 @@ The default collection semantics and TypeOptions applicable to each compound typ
 | Map                       | Map        | minLength, maxLength, ordered, id            |
 | Record                    | Map        | minLength, maxLength, ordered                |
 
-#### 4.3.2.1 ArrayOf(valueType)
 
-The ArrayOf type defines a collection of undifferentiated elements:
-* All elements have the same role within the collection; no special meaning is attached to any element.
-* All elements have the same type, specified by the required `valueType` option.
-* A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
-* If valueType is an Array, Map or Record type with a Key ([Section x](#414)) field, ... mapping type ... 
-
-
-An ArrayOf collection value is serialized by concatenating the values of its elements. Data formats
-must support determining the end of an element and the end of a collection from the serialized value.
-
-| ArrayOf(valueType)      | minLength, maxLength, set, unique, unordered, valueType |
-
-
-#### 4.3.2.2 MapOf(keyType, valueType)
-
-#### 4.3.2.3 Array
-
-#### 4.3.2.4 Map
-
-#### 4.3.2.5 Record
-
-
-
-
-The Compound types are listed in Table 4-2:
-
-###### Table 4-2: Compound Types
-
-| Compound Type             | Structured | Mapping | Collection Properties          |
-|---------------------------|------------|---------|--------------------------------|
-| ArrayOf(valueType)        | No         | No      | Ordered, non-Unique (sequence) |
-| Array                     | Yes        | No      | Ordered, non-Unique (sequence) |
-| MapOf(keyType, valueType) | No         | Yes     | non-Ordered, Unique (set)      |
-| Map                       | Yes        | Yes     | non-Ordered, Unique (set)      |
-| Record                    | Yes        | Both    | non-Ordered, Unique (set)      |
+A compound type may define collection semantics different from the default collection type. An ArrayOf
+collection is a Sequence by default, but a TypeOption can specify that it behaves as a Set, OrderedSet,
+or Bag.
 
 By default, ArrayOf and Array specify a sequence of items and MapOf, Map, and Record specify a set of items,
 but these collection properties can be modified using TypeOptions.
 
-* The `valueType` option specifies the type of each instance in an ArrayOf or MapOf type.
-* The `keyType` option specifies the type of each key in a MapOf type.
-* If a collection is Ordered, item order is significant when comparing instances, otherwise it is not.
-* If a collection is Unique, no item is duplicated within a collection instance, otherwise duplicates are allowed.
 * A Structured type includes individual field definitions. Each field defines an association between an identifier
 (position and/or key) and a type and may include field-specific options ([Section 4.2.2.1](#4221-field-options)).
 A non-structured compound type defines a collection where each item is an instance of the same type.
@@ -1066,25 +1064,7 @@ The ArrayOf compound type can specify the four UML collection types (sequence, s
 Structured and MapOf compound types are always unique, so they can specify only set or ordered set collections.
 The collection type specified by a Compound type and multiplicity option are listed in Table 4-4:
 
-###### Table 4-4: Collection Types
-
-| Compound Type | Multiplicity Option | Collection Properties          |
-|---------------|---------------------|--------------------------------|
-| ArrayOf       |                     | Ordered, non-Unique (sequence) |
-| Array         |                     | Ordered, non-Unique (sequence) |
-| MapOf         |                     | Non-Ordered, Unique (set)      |
-| Map           |                     | Non-Ordered, Unique (set)      |
-| Record        |                     | Non-Ordered, Unique (set)      |
-| ----------    | ---------------     | -------------------------      |
-| ArrayOf       | set                 | Non-Ordered, Unique (set)      |
-| ArrayOf       | unique              | Ordered, Unique (ordered set)  |
-| ArrayOf       | unordered           | Non-Ordered, Non-Unique (bag)  |
-| Array         | set                 | Non-Ordered, Unique (set)      |
-| MapOf         | ordered             | Ordered, Unique (ordered set)  |
-| Map           | ordered             | Ordered, Unique (ordered set)  |
-| Record        | ordered             | Ordered, Unique (ordered set)  |
-
-#### 4.2.2.1 Field Options
+### 4.3.4 Compound Field Options
 
 Structured compound types (Array, Map and Record) and the Choice type have Fields that define each item in a
 collection individually.
