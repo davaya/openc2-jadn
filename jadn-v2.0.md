@@ -831,10 +831,9 @@ isAssociative property:
 >
 > Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
 > collection of values in an instantiation of a JADN MultiplicityElement is one of six types. Because
-> association keys are unique, the combination of isUnique=false and isAssociation=true is invalid.
+> association keys are unique, the combination of isUnique=false and isAssociative=true is invalid.
 
 Table 4-2 shows the multiplicity type name used for each combination of MultiplicityElement properties.
-In applications each collection value is instantiated as a variable with the specified semantic effect.
 
 ###### Table 4-2: Multiplicity Types 
 
@@ -847,9 +846,9 @@ In applications each collection value is instantiated as a variable with the spe
 | true      | false    | false         | Sequence     |
 | false     | false    | false         | Bag          |
 
-This document does not specify how information values are instantiated, but for illustration
-purposes Table 4-3 lists programming language types that could hold collection values with the
-specified semantic effect.
+In applications each collection value is instantiated as a variable with the specified semantic effect.
+This document does not specify how information values are instantiated, but Table 4-3 lists programming
+language types that could hold collection values with the required semantics.
 Values used as keys must be constant in order to be hashable.
 
 ###### Table 4-3: Example Programming Language Types
@@ -937,6 +936,29 @@ The ArrayOf type defines a collection of undifferentiated elements:
 with the columns defined by valueType and the rows indexed by position.
 * If valueType is an Array, Map or Record with a Key ([Section x](#414)) field, the rows are
 indexed by both position and key and can be accessed by either.
+
+Example:
+```
+Places = ArrayOf(Place)         // Places is a table of place names
+Place = Array
+   1 Key(Coordinate)            // coordinate:: Coordinate is a primary key for the Places table
+   2 String                     // name:: Name of a place at the specified location
+Coordinate = Array
+   1 Number [-90., 90.]         // latitude::
+   2 Number (-180., 180.]       // longitude::
+```
+```json
+[
+  [[38.889546, -77.035139], "Washington Monument"],
+  [[38.624801, -90.185004], "Gateway Arch"],
+  [[33.944206, -118.402505], "Los Angeles International Airport (LAX)"]
+]
+```
+The Places table is semantically a map because its valueType has a primary key:
+```
+Places = MapOf(Coordinate, String)      // Places is a map of coordinates to place names
+```
+but designers often prefer to serialize tables as arrays and some serializations require keys to be strings.
 
 *An ArrayOf collection value is serialized by concatenating the values of its elements. Data formats
 must support determining the extent of an element and the extent of a collection from the serialized value.*
