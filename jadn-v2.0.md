@@ -4,7 +4,7 @@
 # JSON Abstract Data Notation (JADN) Version 2.0
 
 ## Committee Specification Draft 01
-## 6 August 2025
+## 20 August 2025
 
 &nbsp;
 
@@ -516,9 +516,9 @@ using $NSID and $TypeName instances as `Prefix` and `LocalPart` respectively.
 An information modeling language's abstract datatypes define their meaning and application behavior.
 As shown in Figure 4-1, JADN defines twelve core types in three categories:
 
-* **Primitive** ([Section 4.2.1](#421-primitive-types)): Types whose instances are atomic (non-decomposable) values.
-* **Compound** ([Section 4.2.2](#422-compound-types): Types whose instances are collections of values.
-* **Union** ([Section 4.2.3](#423-union-types)): Types whose instances are selected from a set of possible values.
+* **Primitive** ([Section 4.2](#42-primitive-types)): Types whose instances are atomic (non-decomposable) values.
+* **Compound** ([Section 4.3](#43-collection-types): Types whose instances are collections of values.
+* **Union** ([Section 4.4](#44-union-types)): Types whose instances are selected from a set of possible values.
 
 ###### Fig. 4-1. JADN Core Datatypes
 
@@ -633,7 +633,8 @@ Color = Enumerated
 ```
 ### 4.1.3 Compound
 
-If CoreType is a structured Compound or Choice type, each field definition in the **Fields** array has five elements:
+If CoreType is a structured Compound (Array, Map, Record) or Choice type, each field definition in the
+**Fields** array has five elements:
 1. **FieldID:** the integer identifier of the field
 2. **FieldName:** the name or label of the field
 3. **FieldType:** the type of the field, a **TypeReference**
@@ -792,12 +793,12 @@ A collection **object** is the instantiation of a collection in a processing env
 The object has both a datatype and the functions/operations defined on values of that type.
 
 Each collection datatype has two parts:
-1. **semantic type**, one of six extended UML MultiplicityElement types that specify
-representation-independent constraints on collection values.
-2. **compound type**, one of five JADN compound types that specify literal representation
-combined with value semantics.
+1. **[multiplicity type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
+that specify constraints on a collection as a whole.
+2. **[compound type](#432-compound-types)**, one of five JADN compound types that define constraints
+on collection elements, collection multiplicity, and literal representation using encoding rules.
 
-### 4.3.1 Collection Semantic Types
+### 4.3.1 Multiplicity Types
 
 [[UML](#uml)] defines a MultiplicityElement as:
 > .. an Element that may be instantiated in some way to represent a collection of values.
@@ -832,34 +833,35 @@ isAssociative property:
 > collection of values in an instantiation of a JADN MultiplicityElement is one of six types. Because
 > association keys are unique, the combination of isUnique=false and isAssociation=true is invalid.
 
-Table 4-2 shows the semantic type name used for each combination of MultiplicityElement properties.
-Each collection value is instantiated as a variable with the specified semantics.
+Table 4-2 shows the multiplicity type name used for each combination of MultiplicityElement properties.
+In applications each collection value is instantiated as a variable with the specified semantic effect.
 
-###### Table 4-2: Collection Semantic Types 
+###### Table 4-2: Multiplicity Types 
 
-| isOrdered | isUnique | isAssociative | Semantic Type |
-|-----------|----------|---------------|---------------|
-| false     | true     | false         | Set           |
-| true      | true     | false         | OrderedSet    |
-| false     | true     | true          | Map           |
-| true      | true     | true          | OrderedMap    |
-| true      | false    | false         | Sequence      |
-| false     | false    | false         | Bag           |
+| isOrdered | isUnique | isAssociative | Multiplicity |
+|-----------|----------|---------------|--------------|
+| false     | true     | false         | Set          |
+| true      | true     | false         | OrderedSet   |
+| false     | true     | true          | Map          |
+| true      | true     | true          | OrderedMap   |
+| true      | false    | false         | Sequence     |
+| false     | false    | false         | Bag          |
 
 This document does not specify how information values are instantiated, but for illustration
 purposes Table 4-3 lists programming language types that could hold collection values with the
-specified semantics.
+specified semantic effect.
 Values used as keys must be constant in order to be hashable.
 
 ###### Table 4-3: Example Programming Language Types
-| Semantic Type | Python Variable Type                          | Constant Type             |
-|---------------|-----------------------------------------------|---------------------------|
-| Set           | set() language type                           | frozenset() language type |
-| OrderedSet    | collections.OrderedDict() library type (keys) |                           |
-| Map           | dict() language type                          | frozendict package        |
-| OrderedMap    | collections.orderedDict() library type        |                           |
-| Sequence      | list() language type                          | tuple() language type     |
-| Bag           | collections.Counter() library type            |                           |
+
+| Multiplicity | Python Variable Type                          | Python Constant Type      |
+|--------------|-----------------------------------------------|---------------------------|
+| Set          | set() language type                           | frozenset() language type |
+| OrderedSet   | collections.OrderedDict() library type (keys) |                           |
+| Map          | dict() language type                          | frozendict package        |
+| OrderedMap   | collections.orderedDict() library type        |                           |
+| Sequence     | list() language type                          | tuple() language type     |
+| Bag          | collections.Counter() library type            |                           |
 
 1. **Set:**
 
@@ -918,12 +920,12 @@ Example:
 
 ### 4.3.2 Compound Types
 
-JADN has five compound types that define the semantics of a collection, the type of each element
-in the collection, and literal representations of the collection using encoding rules for each
+JADN has five compound types that define the type of each element in the collection, the collection
+multiplicity, and literal representations of the collection using encoding rules for each
 compound type:
-* ArrayOf and MapOf specify that every element in the collection has the same type.
-* Array, Map and Record define the type of each element individually, by either position or key.
-These types are inherently unique.
+* Unstructured types ArrayOf and MapOf specify that every element in the collection has the same type.
+* Structured types Array, Map and Record define the type of each element individually,
+by either position or key. Structured types inherently have multiplicity isUnique.
 
 #### 4.3.2.1 ArrayOf(valueType)
 
@@ -971,31 +973,28 @@ Table 4-3 lists the type options specific to compound types:
 * The `id` option specifies that fields in a Map, Enumerated or Choice ([Section 4.4](#44-union-types)) type
 are identified by their integer field / item ID and that any field name / item value present in the type
 definition is never used in serialized messages.
-* The `unique`, `ordered`, `set`, and `unordered` options modify the semantic type of a collection from the
+* The `unique`, `ordered`, `set`, and `unordered` options modify the multiplicity of a collection from the
 default Sequence or Map type shown in Table 4-4. These options are mutually exclusive:
 a type definition may not contain more than one.
   * If a collection is Ordered, element order is significant when comparing instances, otherwise it is not.
   * If a collection is Unique, no element is duplicated within a collection instance, otherwise duplicates are allowed.
 
-Table 4-4 lists the default collection semantics and TypeOptions usable with each compound type:
+Table 4-4 lists the default multiplicity and TypeOptions usable with each compound type:
 
 ###### Table 4-4: Allowed Compound Type Options
 
-| Compound Type             | Collection | Allowed TypeOptions                          |
-|---------------------------|------------|----------------------------------------------|
-| ArrayOf(valueType)        | Sequence   | minLength, maxLength, set, unique, unordered |
-| MapOf(keyType, valueType) | Map        | minLength, maxLength, ordered                |
-| Array                     | Sequence   | minLength, maxLength, set                    |
-| Map                       | Map        | minLength, maxLength, ordered, id            |
-| Record                    | Map        | minLength, maxLength, ordered                |
+| Compound Type             | Multiplicity | Allowed TypeOptions                          |
+|---------------------------|--------------|----------------------------------------------|
+| ArrayOf(valueType)        | Sequence     | minLength, maxLength, set, unique, unordered |
+| MapOf(keyType, valueType) | Map          | minLength, maxLength, ordered                |
+| Array                     | Sequence     | minLength, maxLength, set                    |
+| Map                       | Map          | minLength, maxLength, ordered, id            |
+| Record                    | Map          | minLength, maxLength, ordered                |
 
 
-A compound type may define collection semantics different from the default collection type. An ArrayOf
+A compound type may define a multiplicity different from the compound type default. An ArrayOf
 collection is a Sequence by default, but a TypeOption can specify that it behaves as a Set, OrderedSet,
 or Bag.
-
-By default, ArrayOf and Array specify a sequence of items and MapOf, Map, and Record specify a set of items,
-but these collection properties can be modified using TypeOptions.
 
 * A Structured type includes individual field definitions. Each field defines an association between an identifier
 (position and/or key) and a type and may include field-specific options ([Section 4.2.2.1](#4221-field-options)).
