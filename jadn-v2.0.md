@@ -922,9 +922,11 @@ Example:
 JADN has five compound types that define the type of each element in the collection, the collection
 multiplicity, and literal representations of the collection using encoding rules for each
 compound type:
-* Unstructured types ArrayOf and MapOf specify that every element in the collection has the same type.
-* Structured types Array, Map and Record define the type of each element individually,
-by either position or key. Structured types inherently have multiplicity isUnique.
+* Unstructured types [**ArrayOf**](#4321-arrayofvaluetype) and [**MapOf**](#4322-mapofkeytype-valuetype)
+specify that every element in the collection has the same type.
+* Structured types [**Array**](#4323-array), [**Map**](#4324-map) and [**Record**](#4325-record)
+define the type of each element individually, by either position or key.
+Structured types inherently have multiplicity isUnique.
 
 #### 4.3.2.1 ArrayOf(valueType)
 
@@ -934,8 +936,8 @@ The ArrayOf type defines a collection of undifferentiated elements:
 * A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
 * If valueType is an Array, Map or Record, the collection is serialized as a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
-* If valueType is an Array, Map or Record with a Key ([Section x](#414)) field, the rows are
-indexed by both position and key and can be accessed by either.
+* If valueType is an Array, Map or Record with a Key ([Section 4.3.4](#434-compound-field-options)) field,
+the rows are indexed by both position and key and can be accessed by either.
 
 Example:
 ```
@@ -947,6 +949,7 @@ Coordinate = Array
    1 Number [-90., 90.]         // latitude::
    2 Number (-180., 180.]       // longitude::
 ```
+JSON serialization:
 ```json
 [
   [[38.889546, -77.035139], "Washington Monument"],
@@ -954,12 +957,19 @@ Coordinate = Array
   [[33.944206, -118.402505], "Los Angeles International Airport (LAX)"]
 ]
 ```
-The Places table is semantically a map because its valueType has a primary key:
+The Places table is semantically a map because its valueType has a primary key, but designers often
+prefer to serialize tables as arrays and some literal formats require keys to be strings.
 ```
 Places = MapOf(Coordinate, String)      // Places is a map of coordinates to place names
 ```
-but designers often prefer to serialize tables as arrays and some serializations require keys to be strings.
-
+Example MapOf JSON serialization:
+```json
+{
+  "[38.889546, -77.035139]": "Washington Monument",
+  "[38.624801, -90.185004]": "Gateway Arch",
+  "[33.944206, -118.402505]": "Los Angeles International Airport (LAX)"
+}
+```
 *An ArrayOf collection value is serialized by concatenating the values of its elements. Data formats
 must support determining the extent of an element and the extent of a collection from the serialized value.*
 
