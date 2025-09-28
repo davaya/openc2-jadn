@@ -862,40 +862,43 @@ Values used as keys must be constant in order to be hashable.
 | Sequence     | list() language type                          | tuple() language type     |
 | Bag          | collections.Counter() library type            |                           |
 
-1. **Set:**
+#### 4.3.1.1 Set
 
 A Set value is an unordered collection of elements where no element appears more than once.
 Elements may be added to and removed from Sets.
 Sets may be unioned, intersected, or subtracted from each other.
 
-2. **OrderedSet:**
+#### 4.3.1.2 OrderedSet
 
 An OrderedSet value is an ordered list of elements where no element appears more than once.
 OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
 combined with either a Sequence or a Set.
 
 Example:
-* Set: `{'a', 'b', 'c'}` equals `{'c', 'a', 'b'}`
-* OrderedSet: `{'a', 'b', 'c'}` does not equal `{'c', 'a', 'b'}`
+* set `{'a', 'b', 'c'}` equals set `{'c', 'a', 'b'}`
+* orderedSet(`['a', 'b', 'c']`) does not equal orderedSet(`['c', 'a', 'b']`)
+* set(orderedSet(`['a', 'b', 'c']`)) | set `{'a', 'b'}` yields set `{'a', 'b', 'c')`
+* list(orderedSet(`['a', 'b', 'c']`)) + list `['a', 'b']` yields list `['a', 'b', 'c', 'a', 'b']`
+* list(set(`{'a', 'b', 'c'}`)) yields a list with unspecified order, e.g., `['b', 'a', 'c']`
 
-3. **Map:**
+#### 4.3.1.3 Map
 
 A Map value is a collection of key:value pairs where the keys are a Set.
 Each key and each value may be any type.
 Because Map keys must be unique, a collection of key:value pairs that supports duplicate keys may be
-modeled as a Map of value Arrays or a Set of key:value pairs.
+modeled as a Set of key:value pairs or a Map of value sets.
 
 Example:
-* Not a Map: `{'a': 15, 'b': 42, 'c': 5, 'a': 31}`
+* Not a Map: `{'a': 15, 'b': 42, 'c': 5, 'a': 31}` (invalid duplicate key 'a')
 * Set of Maps: `{{'a': 15'}, {'b': 42}, {'c': 5}, {'a': 31}}`
-* Map of value Arrays: `{'a': [15, 31], 'b': [42], 'c': [5]}`
+* Map of Sets: `{'a': {15, 31}, 'b': {42}, 'c': {5}}`
 
-4. **OrderedMap:**
+#### 4.3.1.4 OrderedMap
 
 An OrderedMap value is a collection of key:value pairs where the keys are an OrderedSet.
 Each key and each value may be any type.
 
-5. **Sequence:**
+#### 4.3.1.5 Sequence
 
 A Sequence value is an ordered list of elements where an element can appear more than once.
 Values of the Sequence type are ordered lists of elements containing the individual values.
@@ -903,7 +906,7 @@ The elements of a sequence may be randomly accessed using 0-origin indices.
 Sequences [A, B, ...] can be combined into a new Sequence whose elements are the concatenation of
 the elements (in order) of each of the arguments (in order).
 
-6. **Bag:**
+#### 4.3.1.6 Bag
 
 A Bag (also known as [Multiset](#multiset)) value is an unordered collection of elements where
 elements may appear more than once.
@@ -915,7 +918,7 @@ each element in the source collection and incrementing the count of that element
 Example:
 * Bag: `['a', 'c', 'b', 'a']` equals `['b', 'a', 'a', 'c']`
 * Sequence: `['a', 'c', 'b', 'a']` does not equal `['b', 'a', 'a', 'c']`
-* Bag instantiation: `{'a': 2, 'b': 1, 'c': 1}`
+* Bag instantiation: `{'a': 2, 'c': 1, 'b': 1}` equals `{'b': 1, 'a': 2, 'c': 1}`
 
 ### 4.3.2 Compound Types
 
