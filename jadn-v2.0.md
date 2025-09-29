@@ -794,9 +794,10 @@ The object has both a datatype and the functions/operations defined on values of
 
 Each collection datatype has two parts:
 1. **[multiplicity type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
-that specify constraints on a collection as a whole.
-2. **[compound type](#432-compound-types)**, one of five JADN compound types that define constraints
-on collection elements, collection multiplicity, and literal representation using encoding rules.
+that specify semantics of the collection as a whole, suggesting suitable program language variable types.
+2. **[compound type](#432-compound-types)**, one of five JADN compound types that define multiplicity type,
+constraints on individual collection elements, and literal representation of collection values using
+type-specific encoding rules.
 
 ### 4.3.1 Multiplicity Types
 
