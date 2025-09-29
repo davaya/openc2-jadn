@@ -792,17 +792,21 @@ lexical-to-value mapping.
 A collection **object** is the instantiation of a collection in a processing environment.
 The object has both a datatype and the functions/operations defined on values of that type.
 
-Each collection datatype has two parts:
+Each collection type has two parts:
 1. **[multiplicity type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
-that specify semantics of the collection as a whole, suggesting suitable program language variable types.
-2. **[compound type](#432-compound-types)**, one of five JADN compound types that define multiplicity type,
-constraints on individual collection elements, and literal representation of collection values using
-type-specific encoding rules.
+that specify semantics of the collection as a whole, indicating variable types that support
+the required behavior.
+2. **[compound type](#432-compound-types)**, one of five JADN compound types that specify
+constraints on collection elements, literal representation of collection values, and the multiplicity
+type applied to collection values.
+
+Information modeling starts with required collection semantics and then selects a compound type that
+represents collection values in the desired format.
 
 ### 4.3.1 Multiplicity Types
 
-[[UML](#uml)] defines a MultiplicityElement as:
-> .. an Element that may be instantiated in some way to represent a collection of values.
+[[UML](#uml)] defines MultiplicityElement as:
+> ... an Element that may be instantiated in some way to represent a collection of values.
 > The cardinality of a collection is the number of values contained in that collection.
 > The multiplicity of a MultiplicityElement specifies valid cardinalities of the collection it represents.
 >
@@ -823,8 +827,7 @@ The isOrdered and isUnique properties specify four collection types defined by U
 in most programming languages: Set, OrderedSet, Sequence and Bag.
 Mapping types (also known as associative arrays, maps, dictionaries, or hashes) are also supported
 by most programming languages but are missing from UML's MultiplicityElement.
-JADN extends MultiplicityElement to support mapping types Map and OrderedMap by defining an
-isAssociative property:
+JADN extends MultiplicityElement to support mapping types by defining an isAssociative property:
 
 > If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
 > of this Element is a collection of associations between keys and values (i.e., key:value pairs)
@@ -880,7 +883,7 @@ Example:
 * orderedSet(`['a', 'b', 'c']`) does not equal orderedSet(`['c', 'a', 'b']`)
 * set(orderedSet(`['a', 'b', 'c']`)) | set `{'a', 'b'}` yields set `{'a', 'b', 'c')`
 * list(orderedSet(`['a', 'b', 'c']`)) + list `['a', 'b']` yields list `['a', 'b', 'c', 'a', 'b']`
-* list(set(`{'a', 'b', 'c'}`)) yields a list with unspecified order, e.g., `['b', 'a', 'c']`
+* list(set(`{'a', 'b', 'c'}`)) yields a list of the same elements with undefined order, e.g., `['b', 'a', 'c']`
 
 #### 4.3.1.3 Map
 
