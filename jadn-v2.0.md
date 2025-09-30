@@ -786,22 +786,24 @@ options do not apply.
 
 ## 4.3 Collection Types
 
-A collection **value** is a group of elements of the same or different types.  
-A collection **datatype** defines the collection's value space, lexical space, and
-lexical-to-value mapping.  
-A collection **object** is the instantiation of a collection in a processing environment.
-The object has both a datatype and the functions/operations defined on values of that type.
+A collection is a group of elements of the same or different types, with a value and multiple
+literal representations of that value.  
+A collection **object** is the instantiation of a collection value in a processing environment,
+i.e., a variable. A variable has both a type and the functions/operations defined on values of that type.  
+A collection **type** defines the collection's value space, literal spaces, and
+literal-to-value mappings.
 
-Each collection type has two parts:
-1. **[multiplicity type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
-that specify semantics of the collection as a whole, indicating variable types that support
-the required behavior.
-2. **[compound type](#432-compound-types)**, one of five JADN compound types that specify
-constraints on collection elements, literal representation of collection values, and the multiplicity
-type applied to collection values.
+As noted in the introduction, an information model defines a collection in a way that is
+representation-independent both as an object within a process and as literals exchanged among processes.
+Each collection type thus has two parts:
+* a **[multiplicity type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
+that specify semantics of the collection value (the variable type within a process)
+* a **[compound type](#432-compound-types)**, one of five JADN compound types that specify literal
+representations of the collection value, constraints on collection elements, 
+and the collection's multiplicity type.
 
-Information modeling starts with required collection semantics and then selects a compound type that
-represents collection values in the desired format.
+Information modeling starts with the desired collection semantics and then defines a compound type that
+represents its value in the desired literal formats.
 
 ### 4.3.1 Multiplicity Types
 
