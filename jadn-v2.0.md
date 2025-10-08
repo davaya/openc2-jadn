@@ -790,20 +790,19 @@ A collection is a group of elements of the same or different types, with a value
 literal representations of that value.  
 A collection **object** is the instantiation of a collection value in a processing environment,
 i.e., a variable. A variable has both a type and the functions/operations defined on values of that type.  
-A collection **type** defines the collection's value space, literal spaces, and
+A collection **type** defines the collection's single value space, multiple literal spaces, and
 literal-to-value mappings.
 
 As noted in the introduction, an information model defines a collection in a way that is
 representation-independent both as an object within a process and as literals exchanged among processes.
 Each collection type thus has two parts:
-* a **[multiplicity type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
-that specify semantics of the collection value (the variable type within a process)
+* a **[semantic type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
+that specify semantics of the collection variable used within a process
 * a **[compound type](#432-compound-types)**, one of five JADN compound types that specify literal
-representations of the collection value, constraints on collection elements, 
-and the collection's multiplicity type.
+representations of a collection value, constraints on collection elements, and the semantic type.
 
-Information modeling starts with the desired collection semantics and then defines a compound type that
-represents its value in the desired literal formats.
+Information modeling starts with the desired semantic type and then selects a compound type that
+represents a value using a desired literal format.
 
 ### 4.3.1 Multiplicity Types
 
@@ -834,39 +833,44 @@ JADN extends MultiplicityElement to support mapping types by defining an isAssoc
 > If the MultiplicityElement is specified as associative (i.e., isAssociative is true), then an instantiation
 > of this Element is a collection of associations between keys and values (i.e., key:value pairs)
 > where the keys must be unique.
->
-> Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
-> collection of values in an instantiation of a JADN MultiplicityElement is one of six types. Because
-> association keys are unique, the combination of isUnique=false and isAssociative=true is invalid.
 
-Table 4-2 shows the multiplicity type name used for each combination of MultiplicityElement properties.
+Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
+collection of values in an instantiation of a JADN MultiplicityElement is one of six types. Because
+association keys are unique, the combination of isUnique=false and isAssociative=true is invalid.
+
+Table 4-2 shows the type name used for each combination of MultiplicityElement properties.
 
 ###### Table 4-2: Multiplicity Types 
 
-| isOrdered | isUnique | isAssociative | Multiplicity |
-|-----------|----------|---------------|--------------|
-| false     | true     | false         | Set          |
-| true      | true     | false         | OrderedSet   |
-| false     | true     | true          | Map          |
-| true      | true     | true          | OrderedMap   |
-| true      | false    | false         | Sequence     |
-| false     | false    | false         | Bag          |
+| isOrdered | isUnique | isAssociative | Type       |
+|-----------|----------|---------------|------------|
+| false     | true     | false         | Set        |
+| true      | true     | false         | OrderedSet |
+| false     | true     | true          | Map        |
+| true      | true     | true          | OrderedMap |
+| true      | false    | false         | Sequence   |
+| false     | false    | false         | Bag        |
 
 In applications each collection value is instantiated as a variable with the specified semantic effect.
-This document does not specify how information values are instantiated, but Table 4-3 lists programming
+Some programming languages define collection types that are "order preserving" but not "ordered".
+Ordered types (OrderedSet, OrderedMap and Sequence) must have a mapping from positive integers to
+collection elements, i.e., elements may be referenced by position.
+Unordered types (Set, Map, Bag) must ignore order when comparing values regardless of whether they
+preserve insertion order.
+This document does not specify how collections are instantiated, but Table 4-3 lists programming
 language types that could hold collection values with the required semantics.
-Values used as keys must be constant in order to be hashable.
+Values used as keys must be hashable, which means they must be constant.
 
 ###### Table 4-3: Example Programming Language Types
 
-| Multiplicity | Python Variable Type                          | Python Constant Type      |
-|--------------|-----------------------------------------------|---------------------------|
-| Set          | set() language type                           | frozenset() language type |
-| OrderedSet   | collections.OrderedDict() library type (keys) |                           |
-| Map          | dict() language type                          | frozendict package        |
-| OrderedMap   | collections.orderedDict() library type        |                           |
-| Sequence     | list() language type                          | tuple() language type     |
-| Bag          | collections.Counter() library type            |                           |
+| Multiplicity | Python Variable Type              | Python Constant Type      |
+|--------------|-----------------------------------|---------------------------|
+| Set          | set() language type               | frozenset() language type |
+| OrderedSet   | OrderedDict() library type (keys) |                           |
+| Map          | dict() language type              | frozendict package        |
+| OrderedMap   | orderedDict() library type        |                           |
+| Sequence     | list() language type              | tuple() language type     |
+| Bag          | Counter() library type            |                           |
 
 #### 4.3.1.1 Set
 
@@ -877,8 +881,8 @@ Sets may be unioned, intersected, or subtracted from each other.
 #### 4.3.1.2 OrderedSet
 
 An OrderedSet value is an ordered list of elements where no element appears more than once.
-OrderedSet collections may not be directly combined, but an OrderedSet value may be coerced into and 
-combined with either a Sequence or a Set.
+OrderedSet values may not be directly combined, but may be coerced into and 
+combined with either Sequence or Set values.
 
 Example:
 * set `{'a', 'b', 'c'}` equals set `{'c', 'a', 'b'}`
@@ -907,8 +911,8 @@ Each key and each value may be any type.
 #### 4.3.1.5 Sequence
 
 A Sequence value is an ordered list of elements where an element can appear more than once.
-Values of the Sequence type are ordered lists of elements containing the individual values.
-The elements of a sequence may be randomly accessed using 0-origin indices.
+A value of the Sequence type is an ordered list of elements with a mapping from positive integers
+to the elements.
 Sequences [A, B, ...] can be combined into a new Sequence whose elements are the concatenation of
 the elements (in order) of each of the arguments (in order).
 
