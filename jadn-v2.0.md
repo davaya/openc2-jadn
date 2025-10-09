@@ -842,7 +842,7 @@ Table 4-2 shows the type name used for each combination of MultiplicityElement p
 
 ###### Table 4-2: Multiplicity Types 
 
-| isOrdered | isUnique | isAssociative | Type       |
+| isOrdered | isUnique | isAssociative | Value Type |
 |-----------|----------|---------------|------------|
 | false     | true     | false         | Set        |
 | true      | true     | false         | OrderedSet |
@@ -863,14 +863,14 @@ Values used as keys must be hashable, which means they must be constant.
 
 ###### Table 4-3: Example Programming Language Types
 
-| Multiplicity | Python Variable Type              | Python Constant Type      |
-|--------------|-----------------------------------|---------------------------|
-| Set          | set() language type               | frozenset() language type |
-| OrderedSet   | OrderedDict() library type (keys) |                           |
-| Map          | dict() language type              | frozendict package        |
-| OrderedMap   | orderedDict() library type        |                           |
-| Sequence     | list() language type              | tuple() language type     |
-| Bag          | Counter() library type            |                           |
+| Multiplicity Type | Python Variable Type              | Python Constant Type      |
+|-------------------|-----------------------------------|---------------------------|
+| Set               | set() language type               | frozenset() language type |
+| OrderedSet        | OrderedDict() library type (keys) |                           |
+| Map               | dict() language type              | frozendict package        |
+| OrderedMap        | orderedDict() library type        |                           |
+| Sequence          | list() language type              | tuple() language type     |
+| Bag               | Counter() library type            |                           |
 
 #### 4.3.1.1 Set
 
@@ -889,7 +889,8 @@ Example:
 * orderedSet(`['a', 'b', 'c']`) does not equal orderedSet(`['c', 'a', 'b']`)
 * set(orderedSet(`['a', 'b', 'c']`)) | set `{'a', 'b'}` yields set `{'a', 'b', 'c')`
 * list(orderedSet(`['a', 'b', 'c']`)) + list `['a', 'b']` yields list `['a', 'b', 'c', 'a', 'b']`
-* list(set(`{'a', 'b', 'c'}`)) yields a list of the same elements with undefined order, e.g., `['b', 'a', 'c']`
+* list(set(`{'a', 'b', 'c'}`)) yields a list of the same elements with indeterminate order, e.g.,
+`['b', 'a', 'c']`, `['c', 'b', 'a']`, or ...
 
 #### 4.3.1.3 Map
 
@@ -932,14 +933,14 @@ Example:
 
 ### 4.3.2 Compound Types
 
-JADN has five compound types that define the type of each element in the collection, the collection
-multiplicity, and literal representations of the collection using encoding rules for each
+JADN has five compound types that define the type of each element in the collection, the multiplicity type
+of the collection, and literal representations of the collection using encoding rules for each
 compound type:
 * Unstructured types [**ArrayOf**](#4321-arrayofvaluetype) and [**MapOf**](#4322-mapofkeytype-valuetype)
 specify that every element in the collection has the same type.
 * Structured types [**Array**](#4323-array), [**Map**](#4324-map) and [**Record**](#4325-record)
 define the type of each element individually, by either position or key.
-Structured types inherently have multiplicity isUnique.
+Because both position and key are unique, structured types inherently have a semantic type isUnique=True.
 
 #### 4.3.2.1 ArrayOf(valueType)
 
@@ -949,10 +950,31 @@ The ArrayOf type defines a collection of undifferentiated elements:
 * A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
 * If valueType is an Array, Map or Record, the collection is serialized as a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
-* If valueType is an Array, Map or Record with a Key ([Section 4.3.4](#434-compound-field-options)) field,
-the rows are indexed by both position and key and can be accessed by either.
+* If valueType is an Array, Map or Record with a designated Key ([Section 4.3.4](#434-compound-field-options))
+field, the collection has a semantic type isUnique=True, and the rows are indexed by both position and key
+and can be accessed by either.
 
-Example:
+Example - "People" table:
+```
+People = ArrayOf(Person)
+Person = Array
+   1 String                 // name::
+   2 String /email          // email::
+   3 String optional        // phone::
+```
+JSON Serialization:
+```json
+[
+  ["Alice Brown", "alice@example.org", "555-123-4567"],
+  ["Bob Green", "bob@foo.com"]
+]
+```
+
+Example - "Places" table:
+
+The Places table is semantically a map because its valueType has a primary key, but designers sometimes
+prefer to serialize maps as arrays.
+
 ```
 Places = ArrayOf(Place)         // Places is a table of place names
 Place = Array
@@ -970,12 +992,42 @@ JSON serialization:
   [[33.944206, -118.402505], "Los Angeles International Airport (LAX)"]
 ]
 ```
-The Places table is semantically a map because its valueType has a primary key, but designers often
-prefer to serialize tables as arrays and some literal formats require keys to be strings.
+
+#### 4.3.2.2 MapOf(keyType, valueType)
+
+The MapOf type defines a collection of undifferentiated key-value associations:
+* All element keys have the same type, specified by the required `keyType` option.
+* All element values have the same type, specified by the required `valueType` option.
+* All elements have the same role within the collection; no special meaning is attached to any element.
+* A Choice ([Section 4.4](#44)) keyType and/or valueType supports definition of heterogeneous collections.
+
+Example - "People" MapOf:
+```
+People = MapOf(Email, Person)
+Email = String /email           // RFC-822 email address format
+Person = Record
+   1 name       String
+   2 phone      String optional
+```
+JSON serialization:
+```json
+{
+  "alice@example.org": {
+    "name": "Alice Brown",
+    "phone": "555-123-4567"
+  },
+  "bob@foo.com": {
+    "name": "Bob Green"
+  }
+}
+```
+
+Example - "Places" MapOf:
 ```
 Places = MapOf(Coordinate, String)      // Places is a map of coordinates to place names
 ```
-Example MapOf JSON serialization:
+JSON serialization:  
+Some data formats including JSON require map keys to be serialized as strings regardless of key type.
 ```json
 {
   "[38.889546, -77.035139]": "Washington Monument",
@@ -983,10 +1035,6 @@ Example MapOf JSON serialization:
   "[33.944206, -118.402505]": "Los Angeles International Airport (LAX)"
 }
 ```
-*An ArrayOf collection value is serialized by concatenating the values of its elements. Data formats
-must support determining the extent of an element and the extent of a collection from the serialized value.*
-
-#### 4.3.2.2 MapOf(keyType, valueType)
 
 #### 4.3.2.3 Array
 
@@ -1024,17 +1072,17 @@ a type definition may not contain more than one.
   * If a collection is Ordered, element order is significant when comparing instances, otherwise it is not.
   * If a collection is Unique, no element is duplicated within a collection instance, otherwise duplicates are allowed.
 
-Table 4-4 lists the default multiplicity and TypeOptions usable with each compound type:
+Table 4-4 lists the default semantic type and the TypeOptions applicable to each compound type:
 
 ###### Table 4-4: Allowed Compound Type Options
 
-| Compound Type             | Multiplicity | Allowed TypeOptions                          |
-|---------------------------|--------------|----------------------------------------------|
-| ArrayOf(valueType)        | Sequence     | minLength, maxLength, set, unique, unordered |
-| MapOf(keyType, valueType) | Map          | minLength, maxLength, ordered                |
-| Array                     | Sequence     | minLength, maxLength, set                    |
-| Map                       | Map          | minLength, maxLength, ordered, id            |
-| Record                    | Map          | minLength, maxLength, ordered                |
+| Compound Type             | Semantic Type | Allowed TypeOptions                          |
+|---------------------------|---------------|----------------------------------------------|
+| ArrayOf(valueType)        | Sequence      | minLength, maxLength, set, unique, unordered |
+| MapOf(keyType, valueType) | Map           | minLength, maxLength, ordered                |
+| Array                     | Sequence      | minLength, maxLength, set                    |
+| Map                       | Map           | minLength, maxLength, ordered, id            |
+| Record                    | Map           | minLength, maxLength, ordered                |
 
 
 A compound type may define a multiplicity different from the compound type default. An ArrayOf
