@@ -951,16 +951,19 @@ The ArrayOf type defines a collection of undifferentiated elements:
 * If valueType is an Array, Map or Record, the collection is serialized as a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
 * If valueType is an Array, Map or Record with a designated Key ([Section 4.3.4](#434-compound-field-options))
-field, the collection has a semantic type isUnique=True, and the rows are indexed by both position and key
+field, the collection has a semantic type with isUnique=True, and the rows are indexed by both position and key
 and can be accessed by either.
 
-Example - "People" table:
+**Example:** "People" table:
+
+The People table is semantically a list of rows because its valueType (Person) does not have a primary key, and
+any column may have duplicate values.
 ```
 People = ArrayOf(Person)
 Person = Array
-   1 String                 // name::
-   2 String /email          // email::
-   3 String optional        // phone::
+   1 String                     // name::
+   2 String /email              // email:: RFC-822 email address format
+   3 String optional            // phone::
 ```
 JSON Serialization:
 ```json
@@ -970,11 +973,10 @@ JSON Serialization:
 ]
 ```
 
-Example - "Places" table:
+**Example:** "Places" table:
 
-The Places table is semantically a map because its valueType has a primary key, but designers sometimes
-prefer to serialize maps as arrays.
-
+The Places table is semantically a map because its valueType (Place) has a primary key, but designers sometimes
+prefer to serialize maps as lists.
 ```
 Places = ArrayOf(Place)         // Places is a table of place names
 Place = Array
@@ -1001,10 +1003,12 @@ The MapOf type defines a collection of undifferentiated key-value associations:
 * All elements have the same role within the collection; no special meaning is attached to any element.
 * A Choice ([Section 4.4](#44)) keyType and/or valueType supports definition of heterogeneous collections.
 
-Example - "People" MapOf:
+**Example:** "People" MapOf:
+
+The People table is semantically a map because it declares keyType to be Email.
 ```
 People = MapOf(Email, Person)
-Email = String /email           // RFC-822 email address format
+Email = String /email                   // RFC-822 email address format
 Person = Record
    1 name       String
    2 phone      String optional
@@ -1022,12 +1026,14 @@ JSON serialization:
 }
 ```
 
-Example - "Places" MapOf:
+**Example:** "Places" MapOf:
+
+The Places table is semantically a map, but some data formats including JSON require map keys
+to be serialized as strings regardless of keyType (Coordinate).
 ```
 Places = MapOf(Coordinate, String)      // Places is a map of coordinates to place names
 ```
 JSON serialization:  
-Some data formats including JSON require map keys to be serialized as strings regardless of key type.
 ```json
 {
   "[38.889546, -77.035139]": "Washington Monument",
