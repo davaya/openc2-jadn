@@ -797,14 +797,14 @@ As noted in the introduction, an information model defines a collection in a way
 representation-independent both as an object within a process and as literals exchanged among processes.
 Each collection type thus has two parts:
 * a **[semantic type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
-that specify semantics of the collection variable used within a process
+that specify semantics of the collection value used within a process
 * a **[compound type](#432-compound-types)**, one of five JADN compound types that specify literal
-representations of a collection value, constraints on collection elements, and the semantic type.
+representations of a collection value, element constraints, and semantic type.
 
 Information modeling starts with the desired semantic type and then selects a compound type that
 represents a value using a desired literal format.
 
-### 4.3.1 Multiplicity Types
+### 4.3.1 Multiplicity Semantic Types
 
 [[UML](#uml)] defines MultiplicityElement as:
 > ... an Element that may be instantiated in some way to represent a collection of values.
@@ -834,9 +834,9 @@ JADN extends MultiplicityElement to support mapping types by defining an isAssoc
 > of this Element is a collection of associations between keys and values (i.e., key:value pairs)
 > where the keys must be unique.
 
-Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that the
-collection of values in an instantiation of a JADN MultiplicityElement is one of six types. Because
-association keys are unique, the combination of isUnique=false and isAssociative=true is invalid.
+Taken together, the isOrdered, isUnique, and isAssociative properties can be used to specify that
+a collection value is one of six MultiplicityElement types.
+Because association keys are unique, the combination of isUnique=false and isAssociative=true is invalid.
 
 Table 4-2 shows the type name used for each combination of MultiplicityElement properties.
 
@@ -853,13 +853,14 @@ Table 4-2 shows the type name used for each combination of MultiplicityElement p
 
 In applications each collection value is instantiated as a variable with the specified semantic effect.
 Some programming languages define collection types that are "order preserving" but not "ordered".
-Ordered types (OrderedSet, OrderedMap and Sequence) must have a mapping from positive integers to
-collection elements, i.e., elements may be referenced by position.
-Unordered types (Set, Map, Bag) must ignore order when comparing values regardless of whether they
+Ordered types (OrderedSet, OrderedMap and Sequence) have a mapping from positive integers to
+collection elements, i.e., elements may be referenced by position and order is significant when
+comparing values.
+Unordered types (Set, Map, Bag) ignore order when comparing values regardless of whether they
 preserve insertion order.
 This document does not specify how collections are instantiated, but Table 4-3 lists programming
 language types that could hold collection values with the required semantics.
-Values used as keys must be hashable, which means they must be constant.
+Values used as keys must be hashable, which implies they are constant.
 
 ###### Table 4-3: Example Programming Language Types
 
@@ -939,24 +940,29 @@ compound type:
 * Unstructured types [**ArrayOf**](#4321-arrayofvaluetype) and [**MapOf**](#4322-mapofkeytype-valuetype)
 specify that every element in the collection has the same type.
 * Structured types [**Array**](#4323-array), [**Map**](#4324-map) and [**Record**](#4325-record)
-define the type of each element individually, by either position or key.
-Because both position and key are unique, structured types inherently have a semantic type isUnique=True.
+define the type of each element individually, by position, key, or both.
+Because position and key are unique, structured types inherently have semantic type isUnique=True
+(Set, OrderedSet, Map, or OrderedMap).
 
 #### 4.3.2.1 ArrayOf(valueType)
 
 The ArrayOf type defines a collection of undifferentiated elements:
 * All elements have the same type, specified by the required `valueType` option.
 * All elements have the same role within the collection; no special meaning is attached to any element.
+* With no [multiplicity option](#table-4-4-compound-type-options) the default collection semantics is
+[Sequence](#table-4-2-multiplicity-types-).
+* With a `set`, `unique` or `unordered` multiplicity option, the collection semantics is
+`Set`, `OrderedSet` or `Bag` respectively.
 * A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
 * If valueType is an Array, Map or Record, the collection is serialized as a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
 * If valueType is an Array, Map or Record with a designated Key ([Section 4.3.4](#434-compound-field-options))
-field, the collection has a semantic type with isUnique=True, and the rows are indexed by both position and key
+field, the collection has a semantic type with isUnique=True and the rows are indexed by both position and key
 and can be accessed by either.
 
 **Example:** "People" table:
 
-The People table is semantically a list of rows because its valueType (Person) does not have a primary key, and
+The People table is semantically a list of rows because its valueType (Person) does not have a primary key and
 any column may have duplicate values.
 ```
 People = ArrayOf(Person)
@@ -975,8 +981,8 @@ JSON Serialization:
 
 **Example:** "Places" table:
 
-The Places table is semantically a map because its valueType (Place) has a primary key, but designers sometimes
-prefer to serialize maps as lists.
+The Places table is semantically a map because its valueType (Place) has a primary key, but is used because
+designers sometimes prefer to serialize maps as lists.
 ```
 Places = ArrayOf(Place)         // Places is a table of place names
 Place = Array
@@ -1005,7 +1011,7 @@ The MapOf type defines a collection of undifferentiated key-value associations:
 
 **Example:** "People" MapOf:
 
-The People table is semantically a map because it declares keyType to be Email.
+The People table is semantically a map because it is defined as a MapOf which has a keyType (Email).
 ```
 People = MapOf(Email, Person)
 Email = String /email                   // RFC-822 email address format
@@ -1028,8 +1034,8 @@ JSON serialization:
 
 **Example:** "Places" MapOf:
 
-The Places table is semantically a map, but some data formats including JSON require map keys
-to be serialized as strings regardless of keyType (Coordinate).
+The Places table is semantically a map. Some data formats including JSON require map keys
+to be serialized as strings regardless of their actual type.
 ```
 Places = MapOf(Coordinate, String)      // Places is a map of coordinates to place names
 ```
@@ -1044,6 +1050,28 @@ JSON serialization:
 
 #### 4.3.2.3 Array
 
+The Array structured type defines a list of elements where each element has a position and an individual type:
+* The [FieldId](#413-compound) identifies the position of each element, numbered sequentially starting at 1.
+* The [FieldName](#413-compound) functions as a comment that describes each element but does not exist
+in collection values.
+* The [multiplicity option](#table-4-4-compound-type-options) collection semantics is a
+[Sequence](#table-4-2-multiplicity-types-) of values with types and roles, commonly referred to as a `struct`.
+
+**Example:** "FullName" Struct:
+
+```
+FullName = Array
+  1 String          // first:: given name
+  2 String          // middle:: additional given name(s)
+  3 String          // family:: surname
+```
+JSON serialization:
+```json
+["John", "Fitzgerald", "Kennedy"]
+```
+Applications may refer to Array fields directly by position or define "first=1", "FIRST=1", "Given=1", or "Forename=1"
+as mnemonics for position since field names do not appear in Array values.
+
 #### 4.3.2.4 Map
 
 #### 4.3.2.5 Record
@@ -1052,7 +1080,7 @@ JSON serialization:
 
 Table 4-3 lists the type options specific to compound types:
 
-###### Table 4-3: Compound Type Options
+###### Table 4-4: Compound Type Options
 
 | ID   | Chr | Type    | Name            | Description                                                   |
 |------|:---:|---------|-----------------|---------------------------------------------------------------|
@@ -1080,13 +1108,13 @@ a type definition may not contain more than one.
 
 Table 4-4 lists the default semantic type and the TypeOptions applicable to each compound type:
 
-###### Table 4-4: Allowed Compound Type Options
+###### Table 4-5: Allowed Compound Type Options
 
 | Compound Type             | Semantic Type | Allowed TypeOptions                          |
 |---------------------------|---------------|----------------------------------------------|
 | ArrayOf(valueType)        | Sequence      | minLength, maxLength, set, unique, unordered |
 | MapOf(keyType, valueType) | Map           | minLength, maxLength, ordered                |
-| Array                     | Sequence      | minLength, maxLength, set                    |
+| Array                     | Sequence      | minLength, maxLength                         |
 | Map                       | Map           | minLength, maxLength, ordered, id            |
 | Record                    | Map           | minLength, maxLength, ordered                |
 
