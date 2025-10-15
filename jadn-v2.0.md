@@ -934,15 +934,13 @@ Example:
 
 ### 4.3.2 Compound Types
 
-JADN has five compound types that define the type of each element in the collection, the multiplicity type
+JADN has five compound types that define the type of each element in a collection, the multiplicity semantics
 of the collection, and literal representations of the collection using encoding rules for each
 compound type:
 * Unstructured types [**ArrayOf**](#4321-arrayofvaluetype) and [**MapOf**](#4322-mapofkeytype-valuetype)
 specify that every element in the collection has the same type.
 * Structured types [**Array**](#4323-array), [**Map**](#4324-map) and [**Record**](#4325-record)
 define the type of each element individually, by position, key, or both.
-Because position and key are unique, structured types inherently have semantic type isUnique=True
-(Set, OrderedSet, Map, or OrderedMap).
 
 #### 4.3.2.1 ArrayOf(valueType)
 
@@ -954,16 +952,16 @@ The ArrayOf type defines a collection of undifferentiated elements:
 * With a `set`, `unique` or `unordered` multiplicity option, the collection semantics is
 `Set`, `OrderedSet` or `Bag` respectively.
 * A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
-* If valueType is an Array, Map or Record, the collection is serialized as a list of rows in a table,
+* If valueType is an Array, Map or Record, the collection is a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
 * If valueType is an Array, Map or Record with a designated Key ([Section 4.3.4](#434-compound-field-options))
-field, the collection has a semantic type with isUnique=True and the rows are indexed by both position and key
+field, the key is unique and the rows are indexed by both position and key
 and can be accessed by either.
 
 **Example:** "People" table:
 
 The People table is semantically a list of rows because its valueType (Person) does not have a primary key and
-any column may have duplicate values.
+rows may have duplicate values.
 ```
 People = ArrayOf(Person)
 Person = Array
@@ -975,7 +973,9 @@ JSON Serialization:
 ```json
 [
   ["Alice Brown", "alice@example.org", "555-123-4567"],
-  ["Bob Green", "bob@foo.com"]
+  ["Alice Brown", "a.brown@example.org"],
+  ["Bob Green", "bob@foo.com"],
+  ["Alice Brown", "a.brown@example.org"]
 ]
 ```
 
@@ -1026,6 +1026,9 @@ JSON serialization:
     "name": "Alice Brown",
     "phone": "555-123-4567"
   },
+  "a.brown@example.org": {
+    "name": "Alice Brown"
+  },
   "bob@foo.com": {
     "name": "Bob Green"
   }
@@ -1052,10 +1055,9 @@ JSON serialization:
 
 The Array structured type defines a list of elements where each element has a position and an individual type:
 * The [FieldId](#413-compound) identifies the position of each element, numbered sequentially starting at 1.
-* The [FieldName](#413-compound) functions as a comment that describes each element but does not exist
-in collection values.
-* The [multiplicity option](#table-4-4-compound-type-options) collection semantics is a
-[Sequence](#table-4-2-multiplicity-types-) of values with types and roles, commonly referred to as a `struct`.
+* The [FieldName](#413-compound) is a comment that describes each element but is not present in collection values.
+* The [multiplicity](#table-4-4-compound-type-options) semantics is a
+[Sequence](#table-4-2-multiplicity-types-) of values, each with a type and role, commonly referred to as a `struct`.
 
 **Example:** "FullName" Struct:
 
@@ -1069,8 +1071,11 @@ JSON serialization:
 ```json
 ["John", "Fitzgerald", "Kennedy"]
 ```
-Applications may refer to Array fields directly by position or define "first=1", "FIRST=1", "Given=1", or "Forename=1"
-as mnemonics for position since field names do not appear in Array values.
+Applications may refer to Array fields directly by position or define mnemonic labels for position.
+Because field names do not exist in Array values, position labels may be chosen arbitrarily within an
+application (e.g., "first=1", "FIRST=1", "Given=1", "Forename=1") without affecting interoperability.
+In [type definitions](#413-compound) FieldName is separate from FieldDescription and may be used as a
+position label.
 
 #### 4.3.2.4 Map
 
