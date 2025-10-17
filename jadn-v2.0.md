@@ -960,8 +960,8 @@ and can be accessed by either.
 
 **Example:** "People" table:
 
-The People table is semantically a list of rows because its valueType (Person) does not have a primary key and
-rows may have duplicate values.
+The People table is semantically a list of rows because its valueType (Person) does not have a primary key.
+Rows may have duplicate values.
 ```
 People = ArrayOf(Person)
 Person = Array
@@ -982,11 +982,12 @@ JSON Serialization:
 **Example:** "Places" table:
 
 The Places table is semantically a map because its valueType (Place) has a primary key, but is used because
-designers sometimes prefer to serialize maps as lists.
+designers sometimes prefer to serialize maps as lists. Regardless of serialization format, a collection
+of rows with duplicate keys not a valid Places instance.
 ```
 Places = ArrayOf(Place)         // Places is a table of place names
 Place = Array
-   1 Key(Coordinate)            // coordinate:: Coordinate is a primary key for the Places table
+   1 Key(Coordinate)            // coordinate:: Primary key for the Places table
    2 String                     // name:: Name of a place at the specified location
 Coordinate = Array
    1 Number [-90., 90.]         // latitude::
@@ -995,7 +996,8 @@ Coordinate = Array
 JSON serialization:
 ```json
 [
-  [[38.889546, -77.035139], "Washington Monument"],
+  [[38.889546, -77.035139], "Washington, DC"],
+  [[38.889809, -77.010121], "Washington, DC"],
   [[38.624801, -90.185004], "Gateway Arch"],
   [[33.944206, -118.402505], "Los Angeles International Airport (LAX)"]
 ]
@@ -1041,11 +1043,15 @@ The Places table is semantically a map. Some data formats including JSON require
 to be serialized as strings regardless of their actual type.
 ```
 Places = MapOf(Coordinate, String)      // Places is a map of coordinates to place names
+Coordinate = Array
+   1 Number [-90., 90.]                 // latitude::
+   2 Number (-180., 180.]               // longitude::
 ```
 JSON serialization:  
 ```json
 {
-  "[38.889546, -77.035139]": "Washington Monument",
+  "[38.889546, -77.035139]": "Washington, DC",
+  "[38.889809, -77.010121]": "Washington, DC",
   "[38.624801, -90.185004]": "Gateway Arch",
   "[33.944206, -118.402505]": "Los Angeles International Airport (LAX)"
 }
@@ -1079,7 +1085,74 @@ position label.
 
 #### 4.3.2.4 Map
 
+**Example:** "FullName" Map:
+
+```
+FullName = Map
+  9 first     String          // given name
+  2 middle    String          // additional given name(s)
+  5 family    String          // surname
+```
+JSON serializations:
+```json
+{
+  "family": "Kennedy",
+  "first": "John",
+  "middle": "Fitzgerald"
+}
+```
+or
+```json
+{
+  "2": "Fitzgerald",
+  "9": "John",
+  "5": "Kennedy"
+}
+```
+
 #### 4.3.2.5 Record
+
+**Example:** "FullName" Record (Map semantics):
+
+```
+FullName = Record
+  1 first     String          // given name
+  2 middle    String          // additional given name(s)
+  3 family    String          // surname
+```
+JSON serializations:
+```json
+["John", "Fitzgerald", "Kennedy"]
+```
+or
+```json
+{
+  "family": "Kennedy",
+  "first": "John",
+  "middle": "Fitzgerald"
+}
+```
+
+**Example:** "FullName" Record (OrderedMap semantics):
+
+```
+FullName = Record ordered
+  1 first     String          // given name
+  2 middle    String          // additional given name(s)
+  3 family    String          // surname
+```
+JSON serializations:
+```json
+["John", "Fitzgerald", "Kennedy"]
+```
+or
+```json
+[
+  {"first": "John"},
+  {"middle": "Fitzgerald"},
+  {"family": "Kennedy"}
+]
+```
 
 ### 4.3.3 Compound Type Options
 
