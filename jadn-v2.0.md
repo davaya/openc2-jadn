@@ -590,20 +590,26 @@ Each type definition has five elements:
 * If Fields is not present, its default is the empty array.
 
 ### 4.1.1 Primitive
+
 If CoreType is a Primitive or unstructured Compound type, the **Fields** array is empty.
 
-JSON Format and Example:
+JSON Format:
 ```
     [TypeName, CoreType, [TypeOption, ...], TypeDescription, []]
-
-    ["Username", "String", ["%^[a-z][a-z0-9]{3,11}$"]]
-    ["Users", "ArrayOf", ["*Username"]]
+```
+JSON Example:
+```json
+[
+  ["Username", "String", ["%^[a-z][a-z0-9]{3,11}$"]],
+  ["Users", "ArrayOf", ["*Username"]]
+]
 ```
 IDL Example:
 ```
 Username = String{pattern="^[a-z][a-z0-9]{3,11}$"}
 Users = ArrayOf(Username)
 ```
+
 ### 4.1.2 Enumerated
 
 If CoreType is the Enumerated Type, each item definition in the **Fields** array has three elements:
@@ -611,18 +617,20 @@ If CoreType is the Enumerated Type, each item definition in the **Fields** array
 2. **ItemValue:** the string value of the item
 3. **ItemDescription:** a non-normative comment
 
-JSON Format and Example:
+JSON Format:
 ```
     [TypeName, CoreType, [TypeOption, ...], TypeDescription, [
         [ItemId, ItemValue, ItemDescription],
         ...
     ]]
-
-    ["Color", "Enumerated", [], "", [
-        [1, "red"],
-        [2, "green"],
-        [3, "blue"]
-    ]]
+```
+JSON Example:
+```json
+["Color", "Enumerated", [], "", [
+  [1, "red"],
+  [2, "green"],
+  [3, "blue"]
+]]
 ```
 IDL Example:
 ```
@@ -631,6 +639,7 @@ Color = Enumerated
    2 green
    3 blue
 ```
+
 ### 4.1.3 Compound
 
 If CoreType is a structured Compound (Array, Map, Record) or Choice type, each field definition in the
@@ -641,19 +650,20 @@ If CoreType is a structured Compound (Array, Map, Record) or Choice type, each f
 4. **FieldOptions:** an array of zero or more **FieldOption** or **TypeOption** values applicable to **FieldType**
 5. **FieldDescription:** a non-normative comment
 
-JSON Format and Example:
+JSON Format:
 ```
     [TypeName, CoreType, [TypeOption, ...], TypeDescription, [
         [FieldID, FieldName, FieldType, [FieldOption, TypeOption, ...], FieldDescription],
         ...
     ]]
-
-    ["Coordinate", "Record", [], "A GPS coordinate", [
-        [1, "latitude", "Latitude", [], "A Number between -90 and 90 degrees"],
-        [2, "longitude", "Longitude", [], "A Number between -180 and 180 degrees"]
-    ]]
 ```
-
+JSON Example:
+```json
+["Coordinate", "Record", [], "A GPS coordinate", [
+  [1, "latitude", "Latitude", [], "A Number between -90 and 90 degrees"],
+  [2, "longitude", "Longitude", [], "A Number between -180 and 180 degrees"]
+]]
+```
 IDL Example:
 ```
 Coordinate = Record                      // A GPS coordinate
@@ -726,7 +736,7 @@ Primitive TypeOptions are listed in Table 4-1:
 | 0x79 |  y  | *       | minExclusive | Instance is greater than option value             |
 | 0x7a |  z  | *       | maxExclusive | Instance is less than option value                |
 
-`*` indicates that the option value must evaluate to an instance of CoreType.
+`*` indicates that the option value must evaluate to an instance of [CoreType](#413-compound).
 
 * The `default` option specifies a pre-set value to be used for an optional/nullable variable when no other
 value is supplied.
@@ -746,7 +756,7 @@ options apply to Compound types but cannot be used until a Compound literal form
 **Conformance Requirements:**
 
 * A value MUST satisfy the conditions defined for each type option listed in
-[Table 4-1](#table-4-1-typeoptions-specific-to-primitive-types)
+[Table 4-1](#table-4-1-primitive-type-options)
 to be classified as an instance of a type containing that option.
 * The *pattern* option value SHOULD conform to the Pattern grammar of [[ECMAScript](#ecmascript)] Section 22.2.
 
@@ -939,8 +949,10 @@ of the collection, and literal representations of the collection using encoding 
 compound type:
 * Unstructured types [**ArrayOf**](#4321-arrayofvaluetype) and [**MapOf**](#4322-mapofkeytype-valuetype)
 specify that every element in the collection has the same type.
-* Structured types [**Array**](#4323-array), [**Map**](#4324-map) and [**Record**](#4325-record)
-define the type of each element individually, by position, key, or both.
+* A Structured type [**Array**](#4323-array), [**Map**](#4324-map) and [**Record**](#4325-record)
+defines the type of each element individually, by position, key, or both.
+Each field defines an association between an identifier (position and/or key) and a type and may include
+field-specific options ([Section 4.2.2.1](#4221-field-options)).
 
 #### 4.3.2.1 ArrayOf(valueType)
 
@@ -950,7 +962,7 @@ The ArrayOf type defines a collection of undifferentiated elements:
 * With no [multiplicity option](#table-4-4-compound-type-options) the default collection semantics is
 [Sequence](#table-4-2-multiplicity-types-).
 * With a `set`, `unique` or `unordered` multiplicity option, the collection semantics is
-`Set`, `OrderedSet` or `Bag` respectively.
+[Set](#4311-set), [OrderedSet](#4312-orderedset) or [Bag](#4316-bag) respectively.
 * A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
 * If valueType is an Array, Map or Record, the collection is a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
@@ -1059,8 +1071,8 @@ JSON serialization:
 
 #### 4.3.2.3 Array
 
-The Array structured type defines a list of elements where each element has a position and an individual type:
-* The [FieldId](#413-compound) identifies the position of each element, numbered sequentially starting at 1.
+The Array structured type defines a list of individually typed elements where each element has a position:
+* The [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
 * The [FieldName](#413-compound) is a comment that describes each element but is not present in collection values.
 * The [multiplicity](#table-4-4-compound-type-options) semantics is a
 [Sequence](#table-4-2-multiplicity-types-) of values, each with a type and role, commonly referred to as a `struct`.
@@ -1085,6 +1097,15 @@ position label.
 
 #### 4.3.2.4 Map
 
+The Map structured type defines a set of individually typed elements where each element has a key:
+* The [FieldId](#413-compound) is the numeric key of each element, arbitrary but unique within the collection.
+* The [FieldName](#413-compound) is the string key of each element, following the 
+[$FieldName](#312-functional-metadata) naming convention and unique within the collection.
+* The [multiplicity](#table-4-4-compound-type-options) semantics is a
+[Set](#table-4-2-multiplicity-types-) of key-value pairs.
+* The [id](#table-4-4-compound-type-options) option specifies that elements are identified only by FieldId,
+and that FieldName does not exist in element values but can be used as a mnemonic label for FieldId
+
 **Example:** "FullName" Map:
 
 ```
@@ -1093,7 +1114,7 @@ FullName = Map
   2 middle    String          // additional given name(s)
   5 family    String          // surname
 ```
-JSON serializations:
+JSON serialization:
 ```json
 {
   "family": "Kennedy",
@@ -1101,7 +1122,7 @@ JSON serializations:
   "middle": "Fitzgerald"
 }
 ```
-or
+Concise encoding rules or `id` option present:
 ```json
 {
   "2": "Fitzgerald",
@@ -1112,7 +1133,21 @@ or
 
 #### 4.3.2.5 Record
 
-**Example:** "FullName" Record (Map semantics):
+The Record structured type defines a set of individually typed elements where each element has both a position and a key:
+* The [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
+* The [FieldName](#413-compound) is the string key of each element, following the 
+[$FieldName](#312-functional-metadata) naming convention and unique within the collection.
+* The [multiplicity](#table-4-4-compound-type-options) semantics is a
+[Set](#4311-set) or [OrderedSet](#4312-orderedset) of key-value pairs as specified by the `ordered` TypeOption.
+
+Record ...
+
+---
+* The Record type defines the key order, which allows Record instances to be represented as either arrays where
+items are identified by position within the array, or associative arrays (maps) where items are identified by key.
+---
+
+**Example:** "FullName" Record (Set semantics):
 
 ```
 FullName = Record
@@ -1120,11 +1155,11 @@ FullName = Record
   2 middle    String          // additional given name(s)
   3 family    String          // surname
 ```
-JSON serializations:
+Concise JSON serialization:
 ```json
 ["John", "Fitzgerald", "Kennedy"]
 ```
-or
+Verbose JSON serialization:
 ```json
 {
   "family": "Kennedy",
@@ -1133,7 +1168,7 @@ or
 }
 ```
 
-**Example:** "FullName" Record (OrderedMap semantics):
+**Example:** "FullName" Record (OrderedSet semantics):
 
 ```
 FullName = Record ordered
@@ -1141,11 +1176,11 @@ FullName = Record ordered
   2 middle    String          // additional given name(s)
   3 family    String          // surname
 ```
-JSON serializations:
+Concise JSON serializations:
 ```json
 ["John", "Fitzgerald", "Kennedy"]
 ```
-or
+Verbose JSON serialization:
 ```json
 [
   {"first": "John"},
@@ -1178,9 +1213,9 @@ Table 4-3 lists the type options specific to compound types:
 * The `id` option specifies that fields in a Map, Enumerated or Choice ([Section 4.4](#44-union-types)) type
 are identified by their integer field / item ID and that any field name / item value present in the type
 definition is never used in serialized messages.
-* The `unique`, `ordered`, `set`, and `unordered` options modify the multiplicity of a collection from the
-default Sequence or Map type shown in Table 4-4. These options are mutually exclusive:
-a type definition may not contain more than one.
+* The `unique`, `ordered`, `set`, and `unordered` options modify the semantic type of a collection from the
+default Sequence or Map type shown in [Table 4-5](#table-4-5-allowed-compound-type-options).
+These options are mutually exclusive: a type definition may not contain more than one.
   * If a collection is Ordered, element order is significant when comparing instances, otherwise it is not.
   * If a collection is Unique, no element is duplicated within a collection instance, otherwise duplicates are allowed.
 
@@ -1191,23 +1226,11 @@ Table 4-4 lists the default semantic type and the TypeOptions applicable to each
 | Compound Type             | Semantic Type | Allowed TypeOptions                          |
 |---------------------------|---------------|----------------------------------------------|
 | ArrayOf(valueType)        | Sequence      | minLength, maxLength, set, unique, unordered |
+| ArrayOf(keyed valueType)  | Map           | minLength, maxLength, ordered                |
 | MapOf(keyType, valueType) | Map           | minLength, maxLength, ordered                |
 | Array                     | Sequence      | minLength, maxLength                         |
-| Map                       | Map           | minLength, maxLength, ordered, id            |
+| Map                       | Map           | minLength, maxLength, id                     |
 | Record                    | Map           | minLength, maxLength, ordered                |
-
-
-A compound type may define a multiplicity different from the compound type default. An ArrayOf
-collection is a Sequence by default, but a TypeOption can specify that it behaves as a Set, OrderedSet,
-or Bag.
-
-* A Structured type includes individual field definitions. Each field defines an association between an identifier
-(position and/or key) and a type and may include field-specific options ([Section 4.2.2.1](#4221-field-options)).
-A non-structured compound type defines a collection where each item is an instance of the same type.
-* Each item in a Mapping type is a key:value pair with a unique key, otherwise each item is a value.
-* The Record type defines the key order, which allows Record instances to be represented as either arrays where
-items are identified by position within the array, or associative arrays (maps) where items are identified by key.
-
 
 
 * Map and Record types have Fields identified by both a numeric FieldID and a text FieldName, both of which
