@@ -800,14 +800,14 @@ A collection is a group of elements of the same or different types, with a value
 literal representations of that value.  
 A collection **object** is the instantiation of a collection value in a processing environment,
 i.e., a variable. A variable has both a type and the functions/operations defined on values of that type.  
-A collection **type** defines the collection's single value space, multiple literal spaces, and
-literal-to-value mappings.
+A collection **type** defines the collection's single value space, multiple literal spaces, and for each
+literal space a literal-to-value mapping.
 
-As noted in the introduction, an information model defines a collection in a way that is
-representation-independent both as an object within a process and as literals exchanged among processes.
+An information model defines a collection in a way that is representation-independent both as
+an object within a process and as literals exchanged among processes.
 Each collection type thus has two parts:
 * a **[semantic type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
-that specify semantics of the collection value used within a process
+that specify semantics of the collection value
 * a **[compound type](#432-compound-types)**, one of five JADN compound types that specify literal
 representations of a collection value, element constraints, and semantic type.
 
@@ -848,18 +848,19 @@ Taken together, the isOrdered, isUnique, and isAssociative properties can be use
 a collection value is one of six MultiplicityElement types.
 Because association keys are unique, the combination of isUnique=false and isAssociative=true is invalid.
 
-Table 4-2 shows the type name used for each combination of MultiplicityElement properties.
+Table 4-2 shows the type name used for each combination of MultiplicityElement properties and the
+[compound type(s)](#432-compound-types) that support that semantic type.
 
-###### Table 4-2: Multiplicity Types 
+###### Table 4-2: Semantic Types 
 
-| isOrdered | isUnique | isAssociative | Value Type |
-|-----------|----------|---------------|------------|
-| false     | true     | false         | Set        |
-| true      | true     | false         | OrderedSet |
-| false     | true     | true          | Map        |
-| true      | true     | true          | OrderedMap |
-| true      | false    | false         | Sequence   |
-| false     | false    | false         | Bag        |
+| isOrdered | isUnique | isAssociative | Semantic Type | Compound Type                     |
+|-----------|----------|---------------|---------------|-----------------------------------|
+| false     | true     | false         | Set           | [ArrayOf](#4321-arrayofvaluetype) |
+| true      | true     | false         | OrderedSet    | [ArrayOf](#4321-arrayofvaluetype) |
+| false     | true     | true          | Map           | [ArrayOf](#4321-arrayofvaluetype), [MapOf](#4322-mapofkeytype-valuetype), [Map](#4324-map), [Record](#4325-record) |
+| true      | true     | true          | OrderedMap    | [Record](#4325-record)            |
+| true      | false    | false         | Sequence      | [ArrayOf](#4321-arrayofvaluetype), [Array](#4323-array) |
+| false     | false    | false         | Bag           | [ArrayOf](#4321-arrayofvaluetype) |
 
 In applications each collection value is instantiated as a variable with the specified semantic effect.
 Some programming languages define collection types that are "order preserving" but not "ordered".
@@ -960,9 +961,10 @@ The ArrayOf type defines a collection of undifferentiated elements:
 * All elements have the same type, specified by the required `valueType` option.
 * All elements have the same role within the collection; no special meaning is attached to any element.
 * With no [multiplicity option](#table-4-4-compound-type-options) the default collection semantics is
-[Sequence](#table-4-2-multiplicity-types-).
+[Sequence](#table-4-2-semantic-types-).
 * With a `set`, `unique` or `unordered` multiplicity option, the collection semantics is
 [Set](#4311-set), [OrderedSet](#4312-orderedset) or [Bag](#4316-bag) respectively.
+* With a keyed `valueType` the collection semantics is [Map](#4313-map) and multiplicity options are invalid.
 * A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
 * If valueType is an Array, Map or Record, the collection is a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
@@ -995,7 +997,7 @@ JSON Serialization:
 
 The Places table is semantically a map because its valueType (Place) has a primary key, but is used because
 designers sometimes prefer to serialize maps as lists. Regardless of serialization format, a collection
-of rows with duplicate keys not a valid Places instance.
+of rows with duplicate keys is not a valid Places instance.
 ```
 Places = ArrayOf(Place)         // Places is a table of place names
 Place = Array
@@ -1021,6 +1023,7 @@ The MapOf type defines a collection of undifferentiated key-value associations:
 * All element keys have the same type, specified by the required `keyType` option.
 * All element values have the same type, specified by the required `valueType` option.
 * All elements have the same role within the collection; no special meaning is attached to any element.
+* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) (a Set of key:value pairs).
 * A Choice ([Section 4.4](#44)) keyType and/or valueType supports definition of heterogeneous collections.
 
 **Example:** "People" MapOf:
@@ -1072,10 +1075,10 @@ JSON serialization:
 #### 4.3.2.3 Array
 
 The Array structured type defines a list of individually typed elements where each element has a position:
-* The [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
-* The [FieldName](#413-compound) is a comment that describes each element but is not present in collection values.
-* The [multiplicity](#table-4-4-compound-type-options) semantics is a
-[Sequence](#table-4-2-multiplicity-types-) of values, each with a type and role, commonly referred to as a `struct`.
+* [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
+* [FieldName](#413-compound) is a comment that describes each element but is not present in collection values.
+* [multiplicity](#table-4-4-compound-type-options) semantics is a
+[Sequence](#table-4-2-semantic-types-) of values, each with a type and role, commonly referred to as a `struct`.
 
 **Example:** "FullName" Struct:
 
@@ -1101,8 +1104,7 @@ The Map structured type defines a set of individually typed elements where each 
 * The [FieldId](#413-compound) is the numeric key of each element, arbitrary but unique within the collection.
 * The [FieldName](#413-compound) is the string key of each element, following the 
 [$FieldName](#312-functional-metadata) naming convention and unique within the collection.
-* The [multiplicity](#table-4-4-compound-type-options) semantics is a
-[Set](#table-4-2-multiplicity-types-) of key-value pairs.
+* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) with a `Set` of keys.
 * The [id](#table-4-4-compound-type-options) option specifies that elements are identified only by FieldId,
 and that FieldName does not exist in element values but can be used as a mnemonic label for FieldId
 
@@ -1137,8 +1139,8 @@ The Record structured type defines a set of individually typed elements where ea
 * The [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
 * The [FieldName](#413-compound) is the string key of each element, following the 
 [$FieldName](#312-functional-metadata) naming convention and unique within the collection.
-* The [multiplicity](#table-4-4-compound-type-options) semantics is a
-[Set](#4311-set) or [OrderedSet](#4312-orderedset) of key-value pairs as specified by the `ordered` TypeOption.
+* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) with a `Set` of keys or
+[OrderedMap](#4314-orderedmap) with an `OrderedSet` of keys as specified by the `ordered` TypeOption.
 
 Record ...
 
