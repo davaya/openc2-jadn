@@ -798,7 +798,7 @@ options do not apply.
 
 A collection is a group of elements of the same or different types, with a value and multiple
 literal representations of that value.  
-A collection **object** is the instantiation of a collection value in a processing environment,
+A collection **object** is the instantiation of a value in a processing environment,
 i.e., a variable. A variable has both a type and the functions/operations defined on values of that type.  
 A collection **type** defines the collection's single value space, multiple literal spaces, and for each
 literal space a literal-to-value mapping.
@@ -858,7 +858,7 @@ Table 4-2 shows the type name used for each combination of MultiplicityElement p
 | false     | true     | false         | Set           | [ArrayOf](#4321-arrayofvaluetype) |
 | true      | true     | false         | OrderedSet    | [ArrayOf](#4321-arrayofvaluetype) |
 | false     | true     | true          | Map           | [ArrayOf](#4321-arrayofvaluetype), [MapOf](#4322-mapofkeytype-valuetype), [Map](#4324-map), [Record](#4325-record) |
-| true      | true     | true          | OrderedMap    | [Record](#4325-record)            |
+| true      | true     | true          | OrderedMap    | [ArrayOf](#4321-arrayofvaluetype), [Record](#4325-record) |
 | true      | false    | false         | Sequence      | [ArrayOf](#4321-arrayofvaluetype), [Array](#4323-array) |
 | false     | false    | false         | Bag           | [ArrayOf](#4321-arrayofvaluetype) |
 
@@ -869,6 +869,7 @@ collection elements, i.e., elements may be referenced by position and order is s
 comparing values.
 Unordered types (Set, Map, Bag) ignore order when comparing values regardless of whether they
 preserve insertion order.
+
 This document does not specify how collections are instantiated, but Table 4-3 lists programming
 language types that could hold collection values with the required semantics.
 Values used as keys must be hashable, which implies they are constant.
@@ -889,6 +890,12 @@ Values used as keys must be hashable, which implies they are constant.
 A Set value is an unordered collection of elements where no element appears more than once.
 Elements may be added to and removed from Sets.
 Sets may be unioned, intersected, or subtracted from each other.
+Coercing a set into a list yields a list of the same elements in indeterminate order.
+
+Example:
+
+* set `{'a', 'b', 'c'}` equals set `{'c', 'a', 'b'}`
+* list( set `{'a', 'b', 'c'}` ) yields `['b', 'a', 'c']` or `['c', 'b', 'a']` or ...
 
 #### 4.3.1.2 OrderedSet
 
@@ -897,12 +904,10 @@ OrderedSet values may not be directly combined, but may be coerced into and
 combined with either Sequence or Set values.
 
 Example:
-* set `{'a', 'b', 'c'}` equals set `{'c', 'a', 'b'}`
+
 * orderedSet(`['a', 'b', 'c']`) does not equal orderedSet(`['c', 'a', 'b']`)
-* set(orderedSet(`['a', 'b', 'c']`)) | set `{'a', 'b'}` yields set `{'a', 'b', 'c')`
+* set(orderedSet(`['a', 'b', 'c']`)) ∪ set `{'a', 'b'}` yields set `{'a', 'b', 'c')`
 * list(orderedSet(`['a', 'b', 'c']`)) + list `['a', 'b']` yields list `['a', 'b', 'c', 'a', 'b']`
-* list(set(`{'a', 'b', 'c'}`)) yields a list of the same elements with indeterminate order, e.g.,
-`['b', 'a', 'c']`, `['c', 'b', 'a']`, or ...
 
 #### 4.3.1.3 Map
 
@@ -1023,7 +1028,7 @@ The MapOf type defines a collection of undifferentiated key-value associations:
 * All element keys have the same type, specified by the required `keyType` option.
 * All element values have the same type, specified by the required `valueType` option.
 * All elements have the same role within the collection; no special meaning is attached to any element.
-* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) (a Set of key:value pairs).
+* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map).
 * A Choice ([Section 4.4](#44)) keyType and/or valueType supports definition of heterogeneous collections.
 
 **Example:** "People" MapOf:
@@ -1139,8 +1144,8 @@ The Record structured type defines a set of individually typed elements where ea
 * The [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
 * The [FieldName](#413-compound) is the string key of each element, following the 
 [$FieldName](#312-functional-metadata) naming convention and unique within the collection.
-* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) with a `Set` of keys or
-[OrderedMap](#4314-orderedmap) with an `OrderedSet` of keys as specified by the `ordered` TypeOption.
+* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) with a `Set` of keys, or
+[OrderedMap](#4314-orderedmap) with an `OrderedSet` of keys if the `ordered` TypeOption is present.
 
 Record ...
 
