@@ -969,7 +969,9 @@ The ArrayOf type defines a collection of undifferentiated elements:
 [Sequence](#table-4-2-semantic-types-).
 * With a `set`, `unique` or `unordered` multiplicity option, the collection semantics is
 [Set](#4311-set), [OrderedSet](#4312-orderedset) or [Bag](#4316-bag) respectively.
-* With a keyed `valueType` the collection semantics is [Map](#4313-map) and multiplicity options are invalid.
+* With a keyed `valueType` the collection semantics is [Map](#4313-map) with no multiplicity option
+or [OrderedMap](#4314-orderedmap) if the `ordered` multiplicity option is present. No other multiplicity
+options are valid with a keyed `valueType`.
 * A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
 * If valueType is an Array, Map or Record, the collection is a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
@@ -1144,15 +1146,14 @@ The Record structured type defines a set of individually typed elements where ea
 * The [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
 * The [FieldName](#413-compound) is the string key of each element, following the 
 [$FieldName](#312-functional-metadata) naming convention and unique within the collection.
-* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) with a `Set` of keys, or
-[OrderedMap](#4314-orderedmap) with an `OrderedSet` of keys if the `ordered` TypeOption is present.
+* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) with no multiplicity option or
+[OrderedMap](#4314-orderedmap) if the `ordered` multiplicity option is present.
 
-Record ...
-
----
-* The Record type defines the key order, which allows Record instances to be represented as either arrays where
-items are identified by position within the array, or associative arrays (maps) where items are identified by key.
----
+The Record type defines key order, which allows Record elements to be identified and accessed by either
+position or key.
+Record differs from Array in that keys have defined names rather than arbitrary struct labels.
+Record differs from Map in that keys have defined positions, allowing a collection value to be represented
+as either an array literal or a map literal.
 
 **Example:** "FullName" Record (Set semantics):
 
