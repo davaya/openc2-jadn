@@ -1155,6 +1155,11 @@ Record differs from Array in that keys have defined names rather than arbitrary 
 Record differs from Map in that keys have defined positions, allowing a collection value to be represented
 as either an array literal or a map literal.
 
+Note that in the serialization examples, applications using an information model understand the equivalence
+between positions and keys and can derive element position from map literals in any order (first example).
+Applications using a data model must use explicitly ordered literals (second example) if element position
+is significant.
+
 **Example:** "FullName" Record (Set semantics):
 
 ```
