@@ -4,7 +4,7 @@
 # JSON Abstract Data Notation (JADN) Version 2.0
 
 ## Committee Specification Draft 01
-## 20 August 2025
+## 29 October 2025
 
 &nbsp;
 
@@ -110,76 +110,88 @@ For complete copyright information please see the Notices section in the Appendi
 
 # Table of Contents
 
-* [1 Introduction](#1-introduction)
-  * [1.1 Glossary](#11-glossary)
-    * [1.1.1 Definitions of terms](#111-definitions-of-terms)
-    * [1.1.2 Acronyms and abbreviations](#112-acronyms-and-abbreviations)
-* [2 Information Models](#2-information-models)
-* [3 Schema Packages](#3-schema-packages)
-    * [3.1.1 Descriptive Metadata](#311-descriptive-metadata)
-    * [3.1.2 Functional Metadata](#312-functional-metadata)
-    * [3.1.3 Package Conformance Requirements](#313-package-conformance-requirements)
-* [4 JADN Types](#4-jadn-types)
-  * [4.1 Type Definition Structure](#41-type-definition-structure)
-    * [4.1.1 Primitive](#411-primitive)
-    * [4.1.2 Enumerated](#412-enumerated)
-    * [4.1.3 Compound](#413-compound)
-    * [4.1.4 Type and Field Options](#414-type-and-field-options)
-    * [4.1.5 Type Conformance Requirements](#415-type-conformance-requirements)
-  * [4.2 Core Types](#42-core-types)
-    * [4.2.1 Primitive Types](#421-primitive-types)
-      * [4.2.1.1 Boolean](#4211-boolean)
-      * [4.2.1.2 Integer](#4212-integer)
-      * [4.2.1.3 Number](#4213-number)
-      * [4.2.1.4 String](#4214-string)
-      * [4.2.1.5 Binary](#4215-binary)
-      * [4.2.1.6 Primitive Type Conformance Requirements](#4216-primitive-type-conformance-requirements)
-    * [4.2.2 Compound Types](#422-compound-types)
-      * [4.2.2.1 Field Options](#4221-field-options)
-      * [4.2.2.2 Multiplicity](#4222-multiplicity)
-      * [4.2.2.3 Links](#4223-links)
-      * [4.2.2.4 Compound Type Conformance Requirements](#4224-compound-type-conformance-requirements)
-    * [4.2.3 Union Types](#423-union-types)
-      * [4.2.3.1 Enumerated](#4231-enumerated)
-      * [4.2.3.2 Choice (Tagged)](#4232-choice-tagged)
-      * [4.2.3.3 Choice (Untagged)](#4233-choice-untagged)
-      * [4.2.3.4 Field Options](#4234-field-options)
-      * [4.2.3.5 Union Type Conformance Requirements](#4235-union-type-conformance-requirements)
-    * [4.2.4 General Type Options](#424-general-type-options)
-      * [4.2.4.1 Type Inheritance](#4241-type-inheritance)
-      * [4.2.4.2 General Type Conformance Requirements](#4242-general-type-conformance-requirements)
-    * [4.2.5 Semantic Validation](#425-semantic-validation)
-      * [4.2.5.1 JADN Semantic Validation Keywords](#4251-jadn-semantic-validation-keywords)
-      * [4.2.5.2 XSD Semantic Validation Keywords](#4252-xsd-semantic-validation-keywords)
-      * [4.2.5.3 JSON Schema Semantic Validation Keywords](#4253-json-schema-semantic-validation-keywords)
-* [5 Shortcuts](#5-shortcuts)
-  * [5.1 Anonymous Type Definition](#51-anonymous-type-definition)
-  * [5.2 Field Multiplicity](#52-field-multiplicity)
-  * [5.3 Derived Enumerations](#53-derived-enumerations)
-  * [5.4 MapOf With Enumerated Key](#54-mapof-with-enumerated-key)
-  * [5.5 Pointers](#55-pointers)
-* [6 Serialization and Data Formats](#6-serialization-and-data-formats)
-  * [6.1 Verbose JSON Serialization](#61-verbose-json-serialization)
-  * [6.2 Compact JSON Serialization:](#62-compact-json-serialization)
-  * [6.3 Concise JSON Serialization:](#63-concise-json-serialization)
-  * [6.4 CBOR Serialization](#64-cbor-serialization)
-  * [6.5 XML Serialization:](#65-xml-serialization)
-* [7 Alternate Schema Representations](#7-alternate-schema-representations)
-  * [7.1 Information Definition Language](#71-information-definition-language)
-  * [7.2 Property Tables](#72-property-tables)
-  * [7.3 Entity Relationship Diagrams](#73-entity-relationship-diagrams)
-* [8 Conformance](#8-conformance)
-* [Appendix A. References](#appendix-a-references)
-  * [A.1 Normative References](#a1-normative-references)
-  * [A.2 Informative References](#a2-informative-references)
-* [Appendix B. Safety, Security and Privacy Considerations](#appendix-b-safety-security-and-privacy-considerations)
-* [Appendix C. Acknowledgments](#appendix-c-acknowledgments)
-  * [C.1 Special Thanks](#c1-special-thanks)
-  * [C.2 Participants](#c2-participants)
-* [Appendix D. Revision History](#appendix-d-revision-history)
-  * [Changes from v1.0 to v2.0](#changes-from-v10-to-v20)
-  * [Changes from v1.0 CSD 01 to v1.0](#changes-from-v10-csd-01-to-v10)
-* [Appendix E. Notices](#appendix-e-notices)
+- [1 Introduction](#1-introduction)
+  - [1.1 Glossary](#11-glossary)
+    - [1.1.1 Definitions of terms](#111-definitions-of-terms)
+    - [1.1.2 Acronyms and abbreviations](#112-acronyms-and-abbreviations)
+- [2 Information Models](#2-information-models)
+- [3 Schema Packages](#3-schema-packages)
+    - [3.1.1 Descriptive Metadata](#311-descriptive-metadata)
+    - [3.1.2 Functional Metadata](#312-functional-metadata)
+    - [3.1.3 Package Conformance Requirements](#313-package-conformance-requirements)
+- [4 JADN Types](#4-jadn-types)
+  - [4.1 Type Definition Structure](#41-type-definition-structure)
+    - [4.1.1 Primitive](#411-primitive)
+    - [4.1.2 Enumerated](#412-enumerated)
+    - [4.1.3 Compound](#413-compound)
+    - [4.1.4 Type and Field Options](#414-type-and-field-options)
+    - [4.1.5 Type Conformance Requirements](#415-type-conformance-requirements)
+  - [4.2 Primitive Types](#42-primitive-types)
+    - [4.2.1 Boolean](#421-boolean)
+    - [4.2.2 Integer](#422-integer)
+    - [4.2.3 Number](#423-number)
+    - [4.2.4 String](#424-string)
+    - [4.2.5 Binary](#425-binary)
+    - [4.2.6 Primitive Type Conformance Requirements](#426-primitive-type-conformance-requirements)
+  - [4.3 Collection Types](#43-collection-types)
+    - [4.3.1 Multiplicity Semantic Types](#431-multiplicity-semantic-types)
+      - [4.3.1.1 Set](#4311-set)
+      - [4.3.1.2 OrderedSet](#4312-orderedset)
+      - [4.3.1.3 Map](#4313-map)
+      - [4.3.1.4 OrderedMap](#4314-orderedmap)
+      - [4.3.1.5 Sequence](#4315-sequence)
+      - [4.3.1.6 Bag](#4316-bag)
+    - [4.3.2 Compound Types](#432-compound-types)
+      - [4.3.2.1 ArrayOf(valueType)](#4321-arrayofvaluetype)
+      - [4.3.2.2 MapOf(keyType, valueType)](#4322-mapofkeytype-valuetype)
+      - [4.3.2.3 Array](#4323-array)
+      - [4.3.2.4 Map](#4324-map)
+      - [4.3.2.5 Record](#4325-record)
+    - [4.3.3 Compound Type Options](#433-compound-type-options)
+    - [4.3.4 Compound Field Options](#434-compound-field-options)
+      - [4.3.4.1 Multiplicity](#4341-multiplicity)
+      - [4.3.4.2 Links](#4342-links)
+    - [4.3.5 Compound Type Conformance Requirements](#435-compound-type-conformance-requirements)
+  - [4.4 Union Types](#44-union-types)
+    - [4.4.1 Enumerated](#441-enumerated)
+    - [4.4.2 Choice (Tagged)](#442-choice-tagged)
+    - [4.4.3 Choice (Untagged)](#443-choice-untagged)
+    - [4.4.4 Field Options](#444-field-options)
+    - [4.4.5 Union Type Conformance Requirements](#445-union-type-conformance-requirements)
+  - [4.5 Type Inheritance](#45-type-inheritance)
+    - [4.5.1 Inheritance Type Conformance Requirements](#451-inheritance-type-conformance-requirements)
+  - [4.6 Semantic Validation](#46-semantic-validation)
+    - [4.6.1 JADN Semantic Validation Keywords](#461-jadn-semantic-validation-keywords)
+    - [4.6.2 XSD Semantic Validation Keywords](#462-xsd-semantic-validation-keywords)
+    - [4.6.3 JSON Schema Semantic Validation Keywords](#463-json-schema-semantic-validation-keywords)
+- [5 Shortcuts](#5-shortcuts)
+  - [5.1 Anonymous Type Definition](#51-anonymous-type-definition)
+  - [5.2 Field Multiplicity](#52-field-multiplicity)
+  - [5.3 Derived Enumerations](#53-derived-enumerations)
+  - [5.4 MapOf With Enumerated Key](#54-mapof-with-enumerated-key)
+  - [5.5 Pointers](#55-pointers)
+- [6 Serialization and Data Formats](#6-serialization-and-data-formats)
+  - [6.1 Verbose JSON Serialization](#61-verbose-json-serialization)
+  - [6.2 Compact JSON Serialization:](#62-compact-json-serialization)
+  - [6.3 Concise JSON Serialization:](#63-concise-json-serialization)
+  - [6.4 CBOR Serialization](#64-cbor-serialization)
+  - [6.5 XML Serialization:](#65-xml-serialization)
+- [7 Alternate Schema Representations](#7-alternate-schema-representations)
+  - [7.1 Information Definition Language](#71-information-definition-language)
+  - [7.2 Property Tables](#72-property-tables)
+  - [7.3 Entity Relationship Diagrams](#73-entity-relationship-diagrams)
+- [8 Conformance](#8-conformance)
+- [Appendix A. References](#appendix-a-references)
+  - [A.1 Normative References](#a1-normative-references)
+  - [A.2 Informative References](#a2-informative-references)
+- [Appendix B. Safety, Security and Privacy Considerations](#appendix-b-safety-security-and-privacy-considerations)
+- [Appendix C. Acknowledgments](#appendix-c-acknowledgments)
+  - [C.1 Special Thanks](#c1-special-thanks)
+  - [C.2 Participants](#c2-participants)
+- [Appendix D. Revision History](#appendix-d-revision-history)
+  - [Changes from v1.0 to v2.0](#changes-from-v10-to-v20)
+  - [Changes from v1.0 CSD 01 to v1.0](#changes-from-v10-csd-01-to-v10)
+- [Appendix E. Notices](#appendix-e-notices)
 
 -------
 
@@ -490,7 +502,7 @@ The JADN Metaschema overrides the default $FieldName pattern to allow config var
 with '$' and core type names beginning with a capital letter.
     * **$NSID:** The regex used to validate an external type reference's prefix string.
 Default: `^([A-Za-z][A-Za-z0-9]{0,7})?$`  \
-External type references (TypeRef in [Figure 4-2](#figure-4-2----jadn-schema-types))
+External type references (TypeRef in [Figure 4-2](#fig-4-2-jadn-schema-types))
 are prefixed names that include an NSID.
 
   * **Size Limits:** These variables define default maximum sizes for variable-sized
@@ -526,7 +538,7 @@ As shown in Figure 4-1, JADN defines twelve core types in three categories:
 
 ## 4.1 Type Definition Structure
 
-All JADN type definitions have the identical structure, shown in [Figure 4-2](#figure-4-2----jadn-schema-types),
+All JADN type definitions have the identical structure, shown in [Figure 4-2](#fig-4-2-jadn-schema-types),
 designed to be easily describable, easily processed, stable, and extensible.
 
 ###### Fig. 4-2. JADN Schema: Types
@@ -678,7 +690,12 @@ strictly regular type definition structure. New requirements can be accommodated
 without modifying that structure.
 Each TypeOption and FieldOption provides a limited piece of information about some aspect of the datatype
 to which it applies, similar in purpose to an [[XSD](#xsd)] *facet*. Each option has an ID and value listed
-in [Section 4.2](#42-core-types),
+in
+[Table 4-1 (primitive)](#table-4-1-primitive-type-options),
+[Table-4-4 (compound)](#table-4-4-compound-type-options),
+[Table-4-8 (union)](#table-4-8-union-type-options),
+[Table-4-10 (inheritance)](#table-4-10-inheritance-type-options)
+
 and is represented in JSON format as a string where the first character's Unicode codepoint is the option's
 ID and the remaining characters are its value.
 Boolean options have no additional characters; if the option ID is present its value is True,
@@ -713,11 +730,11 @@ in TypeOptions, the Fields array MUST be empty.
 ## 4.2 Primitive Types
 
 A primitive type has no substructure, and specifies an unrestricted space of atomic values
-without regard to processing mechanisms or data format. As shown in [Figure 4-1](#figure-4-1----jadn-core-datatypes)
+without regard to processing mechanisms or data format. As shown in [Figure 4-1](#fig-4-1-jadn-core-datatypes)
 the primitive core types are Binary, Boolean, Integer, Number and String.
 
 Type options specify value restrictions such as size, range, and regular expression patterns.
-Semantic validation keywords (formats) listed in [Section 4.2.5](#425-semantic-validation)
+Semantic validation keywords (formats) listed in [Section 4.6](#46-semantic-validation)
 also define value restrictions on primitive types.
 
 Primitive TypeOptions are listed in Table 4-1:
@@ -753,13 +770,6 @@ For options with type = `*` the result of using a value other than a single term
 (literal instance of a Primitive type) is not defined here. In principle the `default` and `const`
 options apply to Compound types but cannot be used until a Compound literal format is defined.*
 
-**Conformance Requirements:**
-
-* A value MUST satisfy the conditions defined for each type option listed in
-[Table 4-1](#table-4-1-primitive-type-options)
-to be classified as an instance of a type containing that option.
-* The *pattern* option value SHOULD conform to the Pattern grammar of [[ECMAScript](#ecmascript)] Section 22.2.
-
 ### 4.2.1 Boolean
 A Boolean instance is one of the predefined values *true* and *false*.
 
@@ -794,6 +804,13 @@ options do not apply.
 **Options:** const, default  \
 **Length Options:** minLength, maxLength
 
+### 4.2.6 Primitive Type Conformance Requirements
+
+* **4.2.6.1** A value MUST satisfy the conditions defined for each type option listed in
+[Table 4-1](#table-4-1-primitive-type-options)
+to be classified as an instance of a type containing that option.
+* **4.2.6.2** The *pattern* option value SHOULD conform to the Pattern grammar of [[ECMAScript](#ecmascript)] Section 22.2.
+
 ## 4.3 Collection Types
 
 A collection is a group of elements of the same or different types, with a value and multiple
@@ -806,7 +823,7 @@ literal space a literal-to-value mapping.
 An information model defines a collection in a way that is representation-independent both as
 an object within a process and as literals exchanged among processes.
 Each collection type thus has two parts:
-* a **[semantic type](#431-multiplicity-types)**, one of six extended UML MultiplicityElement types
+* a **[semantic type](#431-multiplicity-semantic-types)**, one of six extended UML MultiplicityElement types
 that specify semantics of the collection value
 * a **[compound type](#432-compound-types)**, one of five JADN compound types that specify literal
 representations of a collection value, element constraints, and semantic type.
@@ -958,7 +975,7 @@ specify that every element in the collection has the same type.
 * A Structured type [**Array**](#4323-array), [**Map**](#4324-map) and [**Record**](#4325-record)
 defines the type of each element individually, by position, key, or both.
 Each field defines an association between an identifier (position and/or key) and a type and may include
-field-specific options ([Section 4.2.2.1](#4221-field-options)).
+field-specific options ([Section 4.3.4](#434-compound-field-options)).
 
 #### 4.3.2.1 ArrayOf(valueType)
 
@@ -972,7 +989,7 @@ The ArrayOf type defines a collection of undifferentiated elements:
 * With a keyed `valueType` the collection semantics is [Map](#4313-map) with no multiplicity option
 or [OrderedMap](#4314-orderedmap) if the `ordered` multiplicity option is present. No other multiplicity
 options are valid with a keyed `valueType`.
-* A Choice ([Section 4.4](#44)) valueType supports definition of heterogeneous collections.
+* A Choice ([Section 4.4](#44-union-types)) valueType supports definition of heterogeneous collections.
 * If valueType is an Array, Map or Record, the collection is a list of rows in a table,
 with the columns defined by valueType and the rows indexed by position.
 * If valueType is an Array, Map or Record with a designated Key ([Section 4.3.4](#434-compound-field-options))
@@ -1031,7 +1048,7 @@ The MapOf type defines a collection of undifferentiated key-value associations:
 * All element values have the same type, specified by the required `valueType` option.
 * All elements have the same role within the collection; no special meaning is attached to any element.
 * The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map).
-* A Choice ([Section 4.4](#44)) keyType and/or valueType supports definition of heterogeneous collections.
+* A Choice ([Section 4.4](#44-union-types)) keyType and/or valueType supports definition of heterogeneous collections.
 
 **Example:** "People" MapOf:
 
@@ -1204,7 +1221,7 @@ Verbose JSON serialization:
 
 ### 4.3.3 Compound Type Options
 
-Table 4-3 lists the type options specific to compound types:
+Table 4-4 lists the type options ([Section 4.1.4](#414-type-and-field-options)) specific to compound types:
 
 ###### Table 4-4: Compound Type Options
 
@@ -1214,7 +1231,7 @@ Table 4-3 lists the type options specific to compound types:
 | 0x2b |  +  | TypeRef | keyType         | Key type for MapOf                                            |
 | 0x7b |  {  | Integer | minLength       | Minimum number of items in a collection, default is 0         |
 | 0x7d |  }  | Integer | maxLength       | Maximum number of items in a collection, default is unlimited |
-| 0x3d |  =  | Boolean | id              | Fields are identified by FieldID not FieldName                |
+| 0x3d |  =  | Boolean | id              | Fields are identified by FieldID, not FieldName               |
 | 0x71 |  q  | Boolean | unique, ordered | isOrdered = true,  isUnique = true (OrderedSet, OrderedMap)   | 
 | 0x73 |  s  | Boolean | set             | isOrdered = false, isUnique = true (Set)                      |
 | 0x62 |  b  | Boolean | unordered       | isOrdered = false, isUnique = false (Bag)                     |
@@ -1224,15 +1241,16 @@ Table 4-3 lists the type options specific to compound types:
 * The `minLength` option specifies the minimum cardinality of a collection. If not present the minimum is zero.
 * The `maxLength` option specifies the maximum cardinality of a collection. If not present the maximum is unlimited.
 * The `id` option specifies that fields in a Map, Enumerated or Choice ([Section 4.4](#44-union-types)) type
-are identified by their integer field / item ID and that any field name / item value present in the type
-definition is never used in serialized messages.
+are identified by integer field or item ID and that any field name or item value included in the type definition
+is a *label* as described in [Section 4.3.2.3](#4323-array) and is not present in values or literal representations.
 * The `unique`, `ordered`, `set`, and `unordered` options modify the semantic type of a collection from the
-default Sequence or Map type shown in [Table 4-5](#table-4-5-allowed-compound-type-options).
+default semantic type shown in [Table 4-5](#table-4-5-allowed-compound-type-options). TypeOption `0x71` (collection is an ordered set) is referred to
+as `unique` when used with the ArrayOf type and `ordered` when used with the Record type.
 These options are mutually exclusive: a type definition may not contain more than one.
   * If a collection is Ordered, element order is significant when comparing instances, otherwise it is not.
   * If a collection is Unique, no element is duplicated within a collection instance, otherwise duplicates are allowed.
 
-Table 4-4 lists the default semantic type and the TypeOptions applicable to each compound type:
+Table 4-5 lists the default semantic type and the TypeOptions applicable to each compound type:
 
 ###### Table 4-5: Allowed Compound Type Options
 
@@ -1240,27 +1258,14 @@ Table 4-4 lists the default semantic type and the TypeOptions applicable to each
 |---------------------------|---------------|----------------------------------------------|
 | ArrayOf(valueType)        | Sequence      | minLength, maxLength, set, unique, unordered |
 | ArrayOf(keyed valueType)  | Map           | minLength, maxLength, ordered                |
-| MapOf(keyType, valueType) | Map           | minLength, maxLength, ordered                |
+| MapOf(keyType, valueType) | Map           | minLength, maxLength                         |
 | Array                     | Sequence      | minLength, maxLength                         |
 | Map                       | Map           | minLength, maxLength, id                     |
 | Record                    | Map           | minLength, maxLength, ordered                |
 
-
-* Map and Record types have Fields identified by both a numeric FieldID and a text FieldName, both of which
-are unique within a type.
-* FieldIDs for Array and Record types denote position within the collection and must be numbered consecutively
-starting at 1.
-* For Map, Enumerated and Choice types the `id` option indicates that fields are always identified by FieldID.
-  * Without `id`, FieldName is a defined name that is included in the semantics of the type, must be
-    populated in the type definition, and may appear in serialized data depending on serialization format.
-  * With `id`, FieldName is a suggested label that is not included in the semantics of the type,
-    may be empty in the type definition, has no effect on validation,
-    and never appears in serialized data regardless of data format. 
-  * The `id` option cannot be used with Record; the Array type is equivalent to Record with id.
-* TypeOption `0x71` (collection is an ordered set) is referred to as `unique` when used with
-the ArrayOf type and `ordered` when used with MapOf, Map or Record types.
-
 Example: the `id` option indicates that values use FieldId instead of FieldName
+
+JSON Example:
 ```
 ["Colors", "Enumerated", [], "", [
   [1, "red", "The color of roses"],
@@ -1274,7 +1279,7 @@ Example: the `id` option indicates that values use FieldId instead of FieldName
   [3, "blue", "Violets"]
 ]]
 ```
-
+IDL Example:
 ```
 Colors = Enumerated
    1 red                         // The color of roses
@@ -1287,28 +1292,11 @@ ColorIds = Enumerated#
    3                             // blue:: Violets
 ```
 
-<!-- For CN?
-#### 4.2.1.1 Field Identifiers
-
-For example an Enumerated list of HTTP status codes could include the field [403, "Forbidden"].
-If the type definition does not include an `id` option, the API value is "Forbidden" and serialization rules determine
-whether FieldID or FieldName is used in serialized data. With the `id` option the API and serialized values are always
-the FieldID 403. The label "Forbidden" may be displayed in messages or user interfaces, as could customized labels
-such as "NotAllowed", "Verboten", or "Interdit".
--->
-
-Multiplicity TypeOptions specify the ordering and uniqueness semantics of compound types.
-This allows collection instances with uniqueness constraints to be validated and instances
-with the same ordering significance to be compared, independently of their compound type.
-The ArrayOf compound type can specify the four UML collection types (sequence, set, ordered set, bag).
-Structured and MapOf compound types are always unique, so they can specify only set or ordered set collections.
-The collection type specified by a Compound type and multiplicity option are listed in Table 4-4:
-
 ### 4.3.4 Compound Field Options
 
-Structured compound types (Array, Map and Record) and the Choice type have Fields that define each item in a
-collection individually.
-Each Field has a numeric ID, Name, TypeReference, and FieldOptions shown in Table 4-6:
+Structured compound types ([Array](#4323-array), [Map](#4324-map) and [Record](#4325-record) and the
+tagged [Choice](#442-choice-tagged) type have Fields that define each item in a collection individually.
+Each Field has a numeric FieldID, FieldName, TypeReference, and FieldOptions shown in Table 4-6:
 
 ###### Table 4-6: Field Options
 
@@ -1319,9 +1307,9 @@ Each Field has a numeric ID, Name, TypeReference, and FieldOptions shown in Tabl
 | 0x4b |  K  | Boolean | key       | field is the primary key for this type                    | 
 | 0x4c |  L  | Boolean | link      | field is a link (foreign key) to an instance of FieldType |
 
-#### 4.2.2.2 Multiplicity
+#### 4.3.4.1 Multiplicity
 
-The **minOccurs** and **maxOccurs** options specify the minimum and maximum number of instances (the multiplicity)
+The **minOccurs** and **maxOccurs** options specify the minimum and maximum cardinality (the multiplicity)
 of a field within a collection:
 
 | minOccurs | maxOccurs | Multiplicity | Description                             |
@@ -1336,7 +1324,7 @@ of a field within a collection:
 * The default value of minOccurs and maxOccurs is 1.
 * maxOccurs includes non-negative integers (0..n), plus two reserved sentinel values less than 0: 
   * UNSPECIFIED (-1) indicates that the upper bound is the $MaxElements package default
-    ([Figure 3-1](#figure-3-1----jadn-schema-metadata)), or if not specified, an implementation-defined default.
+    ([Figure 3-1](#fig-3-1-jadn-schema-metadata)), or if not specified, an implementation-defined default.
   * UNLIMITED (-2) indicates that no upper bound is defined. Implementations are still limited
     by available storage capacity and the results of resource exhaustion are undefined.
 * If a field has more than one instance, the [data format](#6-serialization-and-data-formats) specifies whether
@@ -1344,7 +1332,7 @@ its representation differs from that of a single instance. The [Field Multiplici
 generates an ArrayOf() type definition for data formats (e.g., JSON) with different representations for single and
 multiple instances of a type.
 
-#### 4.2.2.3 Links
+#### 4.3.4.2 Links
 
 An information model defines type relationships in two ways: as collections containing values
 or as references to values.
@@ -1380,39 +1368,31 @@ Organization = Record
     3 ceo       Link(Person)
 ```
 
-Example composite key:
-```
-LineItem = Record
-   1 item_id    Key(ItemId)     // Composite unique identifier for a line item
-   2 quantity   Integer         // Other information about the ordered item
+The `Places` table in [Section 4.3.2.1](#4321-arrayofvaluetype) is an example of a composite key used in a
+collection of rows.
 
-ItemId = Array
-   1 Integer                    // order_id:: Order unique identifier
-   2 Integer                    // product_id:: Product unique identifier
-```
+#### 4.3.5 Compound Type Conformance Requirements
 
-#### 4.2.2.4 Compound Type Conformance Requirements
-
-* A compound type MUST NOT include more than one multiplicity option (set, unique, ordered, or unordered).
-* If CoreType is ArrayOf, TypeOptions MUST include the `valueType` option.
-* If CoreType is MapOf, TypeOptions MUST include `keyType` and `valueType` options.
-* The `keyType` option SHOULD be a constrained type such as an enumeration, pattern or semantic valuation keyword
+* **4.3.5.1** A compound type MUST NOT include more than one multiplicity option (set, unique, ordered, or unordered).
+* **4.3.5.2** If CoreType is ArrayOf, TypeOptions MUST include the `valueType` option.
+* **4.3.5.3** If CoreType is MapOf, TypeOptions MUST include `keyType` and `valueType` options.
+* **4.3.5.4** The `keyType` option SHOULD be a constrained type such as an enumeration, pattern or semantic valuation keyword
 that specifies a fixed subset of values.
-* All values in an ArrayOf or MapOf instance must be an instance of `valueType`.
-* All keys in a MapOf instance MUST be an instance of `keyType`.
-* The number of items in a collection instance MUST NOT be less than minLength.
-* The number of items in a collection instance MUST NOT be greater than maxLength.
-* FieldIDs for Array and Record types denote position within the collection and MUST be numbered consecutively
+* **4.3.5.5** All values in an ArrayOf or MapOf instance must be an instance of `valueType`.
+* **4.3.5.6** All keys in a MapOf instance MUST be an instance of `keyType`.
+* **4.3.5.7** The number of items in a collection instance MUST NOT be less than minLength.
+* **4.3.5.8** The number of items in a collection instance MUST NOT be greater than maxLength.
+* **4.3.5.9** FieldIDs for Array and Record types denote position within the collection and MUST be numbered consecutively
 starting at 1.
-* An instance of a Map, MapOf, or Record type MUST NOT have more than one occurrence of each key.
-* An instance of a Map, MapOf, or Record type MUST NOT have a key of the null type.
-* An instance of a Map, MapOf, or Record type with a key mapped to a null value MUST compare as equal to an
+* **4.3.5.10** An instance of a Map, MapOf, or Record type MUST NOT have more than one occurrence of each key.
+* **4.3.5.11** An instance of a Map, MapOf, or Record type MUST NOT have a key of the null type.
+* **4.3.5.12** An instance of a Map, MapOf, or Record type with a key mapped to a null value MUST compare as equal to an
 otherwise identical instance without that key.
-* The length of an Array, ArrayOf or Record instance MUST NOT include null values after the last non-null value.
-* Two Array, ArrayOf or Record instances that differ only in the number of trailing nulls MUST compare as equal.
-* An Array, Map or Record type MUST have no more than one `key` field. The key field MAY be a compound type.
-* Values referenced by the `link` option MUST be instances of the referenced type.
-* The value of a field with the `link` option MUST equal the value of the `key` field of the referenced type.
+* **4.3.5.13** The length of an Array, ArrayOf or Record instance MUST NOT include null values after the last non-null value.
+* **4.3.5.14** Two Array, ArrayOf or Record instances that differ only in the number of trailing nulls MUST compare as equal.
+* **4.3.5.15** An Array, Map or Record type MUST have no more than one `key` field. The key field MAY be a compound type.
+* **4.3.5.16** Values referenced by the `link` option MUST be instances of the referenced type.
+* **4.3.5.17** The value of a field with the `link` option MUST equal the value of the `key` field of the referenced type.
 
 ## 4.4 Union Types
 
@@ -1497,7 +1477,7 @@ PhoneNumberTypes = Enumerated
 An untagged Choice with a single field can be used to define an alias for FieldType.
 The `combine` option has no effect when there is only one field.
 
-#### 4.2.3.4 Field Options
+#### 4.4.4 Field Options
 
 The FieldOptions applicable to Union types are shown in Table 4-9:
 
@@ -1506,9 +1486,8 @@ The FieldOptions applicable to Union types are shown in Table 4-9:
 | ID   | Chr | Type    | Name  | Description                                                |
 |------|:---:|---------|-------|------------------------------------------------------------|
 | 0x26 |  &  | Integer | tagId | field holding the tag used for a Tagged Union              |
-| 0x4E |  N  | Boolean | not   | value is not an instance of FieldType in an untagged Union |
 
-##### 4.2.3.4.1 TagId
+##### 4.4.4.1 TagId
 
 A tagged union within a structured type may use the `tagId` option to specify a separate field within
 that type to be used as its tag. The value of the designated field must be a valid field identifier
@@ -1526,20 +1505,7 @@ IP-Addr = Choice
   2 v6           IPv6-Addr
 ```
 
-##### 4.2.3.4.2 Not
-
-A field within an untagged union may use the `not` (logical negation) option to complement its match result.
-This option is valid only in an `allOf` Choice where one or more fields restrict the set of instances,
-because a complement without a restriction matches instances of arbitrary size, type and complexity.
-
-```
-UserName = Choice(allOf)               // lower, upper and digits, but not all digits.
-   1  String{pattern="^[a-zA-Z0-9]$"}  // a::
-   2  String{4..*} [1..16]             // b::
-   3  !String{pattern="^[0-9]$"}       // c::
-```
-
-#### 4.2.3.5 Union Type Conformance Requirements
+#### 4.4.5 Union Type Conformance Requirements
 
 * The FieldIDs of a Choice(anyOf) type MUST be numbered sequentially starting at 1.
 * A value MUST be classified against the fields of a Choice(anyOf) type in field order and as an instance
@@ -1555,7 +1521,7 @@ a `not` option.
 
 The TypeOptions applicable to all core types are shown in Table 4-10:
 
-###### Table 4-10: General Type Options
+###### Table 4-10: Inheritance Type Options
 
 | ID   | Chr | Type    | Name      | Description                                        |
 |------|:---:|---------|-----------|----------------------------------------------------|
@@ -1583,7 +1549,7 @@ in practice inheritance is useful with only some types:
   * It is not possible to extend a Primitive type because every value that could be an instance of that
 type already is.
   * It is not useful to restrict a Primitive type because the options defined in
-[Section 4.2.1](#421-primitive-types) perform restrictions directly without referencing a parent type.
+[Table 4-1](#table-4-1-primitive-type-options) perform restrictions directly without referencing a parent type.
   * Determining subsets analytically is not always practical. But an untagged Choice (`anyOf` or `allOf`)
 of types based on the same primitive type is equivalent to extend or restrict respectively.
 
@@ -1600,7 +1566,7 @@ Name2 = Choice(allOf)                // Restrict: 2915 is valid.  a34c, D72F, g1
 
 * **Compound:**
   * Inheritance may not be useful with unstructured compound types (ArrayOf and MapOf) because the minLength and maxLength
-options defined in [Section 4.2.2](#422-compound-types) are used directly to define collections with different
+options defined in [Table 4-4](#table-4-4-compound-type-options) are used directly to define collections with different
 cardinality limits without referencing a parent type.
   * Inheritance is used to add, remove, or modify the cardinality of fields in structured compound types.
 
@@ -1634,11 +1600,12 @@ Colors2 = Enumerated extends(Colors1)       // Primary and secondary colors
   6 cyan
 ```
 
-#### 4.2.4.2 General Type Conformance Requirements
+#### 4.5.1 Inheritance Type Conformance Requirements
 
-* A type MUST NOT have more than one `extends` or `restricts` TypeOption.
-* A type MUST NOT have both `extends` and `restricts` TypeOptions.
-* A type with an `extends` or `restricts` TypeOption MUST have the same CoreType as the type referenced by that option.
+* **4.5.1.1** A type MUST NOT have more than one `extends` or `restricts` TypeOption.
+* **4.5.1.2** A type MUST NOT have both `extends` and `restricts` TypeOptions.
+* **4.5.1.3** A type with an `extends` or `restricts` TypeOption MUST have the same CoreType as the type
+referenced by that option.
 
 ### 4.6 Semantic Validation
 
@@ -1765,8 +1732,8 @@ using a text-centric approach:
 > The *value space* of *anyAtomicType* is the union of the value spaces of all the *primitive* datatypes
 > defined here or supplied as implementation-defined primitives.
 
-Information models are value-centric: the JADN *value space* consists of the five [Primitive](#421-primitive-types)
-types defined in Section 4.2.1, and the *lexical space* is constructed using semantic keywords defined here
+Information models are value-centric: the JADN *value space* consists of the five [Primitive](#42-primitive-types)
+types defined in Section 4.2, and the *lexical space* is constructed using semantic keywords defined here
 or supplied from elsewhere. This difference has several effects:
 
 * Enumerated is a first-class JADN datatype, not a facet of string or integer representations.
@@ -1907,9 +1874,9 @@ Coordinate.longitude = Number [-180.0, 180.0]
 
 Fields may be defined to have multiple values of the same type. Expanding converts each field that can
 have more than one value to a separate ArrayOf type. The multiplicity (`minOccurs` and `maxOccurs`)
-FieldOptions ([Section 4.2.2.2](#4222-multiplicity)) are moved from FieldOptions to the minimum and maximum
-length (`minLength` and `maxLength`) TypeOptions ([Section 4.2.3](#423-union-types))) of the new ArrayOf type,
-except that if `minOccurs` is 0 (field is optional), it remains in FieldOptions and the new ArrayOf type
+FieldOptions ([Section 4.3.4](#434-compound-field-options)) are moved from FieldOptions to the minimum and maximum
+length (`minLength` and `maxLength`) TypeOptions ([Section 4.3.3](#433-compound-type-options))) of the new ArrayOf
+type, except that if `minOccurs` is 0 (field is optional), it remains in FieldOptions and the new ArrayOf type
 has a minimum length of 1.
 
 Example:
@@ -2233,7 +2200,7 @@ Compound types without the `id` option:
         ...
 ```
 
-Structured types with the `id` [TypeOption](#table-4-2-typeoptions-specific-to-compound-types)
+Structured types with the `id` [TypeOption](#table-4-4-compound-type-options)
 treat the item/field name as an informative label and display it in the description
 followed by a label terminator ("::"):
 ```
