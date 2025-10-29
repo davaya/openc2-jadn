@@ -159,7 +159,7 @@ For complete copyright information please see the Notices section in the Appendi
     - [4.4.4 Field Options](#444-field-options)
     - [4.4.5 Union Type Conformance Requirements](#445-union-type-conformance-requirements)
   - [4.5 Type Inheritance](#45-type-inheritance)
-    - [4.5.1 Inheritance Type Conformance Requirements](#451-inheritance-type-conformance-requirements)
+    - [4.5.1 Inheritance Type Conformance Requirements](#451-inheritance-options-conformance-requirements)
   - [4.6 Semantic Validation](#46-semantic-validation)
     - [4.6.1 JADN Semantic Validation Keywords](#461-jadn-semantic-validation-keywords)
     - [4.6.2 XSD Semantic Validation Keywords](#462-xsd-semantic-validation-keywords)
@@ -1510,8 +1510,6 @@ IP-Addr = Choice
 * The FieldIDs of a Choice(anyOf) type MUST be numbered sequentially starting at 1.
 * A value MUST be classified against the fields of a Choice(anyOf) type in field order and as an instance
 of the first matching field.
-* The `not` FieldOption MUST appear only in a Choice(allOf) type containing at least one field without
-a `not` option.
 
 ## 4.5 Type Inheritance
 
@@ -1600,7 +1598,7 @@ Colors2 = Enumerated extends(Colors1)       // Primary and secondary colors
   6 cyan
 ```
 
-#### 4.5.1 Inheritance Type Conformance Requirements
+#### 4.5.1 Inheritance Options Conformance Requirements
 
 * **4.5.1.1** A type MUST NOT have more than one `extends` or `restricts` TypeOption.
 * **4.5.1.2** A type MUST NOT have both `extends` and `restricts` TypeOptions.
@@ -2217,9 +2215,14 @@ followed by a label terminator ("::"):
 **Type Options:**
 
 TYPESTRING is the value of CoreType or FieldType, followed by string representations of the type options,
-if applicable to TYPE as specified in [Section 4.2](#42-core-types).
+if applicable to TYPE as specified in [Section 4.2 (primitive)](#42-primitive-types),
+[Table 4-5 (Compound)](#table-4-5-allowed-compound-type-options),
+[Table 4-6 (Compound Fields)](#table-4-6-field-options),
+[Table 4-8 (Union)](#table-4-8-union-type-options),
+[Table 4-9 (Union Fields)](#table-4-9-union-field-options), and
+[Table 4-10 (Inheritance)](#table-4-10-inheritance-type-options).
 * TYPEREF is a type name with optional namespace prefix as specified in [Section 3.1.3](#313-package-conformance-requirements).
-* FMTNAME is the name of a semantic validation function as specified in [Section 4.1.5](#425-semantic-validation).
+* FMTNAME is the name of a semantic validation keyword as specified in [Section 4.6](#46-semantic-validation).
 ```
     TYPESTRING  = TYPE [ID] [FUNC] [RANGEPAT] [FORMAT] [KW]  ; TYPE is CoreType or FieldType
     ID          = ".ID"
@@ -2420,10 +2423,11 @@ Conforming implementations SHALL satisfy all conformance requirements listed in 
 including the following sections:
 * [3.1.3 Package](#313-package-conformance-requirements)
 * [4.1.5 Types](#415-type-conformance-requirements)
-* [4.2.1.6 Primitive Types](#4216-primitive-type-conformance-requirements)
-* [4.2.2.4 Compound Types](#4224-compound-type-conformance-requirements)
-* [4.2.3.5 Union Types](#4235-union-type-conformance-requirements)
-* [4.2.4.2 Inherited Types](#4242-general-type-conformance-requirements)
+* [4.2.6 Primitive Types](#426-primitive-type-conformance-requirements)
+* [4.3.5 Compound Types](#435-compound-type-conformance-requirements)
+* [4.4.5 Union Types](#445-union-type-conformance-requirements)
+* [4.5.1 Inherited Types](#451-inheritance-options-conformance-requirements)
+* [4.6 Semantic Validation](#46-semantic-validation)
 
 -------
 
