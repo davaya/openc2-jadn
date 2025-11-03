@@ -1396,9 +1396,9 @@ otherwise identical instance without that key.
 
 ## 4.4 Union Types
 
-A union type specifies a set of alternatives used to classify a value. Like Compound types, some Union types
-have fields individually identified by tag, where the tag consists of an integer FieldID and a string FieldName,
-each of which is local to and unique within the type definition.
+A union type specifies a set of alternatives used to classify a value. Like Compound types, Enumerated and
+Tagged Union types have fields individually identified by tag, where the tag consists of an integer FieldID
+and a string ItemValue or FieldName, each of which is local to and unique within the type definition.
 Union types define a set of tags, types or both as shown in Table 4-7:
 
 ###### Table 4-7: Union Types
@@ -1442,40 +1442,42 @@ FieldType specified by the tag.
 The Choice type containing a `combine` TypeOption is an untagged union, a structure that defines a set of types
 used collectively to classify a value.
 
-The `combine` option value is a single character that specifies the required combination of FieldTypes:
-* A: value must be an instance of `allOf` the types
-* O: value must be an instance of `anyOf` the types, tried in field order until a match is found
-* X: value must be an instance of `oneOf` the types and no others
+The `combine` option value is a keyword that specifies the required combination of FieldTypes:
+* `allOf`: value must be an instance of all field types
+* `anyOf`: value must be an instance of any of the field types, tried in field order until a match is found
+* `oneOf`: value must be an instance of one of the field types and no others
 
 Field order does not matter for the `allOf` and `oneOf` options because values must always be evaluated
 against all FieldTypes.
 
-Field order is significant when using the `anyOf` option and the FieldTypes are not disjoint because
-this performs both classification and validation.
-A value may be an instance of more than one classifier, and classification may be used to answer
-two questions:
-* given a classifier A, is value X an instance of A? (validation)
-* given a value X, which classifier among {A, B, C, ...} is it to be considered an instance of?
-(classification)
+Field order is significant if the `anyOf` option is present and the FieldTypes are not disjoint.
+If a value may be an instance of more than one type, classification answers two questions:
+* given a type A, is value X an instance of A? (validation)
+* given a value X, which of the list of types {A, B, C, ...} is it to be considered an instance of?
+(classification). Types are identified by position only; FieldName values are non-significant labels
+as defined in the [Array](#4323-array)' type.
 
-In this example the value "Home" is an instance of both the predefined and custom types and could be
+In this example the value "home" is an instance of both the predefined and custom types and could be
 classified as either one.
-If any processing operations depend on the classification decision, the predefined type
-must appear first in the Choice otherwise it will never match and all values will be
-tagged, serialized, and processed as instances of the custom type:
+If any processing operations depend on the value type, the Enumerated type
+should appear first in the Choice otherwise it will never match and all values will be
+identified, serialized, and processed as instances of the String type.
 ```
 PhoneType = Choice(anyOf)
-  1 predefined  PhoneNumberTypes   // Pre-defined names
-  2 custom      String{3..10}      // Any name 3-10 characters in length
+  1 PhoneNumberTypes            // predefined:: Pre-defined names
+  2 String{3..10}               // custom:: Any name 3-10 characters in length
 
 PhoneNumberTypes = Enumerated
-  1 Home
-  2 Cell
-  3 Office
+  1 home
+  2 cell
+  3 office
 ```
 
 An untagged Choice with a single field can be used to define an alias for FieldType.
-The `combine` option has no effect when there is only one field.
+```
+PhoneKind = Choice(anyOf)
+  1 PhoneType                   // alias:: Define PhoneKind as a synonym for PhoneType
+```
 
 #### 4.4.4 Field Options
 
