@@ -1966,11 +1966,12 @@ in practice inheritance is useful with only some types:
 type already is.
   * It is not useful to restrict a Primitive type because the options defined in
 [Table 4-1](#table-4-1-primitive-type-options) perform restrictions directly without referencing a parent type.
-  * Determining subsets analytically is not always practical.
+  * Determining subsets analytically is not always practical. Combining regular expressions into an
+inherited expression is not straightforward; use Choice instead.
   * An untagged Choice (`anyOf` or `allOf`) performs union or intersection operations directly on
 two or more types.
 
-Example - combining regular expressions into an expanded inherited definition is not straightforward:
+Example:
 ```
 Name1 = Choice(anyOf)                // Extend: 2915, a34c, D72F are valid.  g16H is not.
    1  String{pattern="^[a-z0-9]$"}   // a::
