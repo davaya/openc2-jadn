@@ -150,19 +150,16 @@ For complete copyright information please see the Notices section in the Appendi
     - [4.3.4 Compound Field Options](#434-compound-field-options)
       - [4.3.4.1 Multiplicity](#4341-multiplicity)
       - [4.3.4.2 Links](#4342-links)
-      - [4.3.5 Compound Type Conformance Requirements](#435-compound-type-conformance-requirements)
+    - [4.3.5 Compound Type Conformance Requirements](#435-compound-type-conformance-requirements)
   - [4.4 Union Types](#44-union-types)
     - [4.4.1 Enumerated](#441-enumerated)
     - [4.4.2 Choice (Tagged)](#442-choice-tagged)
     - [4.4.3 Choice (Untagged)](#443-choice-untagged)
     - [4.4.4 Field Options](#444-field-options)
       - [4.4.4.1 TagId](#4441-tagid)
-      - [4.4.5 Union Type Conformance Requirements](#445-union-type-conformance-requirements)
+    - [4.4.5 Union Type Conformance Requirements](#445-union-type-conformance-requirements)
   - [4.5 Semantic Validation](#45-semantic-validation)
     - [4.5.1 JADN Semantic Validation Keywords](#451-jadn-semantic-validation-keywords)
-      - [Integer and Number Formats](#integer-and-number-formats)
-      - [Address and Identifier Formats](#address-and-identifier-formats)
-      - [Time Formats](#time-formats)
     - [4.5.2 XSD Semantic Validation Keywords](#452-xsd-semantic-validation-keywords)
     - [4.5.3 JSON Schema Semantic Validation Keywords](#453-json-schema-semantic-validation-keywords)
 - [5 Shortcuts](#5-shortcuts)
@@ -172,7 +169,7 @@ For complete copyright information please see the Notices section in the Appendi
   - [5.4 MapOf With Enumerated Key](#54-mapof-with-enumerated-key)
   - [5.5 Pointers](#55-pointers)
   - [5.6 Type Inheritance](#56-type-inheritance)
-      - [5.6.1 Type Inheritance Conformance Requirements](#561-type-inheritance-conformance-requirements)
+    - [5.6.1 Type Inheritance Conformance Requirements](#561-type-inheritance-conformance-requirements)
 - [6 Serialization and Data Formats](#6-serialization-and-data-formats)
   - [6.1 Verbose JSON Serialization](#61-verbose-json-serialization)
   - [6.2 Compact JSON Serialization:](#62-compact-json-serialization)
@@ -1934,14 +1931,14 @@ As described in the [Introduction](#1-introduction), each information model type
 a value space that is a static set of valid values. Sets are combined using the
 union (A ∪ B) and intersection (A ∩ B) set operations, which are used by the `extends`
 and `restricts` TypeOptions to construct a type inheritance hierarchy. These operations
-can be restated as defining inheritance using the "subset rule":
+define inheritance using the "subset rule":
 * If type A `extends` type B, then every instance of B is also an instance of A
 * If type A `restricts` type B, then every instance of A is also an instance of B
 
 Type inheritance is static. It can be implemented as a shortcut that converts inherited
 type definitions into expanded form, or as a runtime operation using the original definitions.
 Set operations are idempotent, which means that inherited definitions are unaffected
-by expansion:
+by expansion and the inheritance TypeOption remains in the type definition after expansion:
 * Original: B = {"x", "y"}; A = {"z"}; A extends(B) = {"x", "y", "z"}
 * Expanded: B = {"x", "y"}; A = {"x", "y", "z"}; A extends(B) = {"x", "y", "z"}
 
