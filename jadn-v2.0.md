@@ -4,7 +4,7 @@
 # JSON Abstract Data Notation (JADN) Version 2.0
 
 ## Committee Specification Draft 01
-## 29 October 2025
+## 19 November 2025
 
 &nbsp;
 
@@ -90,7 +90,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 When referencing this specification the following citation format should be used:
 
 **[JADN-v2.0]**  
-_JSON Abstract Data Notation Version 2.0_. Edited by David Kemp. 19 February 2025. 
+_JSON Abstract Data Notation Version 2.0_. Edited by David Kemp. 19 November 2025. 
 OASIS Committee Specification Draft 01. https://docs.oasis-open.org/openc2/jadn/v2.0/csd01/jadn-v2.0-csd01.html. 
 Latest version: https://docs.oasis-open.org/openc2/jadn/v2.0/jadn-v2.0.html.
 
@@ -109,7 +109,6 @@ For complete copyright information please see the Notices section in the Appendi
 -------
 
 # Table of Contents
-
 - [1 Introduction](#1-introduction)
   - [1.1 Glossary](#11-glossary)
     - [1.1.1 Definitions of terms](#111-definitions-of-terms)
@@ -151,25 +150,29 @@ For complete copyright information please see the Notices section in the Appendi
     - [4.3.4 Compound Field Options](#434-compound-field-options)
       - [4.3.4.1 Multiplicity](#4341-multiplicity)
       - [4.3.4.2 Links](#4342-links)
-    - [4.3.5 Compound Type Conformance Requirements](#435-compound-type-conformance-requirements)
+      - [4.3.5 Compound Type Conformance Requirements](#435-compound-type-conformance-requirements)
   - [4.4 Union Types](#44-union-types)
     - [4.4.1 Enumerated](#441-enumerated)
     - [4.4.2 Choice (Tagged)](#442-choice-tagged)
     - [4.4.3 Choice (Untagged)](#443-choice-untagged)
     - [4.4.4 Field Options](#444-field-options)
-    - [4.4.5 Union Type Conformance Requirements](#445-union-type-conformance-requirements)
-  - [4.5 Type Inheritance](#45-type-inheritance)
-    - [4.5.1 Inheritance Type Conformance Requirements](#451-inheritance-options-conformance-requirements)
-  - [4.6 Semantic Validation](#46-semantic-validation)
-    - [4.6.1 JADN Semantic Validation Keywords](#461-jadn-semantic-validation-keywords)
-    - [4.6.2 XSD Semantic Validation Keywords](#462-xsd-semantic-validation-keywords)
-    - [4.6.3 JSON Schema Semantic Validation Keywords](#463-json-schema-semantic-validation-keywords)
+      - [4.4.4.1 TagId](#4441-tagid)
+      - [4.4.5 Union Type Conformance Requirements](#445-union-type-conformance-requirements)
+  - [4.5 Semantic Validation](#45-semantic-validation)
+    - [4.5.1 JADN Semantic Validation Keywords](#451-jadn-semantic-validation-keywords)
+      - [Integer and Number Formats](#integer-and-number-formats)
+      - [Address and Identifier Formats](#address-and-identifier-formats)
+      - [Time Formats](#time-formats)
+    - [4.5.2 XSD Semantic Validation Keywords](#452-xsd-semantic-validation-keywords)
+    - [4.5.3 JSON Schema Semantic Validation Keywords](#453-json-schema-semantic-validation-keywords)
 - [5 Shortcuts](#5-shortcuts)
   - [5.1 Anonymous Type Definition](#51-anonymous-type-definition)
   - [5.2 Field Multiplicity](#52-field-multiplicity)
   - [5.3 Derived Enumerations](#53-derived-enumerations)
   - [5.4 MapOf With Enumerated Key](#54-mapof-with-enumerated-key)
   - [5.5 Pointers](#55-pointers)
+  - [5.6 Type Inheritance](#56-type-inheritance)
+      - [5.6.1 Type Inheritance Conformance Requirements](#561-type-inheritance-conformance-requirements)
 - [6 Serialization and Data Formats](#6-serialization-and-data-formats)
   - [6.1 Verbose JSON Serialization](#61-verbose-json-serialization)
   - [6.2 Compact JSON Serialization:](#62-compact-json-serialization)
@@ -192,7 +195,34 @@ For complete copyright information please see the Notices section in the Appendi
   - [Changes from v1.0 to v2.0](#changes-from-v10-to-v20)
   - [Changes from v1.0 CSD 01 to v1.0](#changes-from-v10-csd-01-to-v10)
 - [Appendix E. Notices](#appendix-e-notices)
-
+- 
+- 
+- [Figure 2-1 -- Information Model Organization](#figure-2-1----information-model-organization)
+- [Fig. 3-1. JADN Schema: Metadata](#fig-3-1-jadn-schema-metadata)
+- [Fig. 4-1. JADN Core Datatypes](#fig-4-1-jadn-core-datatypes)
+- [Fig. 4-2. JADN Schema: Types](#fig-4-2-jadn-schema-types)
+- 
+- [Table 4-1: Primitive Type Options](#table-4-1-primitive-type-options)
+- [Table 4-2: Semantic Types](#table-4-2-semantic-types-)
+- [Table 4-3: Example Programming Language Types](#table-4-3-example-programming-language-types)
+- [Table 4-4: Compound Type Options](#table-4-4-compound-type-options)
+- [Table 4-5: Allowed Compound Type Options](#table-4-5-allowed-compound-type-options)
+- [Table 4-6: Field Options](#table-4-6-field-options)
+- [Table 4-7: Union Types](#table-4-7-union-types)
+- [Table 4-8: Union Type Options](#table-4-8-union-type-options)
+- [Table 4-9: Union Field Options](#table-4-9-union-field-options)
+- [Table 4-11: JADN Formats](#table-4-11-jadn-formats)
+- [Table 4-12: XSD Formats](#table-4-12-xsd-formats)
+- [Table 4-13: JSON Schema Formats](#table-4-13-json-schema-formats)
+- [Table 5-1: Type Inheritance Options](#table-5-1-type-inheritance-options)
+- [Table 6-1: Verbose JSON](#table-6-1-verbose-json)
+- [Table 6-2: Verbose JSON Formats](#table-6-2-verbose-json-formats)
+- [Table 6-3: Compact JSON](#table-6-3-compact-json)
+- [Table 6-4: Concise JSON](#table-6-4-concise-json)
+- [Table 6-5: CBOR Serialization](#table-6-5-cbor-serialization)
+- [Table 6-6: CBOR Serialization Formats](#table-6-6-cbor-serialization-formats)
+- [Table 6-7: XML Serialization Formats](#table-6-7-xml-serialization-formats)
+- [Table 6-8: XML Serialization Format Options](#table-6-8-xml-serialization-format-options)
 -------
 
 # 1 Introduction
@@ -694,7 +724,7 @@ in
 [Table 4-1 (primitive)](#table-4-1-primitive-type-options),
 [Table-4-4 (compound)](#table-4-4-compound-type-options),
 [Table-4-8 (union)](#table-4-8-union-type-options),
-[Table-4-10 (inheritance)](#table-4-10-inheritance-type-options)
+[Table-5-1 (inheritance)](#table-5-1-type-inheritance-options)
 
 and is represented in JSON format as a string where the first character's Unicode codepoint is the option's
 ID and the remaining characters are its value.
@@ -734,7 +764,7 @@ without regard to processing mechanisms or data format. As shown in [Figure 4-1]
 the primitive core types are Binary, Boolean, Integer, Number and String.
 
 Type options specify value restrictions such as size, range, and regular expression patterns.
-Semantic validation keywords (formats) listed in [Section 4.6](#46-semantic-validation)
+Semantic validation keywords (formats) listed in [Section 4.5](#45-semantic-validation)
 also define value restrictions on primitive types.
 
 Primitive TypeOptions are listed in Table 4-1:
@@ -1511,101 +1541,7 @@ IP-Addr = Choice
 * A value MUST be classified against the fields of a Choice(anyOf) type in field order and as an instance
 of the first matching field.
 
-## 4.5 Type Inheritance
-
-.. types define a value space (a set of valid values)  
-.. the value space is static  
-.. the value space is a set, set operations can be evaluated statically
-
-The TypeOptions applicable to all core types are shown in Table 4-10:
-
-###### Table 4-10: Inheritance Type Options
-
-| ID   | Chr | Type    | Name      | Description                                        |
-|------|:---:|---------|-----------|----------------------------------------------------|
-| 0x65 |  e  | TypeRef | extends   | Inheritance extension: superset of referenced type |
-| 0x72 |  r  | TypeRef | restricts | Inheritance restriction: subset of referenced type |
-| 0x61 |  a  | Boolean | abstract  | Inheritance abstract: non-instantiatable type      |
-| 0x66 |  f  | Boolean | final     | Inheritance final: cannot be subtyped              |
-
-UML defines inherited classifiers, and JADN defines a mechanism for constructing datatype inheritance
-hierarchies using the `extends` and `restricts` TypeOptions. Type inheritance is static;
-it can be implemented as a shortcut that transforms inherited type definitions into expanded form
-prior to use, or as a runtime classifier operation.
-
-Unlike class inheritance, type inheritance mechanisms are defined using a simple subset rule:
-* If type B `extends` type A, then every instance of A is also an instance of B
-* If type B `restricts` type A, then every instance of B is also an instance of A
-* The `abstract` TypeOption indicates that the type cannot be used as a classifier; values may be
-classified against its subtypes.
-* The `final` TypeOption indicates that this type can be used as a classifier but cannot have subtypes.
-
-Although the subset rule is definitive and inheritance TypeOptions are valid for all core types,
-in practice inheritance is useful with only some types:
-
-* **Primitive:** Inheritance is not useful with primitive types because:
-  * It is not possible to extend a Primitive type because every value that could be an instance of that
-type already is.
-  * It is not useful to restrict a Primitive type because the options defined in
-[Table 4-1](#table-4-1-primitive-type-options) perform restrictions directly without referencing a parent type.
-  * Determining subsets analytically is not always practical. But an untagged Choice (`anyOf` or `allOf`)
-of types based on the same primitive type is equivalent to extend or restrict respectively.
-
-Examples:
-```
-Name1 = Choice(anyOf)                // Extend: 2915, a34c, D72F are valid.  g16H is not.
-   1  String{pattern="^[a-z0-9]$"}   // a::
-   2  String{pattern="^[A-Z0-9]$"}   // b::
-
-Name2 = Choice(allOf)                // Restrict: 2915 is valid.  a34c, D72F, g16H are not.
-   1  String{pattern="^[a-z0-9]$"}   // a::
-   2  String{pattern="^[A-Z0-9]$"}   // b::
-```
-
-* **Compound:**
-  * Inheritance may not be useful with unstructured compound types (ArrayOf and MapOf) because the minLength and maxLength
-options defined in [Table 4-4](#table-4-4-compound-type-options) are used directly to define collections with different
-cardinality limits without referencing a parent type.
-  * Inheritance is used to add, remove, or modify the cardinality of fields in structured compound types.
-
-Examples:
-```
-Entity = Record abstract                // Base type, cannot be instantiated
-  1 id      Integer
-  2 name    String optional
-
-Person = Record extends(Entity)         // Add email address
-  3 email   String /email optional
-
-AnonymousPerson = Record restricts(Person) final  // Prohibit "name", no subtypes
-  2 name    String [0]
-```
-
-* **Enumerated:**
-  * Items can be added to an Enumerated type using `extends`.
-  * No mechanism is currently defined to remove items from an Enumerated type.
-
-Examples:
-```
-Colors1 = Enumerated                        // Primary colors
-  5 red
-  3 green
- 16 blue
-
-Colors2 = Enumerated extends(Colors1)       // Primary and secondary colors
-  2 yellow
-  7 magenta
-  6 cyan
-```
-
-#### 4.5.1 Inheritance Options Conformance Requirements
-
-* **4.5.1.1** A type MUST NOT have more than one `extends` or `restricts` TypeOption.
-* **4.5.1.2** A type MUST NOT have both `extends` and `restricts` TypeOptions.
-* **4.5.1.3** A type with an `extends` or `restricts` TypeOption MUST have the same CoreType as the type
-referenced by that option.
-
-### 4.6 Semantic Validation
+### 4.5 Semantic Validation
 
 Semantic validation supplements type validation, ensuring that data values are within boundaries that
 applications will understand. Each format type option is a semantic validation keyword that references
@@ -1619,7 +1555,7 @@ type may include multiple format options.
 |------|:---:|------------|--------------|---------------------------------------------------|
 | 0x2f |  /  | Enumerated | format       | Semantic validation keyword                       |
 
-#### 4.6.1 JADN Semantic Validation Keywords
+#### 4.5.1 JADN Semantic Validation Keywords
 
 JADN types define both logical values and literals, and format options affect both validation and translation
 between values and text representations. See [Section 6](#6-serialization-and-data-formats).
@@ -1723,7 +1659,7 @@ Timestamp2 = String /date-time
 "Wednesday, October 2, 2024 11:00:00 AM GMT-04:00 DST"
 ```
 
-#### 4.6.2 XSD Semantic Validation Keywords
+#### 4.5.2 XSD Semantic Validation Keywords
 
 XML Schema Definition Language ([[XSD](#xsd)]) Section 3 defines a set of built-in datatypes
 using a text-centric approach:
@@ -1788,7 +1724,7 @@ serializations.
 | QName                | String        |            | /QName              |
 | Notation             | String        |            | /Notation           |
 
-#### 4.6.3 JSON Schema Semantic Validation Keywords
+#### 4.5.3 JSON Schema Semantic Validation Keywords
 
 Table 4-13 shows semantic validation keywords defined in [[JSON Schema](#jsonschema)] Section 7.3.
 Because JSON Schema defines only text representations, these keywords have the meanings listed here
@@ -1842,6 +1778,7 @@ The following shortcuts can be converted to core definitions:
 * [5.3](#53-derived-enumerations): Derived enumeration
 * [5.4](#54-mapof-with-enumerated-key): MapOf type with Enumerated key type
 * [5.5](#55-pointers): Derived path enumeration
+* [5.6](#56-type-inheritance): Type Inheritance
 
 ## 5.1 Anonymous Type Definition
 
@@ -1989,6 +1926,107 @@ BomList = Enumerated
    5 metadata/tools/#/name
 ```
 
+## 5.6 Type Inheritance
+
+As described in the [Introduction](#1-introduction), each information model type defines
+a value space that is a static set of valid values. Sets are combined using the
+union (A ∪ B) and intersection (A ∩ B) set operations, which are used by the `extends`
+and `restricts` TypeOptions to construct a type inheritance hierarchy. These operations
+can be restated as defining inheritance using the "subset rule":
+* If type A `extends` type B, then every instance of B is also an instance of A
+* If type A `restricts` type B, then every instance of A is also an instance of B
+
+Type inheritance is static. It can be implemented as a shortcut that converts inherited
+type definitions into expanded form, or as a runtime operation using the original definitions.
+Set operations are idempotent, which means that inherited definitions are unaffected
+by expansion:
+* Original: B = {"x", "y"}; A = {"z"}; A extends(B) = {"x", "y", "z"}
+* Expanded: B = {"x", "y"}; A = {"x", "y", "z"}; A extends(B) = {"x", "y", "z"}
+
+Two additional options apply to type inheritance:
+* The `abstract` TypeOption indicates that the type cannot be used as a classifier; values may be
+classified against its subtypes.
+* The `final` TypeOption indicates that the type can be used as a classifier but cannot have subtypes.
+
+Inheritance TypeOptions are shown in Table 5-1:
+
+###### Table 5-1: Type Inheritance Options
+
+| ID   | Chr | Type    | Name      | Description                                  |
+|------|:---:|---------|-----------|----------------------------------------------|
+| 0x65 |  e  | TypeRef | extends   | A extends B: A = A ∪ B, A is a superset of B |
+| 0x72 |  r  | TypeRef | restricts | A restricts B: A = A ∩ B, A is a subset of B |
+| 0x61 |  a  | Boolean | abstract  | A cannot be instantiated                     |
+| 0x66 |  f  | Boolean | final     | A cannot be extended or restricted           |
+
+Although the subset rule is valid for all core types,
+in practice inheritance is useful with only some types:
+
+* **Primitive:** Inheritance is not useful with primitive types because:
+  * It is not possible to extend a Primitive type because every value that could be an instance of that
+type already is.
+  * It is not useful to restrict a Primitive type because the options defined in
+[Table 4-1](#table-4-1-primitive-type-options) perform restrictions directly without referencing a parent type.
+  * Determining subsets analytically is not always practical.
+  * An untagged Choice (`anyOf` or `allOf`) performs union or intersection operations directly on
+two or more types.
+
+Example - combining regular expressions into an expanded inherited definition is not straightforward:
+```
+Name1 = Choice(anyOf)                // Extend: 2915, a34c, D72F are valid.  g16H is not.
+   1  String{pattern="^[a-z0-9]$"}   // a::
+   2  String{pattern="^[A-Z0-9]$"}   // b::
+
+Name2 = Choice(allOf)                // Restrict: 2915 is valid.  a34c, D72F, g16H are not.
+   1  String{pattern="^[a-z0-9]$"}   // a::
+   2  String{pattern="^[A-Z0-9]$"}   // b::
+```
+
+* **Compound:**
+  * Inheritance may not be useful with unstructured compound types (ArrayOf and MapOf) because the minLength and maxLength
+options defined in [Table 4-4](#table-4-4-compound-type-options) are used directly to define collections with different
+cardinality limits without referencing a parent type.
+  * Inheritance is used to add, remove, or modify the cardinality of fields in structured compound types.
+
+Examples:
+```
+Entity = Record abstract                // Base type, cannot be instantiated
+  1 id      Integer
+  2 name    String optional
+
+Person = Record extends(Entity)         // Add email address
+  3 email   String /email optional
+
+AnonymousPerson = Record restricts(Person) final  // Prohibit "name", no subtypes
+  2 name    String [0]
+```
+
+* **Enumerated:**
+  * Items can be added to an Enumerated type using `extends`.
+  * No mechanism is currently defined to remove items from an Enumerated type.
+
+Examples:
+```
+Colors1 = Enumerated                        // Primary colors
+  5 red
+  3 green
+ 16 blue
+
+Colors2 = Enumerated extends(Colors1)       // Primary and secondary colors
+  2 yellow
+  7 magenta
+  6 cyan
+```
+
+#### 5.6.1 Type Inheritance Conformance Requirements
+
+* **5.6.1.1** The value space of an extended type MUST be a superset of the value space of its base type.
+* **5.6.1.2** The value space of a restricted type MUST be a subset of the value space of its base type.
+* **5.6.1.3** A type MUST NOT have more than one `extends` or `restricts` TypeOption.
+* **5.6.1.4** A type MUST NOT have both `extends` and `restricts` TypeOptions.
+* **5.6.1.5** A type with an `extends` or `restricts` TypeOption MUST have the same CoreType as the type
+referenced by that option.
+
 -------
 
 # 6 Serialization and Data Formats
@@ -2123,7 +2161,7 @@ serialized as shown in Table 6-6.
 * When using XML serialization, instances of JADN types without a format option listed in this section
 MUST be serialized as shown in Table 6-7.
 
-###### Table 6-7:
+###### Table 6-7: XML Serialization Formats
 
 | JADN Type      | XML Serialization Requirement                                                                   |
 |:---------------|:------------------------------------------------------------------------------------------------|
@@ -2144,7 +2182,7 @@ MUST be serialized as shown in Table 6-7.
 * When using XML serialization, instances of JADN types with one of the following format options
 MUST be serialized as shown in Table 6-8.
 
-###### Table 6-8: XML Serialization Formats
+###### Table 6-8: XML Serialization Format Options
 
 | Option       | JADN Type | XML Serialization Requirement                               |
 |:-------------|:----------|:------------------------------------------------------------|
@@ -2220,9 +2258,9 @@ if applicable to TYPE as specified in [Section 4.2 (primitive)](#42-primitive-ty
 [Table 4-6 (Compound Fields)](#table-4-6-field-options),
 [Table 4-8 (Union)](#table-4-8-union-type-options),
 [Table 4-9 (Union Fields)](#table-4-9-union-field-options), and
-[Table 4-10 (Inheritance)](#table-4-10-inheritance-type-options).
+[Table 5-1 (Inheritance)](#table-5-1-type-inheritance-options).
 * TYPEREF is a type name with optional namespace prefix as specified in [Section 3.1.3](#313-package-conformance-requirements).
-* FMTNAME is the name of a semantic validation keyword as specified in [Section 4.6](#46-semantic-validation).
+* FMTNAME is the name of a semantic validation keyword as specified in [Section 4.5](#45-semantic-validation).
 ```
     TYPESTRING  = TYPE [ID] [FUNC] [RANGEPAT] [FORMAT] [KW]  ; TYPE is CoreType or FieldType
     ID          = ".ID"
@@ -2426,8 +2464,8 @@ including the following sections:
 * [4.2.6 Primitive Types](#426-primitive-type-conformance-requirements)
 * [4.3.5 Compound Types](#435-compound-type-conformance-requirements)
 * [4.4.5 Union Types](#445-union-type-conformance-requirements)
-* [4.5.1 Inherited Types](#451-inheritance-options-conformance-requirements)
-* [4.6 Semantic Validation](#46-semantic-validation)
+* [4.5 Semantic Validation](#45-semantic-validation)
+* [5.6.1 Inherited Types](#561-type-inheritance-conformance-requirements)
 
 -------
 
