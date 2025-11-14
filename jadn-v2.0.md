@@ -858,8 +858,8 @@ that specify semantics of the collection value
 * a **[compound type](#432-compound-types)**, one of five JADN compound types that specify literal
 representations of a collection value, element constraints, and semantic type.
 
-Information modeling starts with the desired semantic type and then selects a compound type that
-represents a value using a desired literal format.
+Information modeling starts with the desired collection semantics and then selects a compound type that
+represents the desired value constraints and literal format.
 
 ### 4.3.1 Multiplicity Semantic Types
 
@@ -909,12 +909,12 @@ Table 4-2 shows the type name used for each combination of MultiplicityElement p
 | true      | false    | false         | Sequence      | [ArrayOf](#4321-arrayofvaluetype), [Array](#4323-array) |
 | false     | false    | false         | Bag           | [ArrayOf](#4321-arrayofvaluetype) |
 
-In applications each collection value is instantiated as a variable with the specified semantic effect.
-Some programming languages define collection types that are "order preserving" but not "ordered".
+In applications each collection value is instantiated as a variable with the specified semantic behavior.
+Some programming languages define collection types that are "order preserving" but not ordered.
 Ordered types (OrderedSet, OrderedMap and Sequence) have a mapping from positive integers to
 collection elements, i.e., elements may be referenced by position and order is significant when
 comparing values.
-Unordered types (Set, Map, Bag) ignore order when comparing values regardless of whether they
+Unordered types (Set, Map, and Bag) ignore order when comparing values regardless of whether they
 preserve insertion order.
 
 This document does not specify how collections are instantiated, but Table 4-3 lists programming
@@ -997,9 +997,8 @@ Example:
 
 ### 4.3.2 Compound Types
 
-JADN has five compound types that define the type of each element in a collection, the multiplicity semantics
-of the collection, and literal representations of the collection using encoding rules for each
-compound type:
+JADN has five compound types that define the type of each element in a collection, the collection semantic type,
+and literal representations of the collection using encoding rules for each compound type:
 * Unstructured types [**ArrayOf**](#4321-arrayofvaluetype) and [**MapOf**](#4322-mapofkeytype-valuetype)
 specify that every element in the collection has the same type.
 * A Structured type [**Array**](#4323-array), [**Map**](#4324-map) and [**Record**](#4325-record)
@@ -1049,13 +1048,14 @@ JSON Serialization:
 
 **Example:** "Places" table:
 
-The Places table is semantically a map because its valueType (Place) has a primary key, but is used because
-designers sometimes prefer to serialize maps as lists. Regardless of serialization format, a collection
-of rows with duplicate keys is not a valid Places instance.
+The Places table is semantically a map because its valueType (Place) has a primary key, but is serialized as a list.
+Regardless of serialization format, a collection of rows with duplicate keys is not a valid Places instance, and
+row order is ignored when comparing collection values.
+This example illustrates a compound primary key (Coordinate) composed of multiple fields.
 ```
 Places = ArrayOf(Place)         // Places is a table of place names
 Place = Array
-   1 Key(Coordinate)            // coordinate:: Primary key for the Places table
+   1 Key(Coordinate)            // coordinate:: compound primary key for the Places table
    2 String                     // name:: Name of a place at the specified location
 Coordinate = Array
    1 Number [-90., 90.]         // latitude::
@@ -1082,7 +1082,7 @@ The MapOf type defines a collection of undifferentiated key-value associations:
 
 **Example:** "People" MapOf:
 
-The People table is semantically a map because it is defined as a MapOf which has a keyType (Email).
+The People table is a map with email address as the key.
 ```
 People = MapOf(Email, Person)
 Email = String /email                   // RFC-822 email address format
@@ -1108,7 +1108,7 @@ JSON serialization:
 
 **Example:** "Places" MapOf:
 
-The Places table is semantically a map. Some data formats including JSON require map keys
+The Places table is semantically a map and is serialized as a map. Some data formats including JSON require map keys
 to be serialized as strings regardless of their actual type.
 ```
 Places = MapOf(Coordinate, String)      // Places is a map of coordinates to place names
@@ -1178,7 +1178,7 @@ JSON serialization:
   "middle": "Fitzgerald"
 }
 ```
-Concise encoding rules or `id` option present:
+JSON serialization with concise encoding rules or with `id` option:
 ```json
 {
   "2": "Fitzgerald",
@@ -1193,7 +1193,7 @@ The Record structured type defines a set of individually typed elements where ea
 * The [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
 * The [FieldName](#413-compound) is the string key of each element, following the 
 [$FieldName](#312-functional-metadata) naming convention and unique within the collection.
-* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) with no multiplicity option or
+* The [multiplicity](#table-4-4-compound-type-options) semantics is [Map](#4313-map) by default or
 [OrderedMap](#4314-orderedmap) if the `ordered` multiplicity option is present.
 
 The Record type defines key order, which allows Record elements to be identified and accessed by either
@@ -1202,12 +1202,12 @@ Record differs from Array in that keys have defined names rather than arbitrary 
 Record differs from Map in that keys have defined positions, allowing a collection value to be represented
 as either an array literal or a map literal.
 
-Note that in the serialization examples, applications using an information model understand the equivalence
+Note that in the serialization examples, applications using an information model Record define equivalence
 between positions and keys and can derive element position from map literals in any order (first example).
-Applications using a data model must use explicitly ordered literals (second example) if element position
-is significant.
+Applications using a data model (e.g., JSON Schema object) must use explicitly ordered literals (second example)
+if element position is significant.
 
-**Example:** "FullName" Record (Set semantics):
+**Example:** "FullName" Record with Set semantics:
 
 ```
 FullName = Record
@@ -1228,7 +1228,7 @@ Verbose JSON serialization:
 }
 ```
 
-**Example:** "FullName" Record (OrderedSet semantics):
+**Example:** "FullName" Record with OrderedSet semantics:
 
 ```
 FullName = Record ordered
@@ -1426,9 +1426,9 @@ otherwise identical instance without that key.
 
 ## 4.4 Union Types
 
-A union type specifies a set of alternatives used to classify a value. Like Compound types, some Union types
-have fields individually identified by tag, where the tag consists of an integer FieldID and a string FieldName,
-each of which is local to and unique within the type definition.
+A union type specifies a set of alternatives used to classify a value. Like Compound types, Enumerated and
+Tagged Union types have fields individually identified by tag, where the tag consists of an integer FieldID
+and a string ItemValue or FieldName, each of which is local to and unique within the type definition.
 Union types define a set of tags, types or both as shown in Table 4-7:
 
 ###### Table 4-7: Union Types
@@ -1472,40 +1472,42 @@ FieldType specified by the tag.
 The Choice type containing a `combine` TypeOption is an untagged union, a structure that defines a set of types
 used collectively to classify a value.
 
-The `combine` option value is a single character that specifies the required combination of FieldTypes:
-* A: value must be an instance of `allOf` the types
-* O: value must be an instance of `anyOf` the types, tried in field order until a match is found
-* X: value must be an instance of `oneOf` the types and no others
+The `combine` option value is a keyword that specifies the required combination of FieldTypes:
+* `allOf`: value must be an instance of all field types
+* `anyOf`: value must be an instance of any of the field types, tried in field order until a match is found
+* `oneOf`: value must be an instance of one of the field types and no others
 
 Field order does not matter for the `allOf` and `oneOf` options because values must always be evaluated
 against all FieldTypes.
 
-Field order is significant when using the `anyOf` option and the FieldTypes are not disjoint because
-this performs both classification and validation.
-A value may be an instance of more than one classifier, and classification may be used to answer
-two questions:
-* given a classifier A, is value X an instance of A? (validation)
-* given a value X, which classifier among {A, B, C, ...} is it to be considered an instance of?
-(classification)
+Field order is significant if the `anyOf` option is present and the FieldTypes are not disjoint.
+If a value may be an instance of more than one type, classification answers two questions:
+* given a type A, is value X an instance of A? (validation)
+* given a value X, which of the list of types {A, B, C, ...} is it to be considered an instance of?
+(classification). Types are identified by position only; FieldName values are non-significant labels
+as defined in the [Array](#4323-array)' type.
 
-In this example the value "Home" is an instance of both the predefined and custom types and could be
+In this example the value "home" is an instance of both the predefined and custom types and could be
 classified as either one.
-If any processing operations depend on the classification decision, the predefined type
-must appear first in the Choice otherwise it will never match and all values will be
-tagged, serialized, and processed as instances of the custom type:
+If any processing operations depend on the value type, the Enumerated type
+should appear first in the Choice otherwise it will never match and all values will be
+identified, serialized, and processed as instances of the String type.
 ```
 PhoneType = Choice(anyOf)
-  1 predefined  PhoneNumberTypes   // Pre-defined names
-  2 custom      String{3..10}      // Any name 3-10 characters in length
+  1 PhoneNumberTypes            // predefined:: Pre-defined names
+  2 String{3..10}               // custom:: Any name 3-10 characters in length
 
 PhoneNumberTypes = Enumerated
-  1 Home
-  2 Cell
-  3 Office
+  1 home
+  2 cell
+  3 office
 ```
 
 An untagged Choice with a single field can be used to define an alias for FieldType.
-The `combine` option has no effect when there is only one field.
+```
+PhoneKind = Choice(anyOf)
+  1 PhoneType                   // alias:: Define PhoneKind as a synonym for PhoneType
+```
 
 #### 4.4.4 Field Options
 
