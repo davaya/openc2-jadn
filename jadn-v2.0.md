@@ -1175,7 +1175,7 @@ JSON serialization:
   "middle": "Fitzgerald"
 }
 ```
-JSON serialization with concise encoding rules or with `id` option:
+JSON serialization with `id` option or concise encoding rules:
 ```json
 {
   "2": "Fitzgerald",
@@ -1186,7 +1186,8 @@ JSON serialization with concise encoding rules or with `id` option:
 
 #### 4.3.2.5 Record
 
-The Record structured type defines a set of individually typed elements where each element has both a position and a key:
+The Record structured type defines a set of individually typed elements where each element has
+both a position and a key:
 * The [FieldId](#413-compound) is the position of each element, numbered sequentially starting at 1.
 * The [FieldName](#413-compound) is the string key of each element, following the 
 [$FieldName](#312-functional-metadata) naming convention and unique within the collection.
@@ -1194,17 +1195,20 @@ The Record structured type defines a set of individually typed elements where ea
 [OrderedMap](#4314-orderedmap) if the `ordered` multiplicity option is present.
 
 The Record type defines key order, which allows Record elements to be identified and accessed by either
-position or key.
+position or key. It allows a single schema to define both verbose data formats with explicit keys
+and concise data formats where keys are known by position.
+Record is also used to serialize table values where keys appear only in the header and each row contains
+typed values identified by column.
 Record differs from Array in that keys have defined names rather than arbitrary struct labels.
-Record differs from Map in that keys have defined positions, allowing a collection value to be represented
-as either an array literal or a map literal.
+Record differs from Map in that keys have sequential positions rather than arbitrary IDs, making
+Map preferable for concise encodings of sparse collections where positional encoding is awkward.
 
-Note that in the serialization examples, applications using an information model Record define equivalence
-between positions and keys and can derive element position from map literals in any order (first example).
-Applications using a data model (e.g., JSON Schema object) must use explicitly ordered literals (second example)
-if element position is significant.
+IM-based applications using a Record type understand equivalence between positions and keys
+and can reorder element position from unordered map literals (first example).
+Applications using a data model (e.g., JSON Schema object) must use explicitly ordered literals
+(second example) if element position is significant.
 
-**Example:** "FullName" Record with Set semantics:
+**Example:** "FullName" Record with Map semantics:
 
 ```
 FullName = Record
@@ -1216,7 +1220,7 @@ Concise JSON serialization:
 ```json
 ["John", "Fitzgerald", "Kennedy"]
 ```
-Verbose JSON serialization:
+Verbose JSON serialization (order is ignored):
 ```json
 {
   "family": "Kennedy",
@@ -1225,7 +1229,7 @@ Verbose JSON serialization:
 }
 ```
 
-**Example:** "FullName" Record with OrderedSet semantics:
+**Example:** "FullName" Record with OrderedMap semantics:
 
 ```
 FullName = Record ordered
@@ -1237,7 +1241,7 @@ Concise JSON serializations:
 ```json
 ["John", "Fitzgerald", "Kennedy"]
 ```
-Verbose JSON serialization:
+Verbose JSON serialization (order is significant):
 ```json
 [
   {"first": "John"},
@@ -1971,13 +1975,13 @@ inherited expression is not straightforward; use Choice instead.
   * An untagged Choice (`anyOf` or `allOf`) performs union or intersection operations directly on
 two or more types.
 
-Example:
+Example - validate upper-only and lower-only alphanumeric strings:
 ```
-Name1 = Choice(anyOf)                // Extend: 2915, a34c, D72F are valid.  g16H is not.
+Name1 = Choice(anyOf)                // A extends(B): 2915, a34c, D72F are valid. Mixed g16H is not.
    1  String{pattern="^[a-z0-9]$"}   // a::
    2  String{pattern="^[A-Z0-9]$"}   // b::
 
-Name2 = Choice(allOf)                // Restrict: 2915 is valid.  a34c, D72F, g16H are not.
+Name2 = Choice(allOf)                // A restricts(B): Numeric 2915 is valid. a34c, D72F, g16H are not.
    1  String{pattern="^[a-z0-9]$"}   // a::
    2  String{pattern="^[A-Z0-9]$"}   // b::
 ```
