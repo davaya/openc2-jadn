@@ -1444,12 +1444,12 @@ The TypeOptions applicable to Union types are shown in Table 4-8:
 
 ###### Table 4-8: Union Type Options
 
-| ID   | Chr | Type    | Name    | Description                                                                  |
-|------|:---:|---------|---------|------------------------------------------------------------------------------|
-| 0x3d |  =  | Boolean | id      | If present Tag is an integer FieldID, otherwise a string FieldName           |
-| 0x43 |  C  | String  | combine | Option value is a character specifying the untagged union combining function |
-| 0x23 |  #  | TypeRef | enum    | Enumerated type derived from a structured type                               |
-| 0x3e |  >  | TypeRef | pointer | Enumerated type containing pointers derived from a structured type           |
+| ID   | Chr | Type      | Name    | Description                                                        |
+|------|:---:|-----------|---------|--------------------------------------------------------------------|
+| 0x3d |  =  | Boolean   | id      | If present Tag is an integer FieldID, otherwise a string FieldName |
+| 0x43 |  C  | UnionType | combine | Option value specifies the untagged union combining function       |
+| 0x23 |  #  | TypeRef   | enum    | Enumerated type derived from a structured type                     |
+| 0x3e |  >  | TypeRef   | pointer | Enumerated type containing pointers derived from a structured type |
 
 ### 4.4.1 Enumerated
 
@@ -1471,12 +1471,28 @@ FieldType specified by the tag.
 ### 4.4.3 Choice (Untagged)
 
 The Choice type containing a `combine` TypeOption is an untagged union, a structure that defines a set of types
-used collectively to classify a value.
+used collectively to both validate and classify a value.
+An untagged union is a specified logical combination of types to classify the value against,
+and because each type has a value space the validation result is equivalent to a set operation.
 
-The `combine` option value is a keyword that specifies the required combination of FieldTypes:
-* `allOf`: value must be an instance of all field types
-* `anyOf`: value must be an instance of any of the field types, tried in field order until a match is found
-* `oneOf`: value must be an instance of one of the field types and no others
+UnionType = Enumerated#
+  1         // allOf:: AND, set intersection
+  2         // anyOf:: OR, set union
+  3         // oneOf:: XOR, set symmetric difference
+  4         // diff:: NOT, set difference
+
+The `combine` option value is an enumeration ID that specifies the combination to be evaluated:
+* `1 (allOf)`: value must be an instance of all field types. The classifier result is the first type or none.
+  (AND, *intersection*)
+* `2 (anyOf)`: value must be an instance of any of the field types, tried in field order until a match is found.
+  The classifier result is the first matching type or none.
+  (OR, *union*)
+* `3 (oneOf)`: value must be an instance of one of the field types and no others.
+  The classifier result is the matching type or none.
+  (XOR, *symmetric difference*)
+* `4 (diff)`: value must be an instance of the first field type and not an instance of any others.
+  The classifier result is the first type or none.
+  (NOT, *difference*)
 
 Field order does not matter for the `allOf` and `oneOf` options because values must always be evaluated
 against all FieldTypes.
